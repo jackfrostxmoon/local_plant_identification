@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:local_plant_identification/screens/login_and_registration/otp_verification.dart';
 import 'package:local_plant_identification/widgets/custom_scaffold_background.dart';
-import 'package:email_otp/email_otp.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ForgetPassword extends StatefulWidget {
   const ForgetPassword({super.key});
@@ -13,42 +12,17 @@ class ForgetPassword extends StatefulWidget {
 class _ForgetPasswordState extends State<ForgetPassword> {
   final _forgetPasswordFormKey = GlobalKey<FormState>();
   final TextEditingController _emailController = TextEditingController();
-  final EmailOTP _emailOTP = EmailOTP();
   bool rememberPassword = true;
 
-  @override
-  void initState() {
-    super.initState();
-    _emailOTP.config(
-      appEmail: "contact@localplantapp.com",
-      appName: "Local Plant Identification",
-      email: _emailController.text,
-      otpLength: 6,
-      //otpType: OTPType.digitsOnly
-    );
-  }
-
-  Future<void> _sendOtp() async {
+  Future<void> _resetPassword() async {
     try {
-      bool otpSent = await _emailOTP.sendOTP();
-      if (otpSent) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('OTP sent successfully')),
-        );
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => OtpVerificationPage(
-              email: _emailController.text,
-              emailOTP: _emailOTP,
-            ),
-          ),
-        );
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('Failed to send OTP')),
-        );
-      }
+      await FirebaseAuth.instance.sendPasswordResetEmail(
+        email: _emailController.text,
+      );
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Password reset email sent successfully')),
+      );
+      Navigator.pop(context);
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text('Error: ${e.toString()}')),
@@ -104,6 +78,10 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter Email';
                               }
+                              // Add email format validation
+                              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                                return 'Please enter a valid email';
+                              }
                               return null;
                             },
                             decoration: InputDecoration(
@@ -129,7 +107,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                           ElevatedButton(
                             onPressed: () async {
                               if (_forgetPasswordFormKey.currentState!.validate()) {
-                                await _sendOtp();
+                                await _resetPassword();
                               }
                             },
                             style: ElevatedButton.styleFrom(
@@ -143,7 +121,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                               ),
                             ),
                             child: const Text(
-                              'Send OTP',
+                              'Reset Password',
                               style: TextStyle(
                                 fontSize: 18,
                                 color: Colors.white,

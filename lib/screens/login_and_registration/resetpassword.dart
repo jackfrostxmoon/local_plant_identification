@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:local_plant_identification/widgets/custom_scaffold_background.dart';
-import 'package:email_otp/email_otp.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class ResetPassword extends StatefulWidget {
   const ResetPassword({super.key});
@@ -11,41 +11,26 @@ class ResetPassword extends StatefulWidget {
 
 class _ResetPasswordState extends State<ResetPassword> {
   final _resetPasswordFormKey = GlobalKey<FormState>();
-  final TextEditingController _otpController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  final EmailOTP _emailOTP = EmailOTP();
+  final TextEditingController _confirmPasswordController = TextEditingController();
 
-  @override
-  void initState() {
-    super.initState();
-    _emailOTP.setConfig(
-      appEmail: "your-email@example.com",
-      appName: "Local Plant Identification",
-      userEmail: "user@example.com",
-      otpLength: 6,
-      otpType: OTPType.digitsOnly,
-    );
-  }
-
-  Future<void> _sendOtp() async {
-    await _emailOTP.sendOTP();
-  }
-
-  Future<void> _verifyOtpAndResetPassword() async {
-    String otp = _otpController.text;
-    bool isVerified = await _emailOTP.verifyOTP(otp: otp);
-    if (isVerified) {
-      // Handle password reset logic here
+  Future<void> _updatePassword() async {
+    try {
+      if (_passwordController.text != _confirmPasswordController.text) {
+        throw Exception("Passwords don't match");
+      }
+      
+      User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        await user.updatePassword(_passwordController.text);
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Password updated successfully')),
+        );
+        Navigator.pop(context);
+      }
+    } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('OTP Verified. Password reset successful.'),
-        ),
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Invalid OTP'),
-        ),
+        SnackBar(content: Text('Error: ${e.toString()}')),
       );
     }
   }
@@ -58,12 +43,7 @@ class _ResetPasswordState extends State<ResetPassword> {
         children: [
           Column(
             children: [
-              const Expanded(
-                flex: 1,
-                child: SizedBox(
-                  height: 10,
-                ),
-              ),
+              const Expanded(flex: 1, child: SizedBox(height: 10)),
               Expanded(
                 flex: 7,
                 child: Container(
@@ -89,37 +69,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                               color: lightColorScheme.primary,
                             ),
                           ),
-                          const SizedBox(
-                            height: 40.0,
-                          ),
-                          TextFormField(
-                            controller: _otpController,
-                            validator: (value) {
-                              if (value == null || value.isEmpty) {
-                                return 'Please enter OTP';
-                              }
-                              return null;
-                            },
-                            decoration: InputDecoration(
-                              labelText: 'OTP',
-                              labelStyle: TextStyle(
-                                color: lightColorScheme.primary,
-                              ),
-                              focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: lightColorScheme.primary,
-                                ),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: lightColorScheme.primary,
-                                ),
-                              ),
-                            ),
-                          ),
-                          const SizedBox(
-                            height: 20.0,
-                          ),
+                          const SizedBox(height: 40.0),
                           TextFormField(
                             controller: _passwordController,
                             obscureText: true,
@@ -127,36 +77,55 @@ class _ResetPasswordState extends State<ResetPassword> {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter new password';
                               }
+                              if (value.length < 6) {
+                                return 'Password must be at least 6 characters';
+                              }
                               return null;
                             },
                             decoration: InputDecoration(
                               labelText: 'New Password',
-                              labelStyle: TextStyle(
-                                color: lightColorScheme.primary,
-                              ),
+                              labelStyle: TextStyle(color: lightColorScheme.primary),
                               focusedBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: lightColorScheme.primary,
-                                ),
+                                borderSide: BorderSide(color: lightColorScheme.primary),
                               ),
                               enabledBorder: OutlineInputBorder(
-                                borderSide: BorderSide(
-                                  color: lightColorScheme.primary,
-                                ),
+                                borderSide: BorderSide(color: lightColorScheme.primary),
                               ),
                             ),
                           ),
-                          const SizedBox(
-                            height: 20.0,
+                          const SizedBox(height: 20.0),
+                          TextFormField(
+                            controller: _confirmPasswordController,
+                            obscureText: true,
+                            validator: (value) {
+                              if (value == null || value.isEmpty) {
+                                return 'Please confirm your password';
+                              }
+                              if (value != _passwordController.text) {
+                                return 'Passwords do not match';
+                              }
+                              return null;
+                            },
+                            decoration: InputDecoration(
+                              labelText: 'Confirm Password',
+                              labelStyle: TextStyle(color: lightColorScheme.primary),
+                              focusedBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: lightColorScheme.primary),
+                              ),
+                              enabledBorder: OutlineInputBorder(
+                                borderSide: BorderSide(color: lightColorScheme.primary),
+                              ),
+                            ),
                           ),
+                          const SizedBox(height: 20.0),
                           ElevatedButton(
                             onPressed: () {
                               if (_resetPasswordFormKey.currentState!.validate()) {
-                                _verifyOtpAndResetPassword();
+                                _updatePassword();
                               }
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green, // Set the button color to green
+                              backgroundColor: Colors.green,
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 80,
                                 vertical: 15,
@@ -166,15 +135,12 @@ class _ResetPasswordState extends State<ResetPassword> {
                               ),
                             ),
                             child: const Text(
-                              'Reset Password',
+                              'Update Password',
                               style: TextStyle(
                                 fontSize: 18,
                                 color: Colors.white,
                               ),
                             ),
-                          ),
-                          const SizedBox(
-                            height: 20.0,
                           ),
                         ],
                       ),

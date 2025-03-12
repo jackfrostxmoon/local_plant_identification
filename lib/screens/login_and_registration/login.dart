@@ -16,7 +16,7 @@ class _LoginState extends State<Login> {
   final _loginFormKey = GlobalKey<FormState>(); // Ensure the form key is defined
   bool rememberPassword = true;
 
-  final bool _obscurePassword = true;
+  bool _obscurePassword = true;
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   String _typedEmail = '';
@@ -137,7 +137,7 @@ class _LoginState extends State<Login> {
                             height: 25.0,
                           ),
                           TextFormField(
-                            controller: _passwordController, // Add controller
+                            controller: _passwordController,
                             obscureText: _obscurePassword,
                             obscuringCharacter: '*',
                             validator: (value) {
@@ -152,15 +152,26 @@ class _LoginState extends State<Login> {
                               hintStyle: const TextStyle(
                                 color: Colors.black26,
                               ),
+                              // Add suffix icon for show/hide password
+                              suffixIcon: IconButton(
+                                icon: Icon(
+                                  _obscurePassword ? Icons.visibility_off : Icons.visibility,
+                                ),
+                                onPressed: () {
+                                  setState(() {
+                                    _obscurePassword = !_obscurePassword;
+                                  });
+                                },
+                              ),
                               border: OutlineInputBorder(
                                 borderSide: const BorderSide(
-                                  color: Colors.black12, // Default border color
+                                  color: Colors.black12,
                                 ),
                                 borderRadius: BorderRadius.circular(10),
                               ),
                               enabledBorder: OutlineInputBorder(
                                 borderSide: const BorderSide(
-                                  color: Colors.black12, // Default border color
+                                  color: Colors.black12,
                                 ),
                                 borderRadius: BorderRadius.circular(10),
                               ),
