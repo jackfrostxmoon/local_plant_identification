@@ -24,9 +24,9 @@ class _ForgetPasswordState extends State<ForgetPassword> {
       );
       Navigator.pop(context);
     } catch (e) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Error: ${e.toString()}')),
-      );
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(SnackBar(content: Text('Error: ${e.toString()}')));
     }
   }
 
@@ -38,12 +38,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
         children: [
           Column(
             children: [
-              const Expanded(
-                flex: 1,
-                child: SizedBox(
-                  height: 10,
-                ),
-              ),
+              const Expanded(flex: 1, child: SizedBox(height: 10)),
               Expanded(
                 flex: 7,
                 child: Container(
@@ -69,9 +64,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                               color: lightColorScheme.primary,
                             ),
                           ),
-                          const SizedBox(
-                            height: 40.0,
-                          ),
+                          const SizedBox(height: 40.0),
                           TextFormField(
                             controller: _emailController,
                             validator: (value) {
@@ -79,7 +72,9 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                                 return 'Please enter Email';
                               }
                               // Add email format validation
-                              if (!RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(value)) {
+                              if (!RegExp(
+                                r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$',
+                              ).hasMatch(value)) {
                                 return 'Please enter a valid email';
                               }
                               return null;
@@ -101,17 +96,17 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                               ),
                             ),
                           ),
-                          const SizedBox(
-                            height: 20.0,
-                          ),
+                          const SizedBox(height: 20.0),
                           ElevatedButton(
                             onPressed: () async {
-                              if (_forgetPasswordFormKey.currentState!.validate()) {
+                              if (_forgetPasswordFormKey.currentState!
+                                  .validate()) {
                                 await _resetPassword();
                               }
                             },
                             style: ElevatedButton.styleFrom(
-                              backgroundColor: Colors.green, // Set the button color to green
+                              backgroundColor:
+                                  Colors.green, // Set the button color to green
                               padding: const EdgeInsets.symmetric(
                                 horizontal: 80,
                                 vertical: 15,
@@ -128,9 +123,7 @@ class _ForgetPasswordState extends State<ForgetPassword> {
                               ),
                             ),
                           ),
-                          const SizedBox(
-                            height: 20.0,
-                          ),
+                          const SizedBox(height: 20.0),
                         ],
                       ),
                     ),

@@ -1,180 +1,176 @@
+//import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:local_plant_identification/widgets/custom_scaffold_background.dart';
-import 'package:local_plant_identification/screens/login_and_registration/login.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:local_plant_identification/screens/login_and_registration/login.dart';
+import 'package:local_plant_identification/screens/models/plant.dart';
+import 'package:local_plant_identification/services/plant_service.dart';
+//import 'package:local_plant_identification/widgets/custom_bottom_navbar.dart';
+//import 'package:local_plant_identification/widgets/custom_scaffold_background.dart';
 
 class Dashboard extends StatefulWidget {
-  const Dashboard({super.key});
+  const Dashboard({Key? key}) : super(key: key);
 
   @override
   State<Dashboard> createState() => _DashboardState();
 }
 
 class _DashboardState extends State<Dashboard> {
-  final TextEditingController _searchController = TextEditingController();
-
-  String _username = '';
-  String _fullname = '';
+  final PlantService _plantService = PlantService();
+  List<Plant> _plants = [];
+  bool _isLoading = true;
 
   @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    loadUserData();
+  void initState() {
+    super.initState();
+    _loadPlants();
   }
 
-  Future<void> loadUserData() async {
-    User? user = FirebaseAuth.instance.currentUser;
-    if (user != null) {
-      DocumentReference userDoc = FirebaseFirestore.instance.collection('users').doc(user.uid);
-      DocumentSnapshot userSnapshot = await userDoc.get();
+  Future<void> _loadPlants() async {
+    try {
+      final plants = await _plantService.getPlants();
       setState(() {
-        _username = userSnapshot.get('username');
-        _fullname = userSnapshot.get('fullname');
+        _plants = plants;
+        _isLoading = false;
       });
+    } catch (e) {
+      setState(() => _isLoading = false);
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error loading plants: ${e.toString()}')),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final lightColorScheme = Theme.of(context).colorScheme;
-    return CustomScaffold(
-      child: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(16.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Welcome $_username!',
-                  style: const TextStyle(
-                    fontSize: 24,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                  ),
-                ),
-                TextButton(
-                  onPressed: () {
-                    FirebaseAuth.instance.signOut();
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(builder: (context) => const Login()),
-                    );
-                  },
-                  child: const Text(
-                    'Sign out',
-                    style: TextStyle(color: Colors.white),
-                  ),
-                ),
-              ],
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16.0),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search',
-                prefixIcon: const Icon(Icons.search),
-                suffixIcon: IconButton(
-                  icon: const Icon(Icons.filter_list),
-                  onPressed: () {
-                    // Handle filter action
-                  },
-                ),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(30),
-                ),
-                filled: true,
-                fillColor: Colors.white,
-              ),
-            ),
-          ),
-          const SizedBox(height: 16.0),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
-            child: Divider(color: Colors.white),
-          ),
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 16.0),
-            child: Text(
-              'Plant Type',
-              style: TextStyle(
-                fontSize: 18,
-                fontWeight: FontWeight.bold,
-                color: Colors.white,
-              ),
-            ),
-          ),
-          const SizedBox(height: 16.0),
-          Expanded(
-            child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                child: Column(
-                  children: [
-                    _buildCategorySection('Flowers', ['Daisy', 'Dandelion']),
-                    const SizedBox(height: 16.0),
-                    _buildCategorySection('Herbs', ['Daisy', 'Dandelion']),
-                  ],
-                ),
-              ),
-            ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Plant Dashboard'),
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.add),
+            onPressed: () => _showAddPlantDialog(context),
           ),
         ],
       ),
+      body:
+          _isLoading
+              ? const Center(child: CircularProgressIndicator())
+              : ListView.builder(
+                itemCount: _plants.length,
+                itemBuilder: (context, index) {
+                  final plant = _plants[index];
+                  return Card(
+                    margin: const EdgeInsets.all(8.0),
+                    child: ListTile(
+                      title: Text(plant.name),
+                      subtitle: Text(plant.description),
+                      onTap: () => _showPlantDetails(context, plant),
+                    ),
+                  );
+                },
+              ),
     );
   }
 
-  Widget _buildCategorySection(String title, List<String> items) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: const TextStyle(
-            fontSize: 18,
-            fontWeight: FontWeight.bold,
-            color: Colors.white,
+  void _showPlantDetails(BuildContext context, Plant plant) {
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: Text(plant.name),
+            content: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Description: ${plant.description}'),
+                const SizedBox(height: 8),
+                Text('Care Instructions: ${plant.careInstructions}'),
+                Text('Watering: ${plant.wateringFrequency}'),
+                Text('Sunlight: ${plant.sunlightNeeds}'),
+              ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Close'),
+              ),
+            ],
           ),
-        ),
-        const SizedBox(height: 8.0),
-        GridView.builder(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 2,
-            crossAxisSpacing: 16.0,
-            mainAxisSpacing: 16.0,
-          ),
-          itemCount: items.length,
-          itemBuilder: (context, index) {
-            return GestureDetector(
-              onTap: () {
-                // Handle category item click
-              },
-              child: Container(
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(16.0),
-                  border: Border.all(color: Colors.black),
-                ),
-                child: Center(
-                  child: Text(
-                    items[index],
-                    style: const TextStyle(
-                      fontSize: 16,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.black,
+    );
+  }
+
+  void _showAddPlantDialog(BuildContext context) {
+    final nameController = TextEditingController();
+    final descriptionController = TextEditingController();
+    final careController = TextEditingController();
+    final wateringController = TextEditingController();
+    final sunlightController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder:
+          (context) => AlertDialog(
+            title: const Text('Add New Plant'),
+            content: SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  TextField(
+                    controller: nameController,
+                    decoration: const InputDecoration(labelText: 'Plant Name'),
+                  ),
+                  TextField(
+                    controller: descriptionController,
+                    decoration: const InputDecoration(labelText: 'Description'),
+                  ),
+                  TextField(
+                    controller: careController,
+                    decoration: const InputDecoration(
+                      labelText: 'Care Instructions',
                     ),
                   ),
-                ),
+                  TextField(
+                    controller: wateringController,
+                    decoration: const InputDecoration(
+                      labelText: 'Watering Frequency',
+                    ),
+                  ),
+                  TextField(
+                    controller: sunlightController,
+                    decoration: const InputDecoration(
+                      labelText: 'Sunlight Needs',
+                    ),
+                  ),
+                ],
               ),
-            );
-          },
-        ),
-      ],
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text('Cancel'),
+              ),
+              TextButton(
+                onPressed: () async {
+                  try {
+                    await _plantService.addPlant(
+                      name: nameController.text,
+                      description: descriptionController.text,
+                      careInstructions: careController.text,
+                      wateringFrequency: wateringController.text,
+                      sunlightNeeds: sunlightController.text,
+                    );
+                    Navigator.pop(context);
+                    _loadPlants();
+                  } catch (e) {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text(e.toString())));
+                  }
+                },
+                child: const Text('Add'),
+              ),
+            ],
+          ),
     );
   }
 }

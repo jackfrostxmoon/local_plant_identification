@@ -4,7 +4,7 @@ import 'package:local_plant_identification/screens/login_and_registration/login.
 
 class NewPasswordPage extends StatefulWidget {
   final String email;
-  
+
   const NewPasswordPage({super.key, required this.email});
 
   @override
@@ -75,7 +75,9 @@ class _NewPasswordPageState extends State<NewPasswordPage> {
                         // Handle password update logic here
                         Navigator.pushAndRemoveUntil(
                           context,
-                          MaterialPageRoute(builder: (context) => const Login()),
+                          MaterialPageRoute(
+                            builder: (context) => const Login(),
+                          ),
                           (route) => false,
                         );
                       }

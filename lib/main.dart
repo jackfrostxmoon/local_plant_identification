@@ -1,16 +1,18 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:local_plant_identification/screens/login_and_registration/login.dart';
 import 'package:local_plant_identification/screens/login_and_registration/signup.dart';
 import 'package:local_plant_identification/screens/login_and_registration/welcome.dart';
+//import 'package:local_plant_identification/screens/dashboard/homepage.dart';
 import 'package:local_plant_identification/screens/dashboard/dashboard.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
+import 'package:provider/provider.dart';
+
 //test
-Future <void> main() async {
-    WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(
-    options: DefaultFirebaseOptions.currentPlatform,
-  );
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   runApp(const MyApp());
 }
 
@@ -41,15 +43,18 @@ class MyApp extends StatelessWidget {
         // tested with just a hot reload.
         // colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
       ),
-      initialRoute: '/welcome',
+      initialRoute:
+          FirebaseAuth.instance.currentUser != null ? '/dashboard' : '/welcome',
       routes: {
-        '/welcome': (context) => const WelcomeScreen(title: 'Welcome to Local Plant Identification'),
+        '/welcome':
+            (context) => const WelcomeScreen(
+              title: 'Welcome to Local Plant Identification',
+            ),
         '/login': (context) => const Login(),
         '/signup': (context) => const Signup(),
         '/dashboard': (context) => const Dashboard(),
       },
     );
-
   }
 }
 

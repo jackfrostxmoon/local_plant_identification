@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:local_plant_identification/screens/login_and_registration/signup.dart';
-import 'package:local_plant_identification/widgets/custom_scaffold_background.dart';
+import 'package:local_plant_identification/widgets/custom_scaffold_background.dart'; // Assuming this exists
 import 'package:local_plant_identification/screens/login_and_registration/forgetpassword.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
+import 'package:local_plant_identification/widgets/custom_text_field.dart';
 
 class Login extends StatefulWidget {
   const Login({super.key});
@@ -13,70 +14,95 @@ class Login extends StatefulWidget {
 }
 
 class _LoginState extends State<Login> {
-  final _loginFormKey = GlobalKey<FormState>(); // Ensure the form key is defined
+  final _loginFormKey = GlobalKey<FormState>();
   bool rememberPassword = true;
 
-  bool _obscurePassword = true;
+  // No need for _obscurePassword here anymore
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
-  String _typedEmail = '';
-  String _typedPassword = '';
+  // No need for _typedEmail and _typedPassword here, get from controllers directly
 
   @override
   void initState() {
     super.initState();
-    _initializeFirebase();
+    // Consider initializing Firebase in main.dart for better practice
+    // _initializeFirebase();
   }
 
-  Future<void> _initializeFirebase() async {
-    await Firebase.initializeApp();
-  }
+  // Removed _initializeFirebase as it's better done once in main.dart
 
   Future<void> _login() async {
-    _typedEmail = _emailController.text;
-    _typedPassword = _passwordController.text;
+    // Get values directly from controllers
+    final String email = _emailController.text.trim();
+    final String password = _passwordController.text.trim();
+
+    // Ensure the form is valid before proceeding
+    if (!_loginFormKey.currentState!.validate()) {
+      return; // Stop if validation fails
+    }
+
     try {
       await FirebaseAuth.instance.signInWithEmailAndPassword(
-        email: _typedEmail,
-        password: _typedPassword,
+        email: email,
+        password: password,
       );
       if (mounted) {
+        // Use pushReplacementNamed to prevent going back to login
         Navigator.of(context).pushReplacementNamed('/dashboard');
       }
     } on FirebaseAuthException catch (e) {
       String errorMessage;
-      if (e.code == 'user-not-found') {
+      if (e.code == 'user-not-found' || e.code == 'invalid-email') {
         errorMessage = 'No user found for that email.';
-      } else if (e.code == 'wrong-password') {
-        errorMessage = 'Wrong password provided.';
+      } else if (e.code == 'wrong-password' || e.code == 'invalid-credential') {
+        // 'invalid-credential' is a more common code now
+        errorMessage = 'Wrong email or password provided.';
       } else {
-        errorMessage = 'An error occurred. Please try again.';
+        errorMessage = 'An error occurred during login. Please try again.';
+        print('Firebase Auth Error: ${e.code} - ${e.message}'); // Log details
       }
-      SnackBar snackBar = SnackBar(
-        backgroundColor: Colors.red,
-        content: Text(errorMessage),
-        duration: const Duration(seconds: 3),
-      );
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            backgroundColor: Colors.redAccent, // Slightly different red
+            content: Text(errorMessage),
+            duration: const Duration(seconds: 4), // Slightly longer
+          ),
+        );
+      }
+    } catch (e) {
+      // Catch generic errors
+      print('Generic Login Error: $e');
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            backgroundColor: Colors.redAccent,
+            content: Text('An unexpected error occurred. Please try again.'),
+            duration: Duration(seconds: 4),
+          ),
+        );
       }
     }
+  }
+
+  @override
+  void dispose() {
+    // Dispose controllers when the widget is removed from the tree
+    _emailController.dispose();
+    _passwordController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     final lightColorScheme = Theme.of(context).colorScheme;
     return CustomScaffold(
+      // Make sure CustomScaffold is defined correctly
       child: Stack(
         children: [
           Column(
             children: [
-              const Expanded(
-                flex: 1,
-                child: SizedBox(
-                  height: 10,
-                ),
-              ),
+              const Expanded(flex: 1, child: SizedBox(height: 10)),
               Expanded(
                 flex: 7,
                 child: Container(
@@ -90,7 +116,7 @@ class _LoginState extends State<Login> {
                   ),
                   child: SingleChildScrollView(
                     child: Form(
-                      key: _loginFormKey, // Use the form key here
+                      key: _loginFormKey,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -102,84 +128,43 @@ class _LoginState extends State<Login> {
                               color: lightColorScheme.primary,
                             ),
                           ),
-                          const SizedBox(
-                            height: 40.0,
-                          ),
-                          TextFormField(
-                            controller: _emailController, // Add controller
+                          const SizedBox(height: 40.0),
+                          // Use the CustomTextField for Email
+                          CustomTextField(
+                            controller: _emailController,
+                            labelText: 'Email',
+                            hintText: 'Enter Email',
+                            keyboardType: TextInputType.emailAddress,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter Email';
                               }
+                              // Basic email format validation (optional but recommended)
+                              if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value)) {
+                                return 'Please enter a valid email address';
+                              }
                               return null;
                             },
-                            decoration: InputDecoration(
-                              label: const Text('Email'),
-                              hintText: 'Enter Email',
-                              hintStyle: const TextStyle(
-                                color: Colors.black26,
-                              ),
-                              border: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                  color: Colors.black12, // Default border color
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                  color: Colors.black12, // Default border color
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
                           ),
-                          const SizedBox(
-                            height: 25.0,
-                          ),
-                          TextFormField(
+                          const SizedBox(height: 25.0),
+                          // Use the CustomTextField for Password
+                          CustomTextField(
                             controller: _passwordController,
-                            obscureText: _obscurePassword,
-                            obscuringCharacter: '*',
+                            labelText: 'Password',
+                            hintText: 'Enter Password',
+                            isPassword: true, // Set this to true
                             validator: (value) {
                               if (value == null || value.isEmpty) {
                                 return 'Please enter Password';
                               }
+                              // Optional: Add password length validation
+                              // if (value.length < 6) {
+                              //   return 'Password must be at least 6 characters';
+                              // }
                               return null;
                             },
-                            decoration: InputDecoration(
-                              label: const Text('Password'),
-                              hintText: 'Enter Password',
-                              hintStyle: const TextStyle(
-                                color: Colors.black26,
-                              ),
-                              // Add suffix icon for show/hide password
-                              suffixIcon: IconButton(
-                                icon: Icon(
-                                  _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                                ),
-                                onPressed: () {
-                                  setState(() {
-                                    _obscurePassword = !_obscurePassword;
-                                  });
-                                },
-                              ),
-                              border: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                  color: Colors.black12,
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                              enabledBorder: OutlineInputBorder(
-                                borderSide: const BorderSide(
-                                  color: Colors.black12,
-                                ),
-                                borderRadius: BorderRadius.circular(10),
-                              ),
-                            ),
                           ),
-                          const SizedBox(
-                            height: 25.0,
-                          ),
+                          const SizedBox(height: 25.0),
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
@@ -196,9 +181,7 @@ class _LoginState extends State<Login> {
                                   ),
                                   const Text(
                                     'Remember me',
-                                    style: TextStyle(
-                                      color: Colors.black45,
-                                    ),
+                                    style: TextStyle(color: Colors.black45),
                                   ),
                                 ],
                               ),
@@ -207,7 +190,8 @@ class _LoginState extends State<Login> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => const ForgetPassword(),
+                                      builder:
+                                          (context) => const ForgetPassword(),
                                     ),
                                   );
                                 },
@@ -221,20 +205,18 @@ class _LoginState extends State<Login> {
                               ),
                             ],
                           ),
-                          const SizedBox(
-                            height: 25.0,
-                          ),
+                          const SizedBox(height: 25.0),
                           SizedBox(
                             width: double.infinity,
                             child: ElevatedButton(
-                              onPressed: () {
-                                if (_loginFormKey.currentState!.validate()) {
-                                  _login(); // Call the login method
-                                }
-                              },
+                              // Use the _login method directly here
+                              onPressed: _login,
                               style: ElevatedButton.styleFrom(
                                 backgroundColor: Colors.green,
-                                padding: const EdgeInsets.symmetric(horizontal: 100, vertical: 15),
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 100,
+                                  vertical: 15,
+                                ),
                                 shape: RoundedRectangleBorder(
                                   borderRadius: BorderRadius.circular(30),
                                 ),
@@ -248,38 +230,20 @@ class _LoginState extends State<Login> {
                               ),
                             ),
                           ),
-                          const SizedBox(
-                            height: 25.0,
-                          ),
-                          Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              const Padding(
-                                padding: EdgeInsets.symmetric(
-                                  vertical: 0,
-                                  horizontal: 10,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(
-                            height: 25.0,
-                          ),
-                          const SizedBox(
-                            height: 25.0,
-                          ),
+                          // Removed redundant SizedBoxes and Row
+                          const SizedBox(height: 30.0), // Adjusted spacing
                           // don't have an account
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               const Text(
                                 'Don\'t have an account? ',
-                                style: TextStyle(
-                                  color: Colors.black45,
-                                ),
+                                style: TextStyle(color: Colors.black45),
                               ),
                               GestureDetector(
                                 onTap: () {
+                                  // Consider pushReplacement if you don't want users
+                                  // to navigate back from Signup to Login easily
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
@@ -297,9 +261,7 @@ class _LoginState extends State<Login> {
                               ),
                             ],
                           ),
-                          const SizedBox(
-                            height: 20.0,
-                          ),
+                          const SizedBox(height: 20.0),
                         ],
                       ),
                     ),
@@ -315,6 +277,7 @@ class _LoginState extends State<Login> {
               icon: Icon(Icons.language, color: lightColorScheme.primary),
               onSelected: (String value) {
                 // Handle language change logic here
+                print('Language selected: $value');
               },
               itemBuilder: (BuildContext context) {
                 return [
