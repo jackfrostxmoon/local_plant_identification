@@ -1,11 +1,12 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:local_plant_identification/screens/plant_configs/category_section.dart';
 import 'package:local_plant_identification/screens/plant_configs/empty_data_message.dart';
 import 'package:local_plant_identification/screens/plant_configs/error_display.dart';
 import 'package:local_plant_identification/screens/plant_configs/loading_indicator.dart';
-import 'package:local_plant_identification/screens/quizs/quiz_screen.dart';
-import 'package:local_plant_identification/screens/quizs/quiz_type_button.dart';
-import 'package:local_plant_identification/screens/quizs/quiz_type_header.dart';
+import 'package:local_plant_identification/screens/quizs/flowers_quiz.dart';
+import 'package:local_plant_identification/screens/quizs/herbs_quiz.dart';
+import 'package:local_plant_identification/screens/quizs/trees_quiz.dart';
 
 // Service
 import 'package:local_plant_identification/services/appwrite_service.dart';
@@ -20,6 +21,7 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   late Future<List<Map<String, dynamic>>> _futurePlants;
   final AppwriteService _appwriteService = AppwriteService();
+  int _selectedIndex = 0;
 
   @override
   void initState() {
@@ -31,6 +33,14 @@ class _DashboardScreenState extends State<DashboardScreen> {
     setState(() {
       _futurePlants = _appwriteService.fetchAllPlants();
     });
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    // You might want to navigate to different screens or update content based on the selected index
+    // For now, it just updates the selected index visually.
   }
 
   @override
@@ -90,7 +100,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
             // For now, let's allow the quiz section to show even if plants are empty.
           }
 
-          const categoryOrder = ['Flowers', 'Herbs', 'Trees', 'Unknown'];
+          const categoryOrder = ['Flowers', 'Herbs', 'Trees'];
 
           // --- Build the combined list ---
           return SingleChildScrollView(
@@ -124,19 +134,117 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     ),
                     const SizedBox(height: 24),
                   ],
-
                   // --- Quiz Selection Section ---
-                  const QuizTypeHeader(),
-                  const SizedBox(height: 8),
-                  const QuizTypeButton(plantType: PlantType.flowers),
-                  const QuizTypeButton(plantType: PlantType.herbs),
-                  const QuizTypeButton(plantType: PlantType.trees),
+                  const Text(
+                    'Quiz Type',
+                    style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+                  ),
+                  const Divider(color: Colors.black, thickness: 1),
+
+                  const SizedBox(height: 16),
+                  Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 16),
+                    child: Column(
+                      children: [
+                        OutlinedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const FlowerQuiz(),
+                              ),
+                            );
+                          },
+                          style: OutlinedButton.styleFrom(
+                            minimumSize: const Size(double.infinity, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            side: const BorderSide(
+                              color: Colors.black,
+                              width: 1,
+                            ),
+                          ),
+                          child: const Text(
+                            'Flowers',
+                            style: TextStyle(fontSize: 18, color: Colors.black),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        OutlinedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const HerbsQuiz(),
+                              ),
+                            );
+                          },
+                          style: OutlinedButton.styleFrom(
+                            minimumSize: const Size(double.infinity, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            side: const BorderSide(
+                              color: Colors.black,
+                              width: 1,
+                            ),
+                          ),
+                          child: const Text(
+                            'Herbs',
+                            style: TextStyle(fontSize: 18, color: Colors.black),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        OutlinedButton(
+                          onPressed: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => const TreesQuiz(),
+                              ),
+                            );
+                          },
+                          style: OutlinedButton.styleFrom(
+                            minimumSize: const Size(double.infinity, 50),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(25),
+                            ),
+                            side: const BorderSide(
+                              color: Colors.black,
+                              width: 1,
+                            ),
+                          ),
+                          child: const Text(
+                            'Trees',
+                            style: TextStyle(fontSize: 18, color: Colors.black),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                   const SizedBox(height: 16),
                 ],
               ),
             ),
           );
         },
+      ),
+      bottomNavigationBar: BottomNavigationBar(
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(icon: Icon(Icons.home), label: 'Home'),
+          BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: 'Favourite',
+          ),
+          BottomNavigationBarItem(icon: Icon(Icons.person), label: 'User'),
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Colors.black,
+        unselectedItemColor: Colors.grey,
+        onTap: _onItemTapped,
+        type: BottomNavigationBarType.fixed, // Added for consistent spacing
       ),
     );
   }

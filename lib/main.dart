@@ -7,7 +7,6 @@ import 'package:local_plant_identification/screens/login_and_registration/welcom
 //import 'package:local_plant_identification/screens/dashboard/dashboard.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
-import 'package:provider/provider.dart';
 
 //test
 Future<void> main() async {
@@ -35,9 +34,7 @@ class MyApp extends StatelessWidget {
             ),
         '/login': (context) => const Login(),
         '/signup': (context) => const Signup(),
-        //'/dashboard': (context) => HomePage(),
-        //'/dashboard': (context) => const Dashboard(),
-        //'/homepage': (context) => const homepage(),
+        '/dashboard': (context) => const DashboardScreen(),
       },
     );
   }

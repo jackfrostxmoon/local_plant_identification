@@ -1,7 +1,7 @@
 // services/appwrite_service.dart
 import 'package:appwrite/appwrite.dart';
-import 'package:appwrite/models.dart'
-    as models; // Alias to avoid name conflicts
+import 'package:appwrite/models.dart' as models;
+import 'package:appwrite/models.dart'; // Alias to avoid name conflicts
 
 // --- Appwrite Configuration ---
 class AppwriteConfig {
@@ -12,6 +12,9 @@ class AppwriteConfig {
   static const String herbsCollectionId = '67feefaf000e7e958cc3';
   static const String treesCollectionId = '67fef1a10005c250aa24';
   static const String plantImagesStorageId = '67fc68bc003416307fcf';
+  static const String flowersquizCollectionId = '68039868002e38039bb3';
+  static const String herbsquizCollectionId = '6803b4d30025e1644b19';
+  static const String treesquizCollectionId = '6803b92b0003cbbca918';
 }
 
 class AppwriteService {
@@ -99,5 +102,47 @@ class AppwriteService {
       // Rethrow the error so the FutureBuilder can catch it
       throw Exception("Failed to load plant data: $e");
     }
+  }
+}
+
+class Question {
+  final String id; // Appwrite document ID
+  final String questionText;
+  final List<String> options;
+  final int correctAnswerIndex;
+  final String? imageUrl; // Nullable image URL
+
+  Question({
+    required this.id,
+    required this.questionText,
+    required this.options,
+    required this.correctAnswerIndex,
+    this.imageUrl,
+  });
+
+  factory Question.fromAppwriteDoc(Document doc) {
+    // Ensure options are parsed correctly as List<String>
+    List<String> parsedOptions = [];
+    if (doc.data['Options'] is List) {
+      // Appwrite SDK might return List<dynamic>, so cast safely
+      parsedOptions = List<String>.from(
+        doc.data['Options'].map((item) => item.toString()),
+      );
+    }
+
+    // Handle potential null or empty image URL
+    String? imageUrl = doc.data['Image'];
+    if (imageUrl != null && imageUrl.trim().isEmpty) {
+      imageUrl = null;
+    }
+
+    return Question(
+      id: doc.$id,
+      questionText: doc.data['Questions'] ?? 'Error: Missing question text',
+      options: parsedOptions,
+      correctAnswerIndex:
+          doc.data['Correct_Answer_Index'] ?? 0, // Default to 0 if missing
+      imageUrl: imageUrl,
+    );
   }
 }

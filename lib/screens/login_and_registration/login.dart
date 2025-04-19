@@ -3,7 +3,7 @@ import 'package:local_plant_identification/screens/login_and_registration/signup
 import 'package:local_plant_identification/widgets/custom_scaffold_background.dart'; // Assuming this exists
 import 'package:local_plant_identification/screens/login_and_registration/forgetpassword.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
+//import 'package:firebase_core/firebase_core.dart';
 import 'package:local_plant_identification/widgets/custom_text_field.dart';
 
 class Login extends StatefulWidget {

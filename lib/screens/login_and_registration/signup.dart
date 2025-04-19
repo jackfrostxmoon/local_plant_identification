@@ -67,6 +67,7 @@ class _SignupState extends State<Signup> {
           'fullname': _typedFullname,
           'email': _typedEmail,
           'createdAt': FieldValue.serverTimestamp(),
+          'points': 0,
         });
         // Optionally update Firebase Auth profile
         // await user.updateDisplayName(_typedFullname);
