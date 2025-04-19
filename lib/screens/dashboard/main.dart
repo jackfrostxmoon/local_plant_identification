@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:local_plant_identification/screens/dashboard/mock_dashboard.dart';
+import 'package:local_plant_identification/screens/dashboard/dashboard.dart';
 // Adjust the package name 'local_plant_identification' if yours is different
 
 void main() {
@@ -12,7 +12,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: const MockDashboardScreen(), // Use the screen widget
+      home: const DashboardScreen(), // Use the screen widget
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         useMaterial3: true,
