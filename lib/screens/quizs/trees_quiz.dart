@@ -1,8 +1,8 @@
-// lib/main.dart
-import 'package:flutter/material.dart';
 import 'package:appwrite/appwrite.dart';
+import 'package:flutter/material.dart';
+import 'package:local_plant_identification/screens/quizs/quiz_dialogs.dart';
 import 'package:local_plant_identification/services/appwrite_service.dart';
-// Your question model
+import 'package:local_plant_identification/widgets/custom_quiz_option_button.dart';
 
 class TreesQuiz extends StatefulWidget {
   const TreesQuiz({super.key});
@@ -125,41 +125,14 @@ class _TreesQuizState extends State<TreesQuiz> {
       context: context,
       barrierDismissible: false, // User must tap button to close
       builder: (BuildContext context) {
-        return AlertDialog(
-          backgroundColor: const Color(0xFF1E1E1E), // Dark background
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
-          ),
-          title: const Text(
-            'Quiz Finished!',
-            style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-          ),
-          content: Text(
-            'Your final score is $_score out of ${_questions.length}.',
-            style: const TextStyle(color: Colors.white70),
-          ),
-          actions: <Widget>[
-            TextButton(
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.lightBlueAccent, // Text color
-              ),
-              child: const Text('Play Again'),
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-                _resetQuiz();
-              },
-            ),
-            TextButton(
-              style: TextButton.styleFrom(
-                foregroundColor: Colors.grey, // Text color
-              ),
-              child: const Text('Close'),
-              onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-                // Optionally navigate away or just stay on the results screen
-              },
-            ),
-          ],
+        return QuizResultsDialog(
+          score: _score,
+          totalQuestions: _questions.length,
+          onPlayAgain: _resetQuiz,
+          onClose: () {
+            Navigator.of(context).pop(); // Close the dialog
+            // Optionally navigate away or just stay on the results screen
+          },
         );
       },
     );
@@ -177,44 +150,13 @@ class _TreesQuizState extends State<TreesQuiz> {
     });
   }
 
-  // Determine button color based on answer state
-  Color _getButtonColor(int index, Question currentQuestion) {
-    if (!_answered) {
-      // Default color before answering
-      return Colors.grey.shade800; // Darker grey for options
-    }
-    // After answering
-    if (index == currentQuestion.correctAnswerIndex) {
-      return Colors.green.shade700; // Darker green for correct
-    } else if (index == _selectedAnswerIndex) {
-      return Colors.red.shade700; // Darker red for incorrect selected
-    } else {
-      // Other incorrect options (fade them out slightly)
-      return Colors.grey.shade900; // Even darker grey
-    }
-  }
-
-  // Determine text color for buttons for better contrast
-  Color _getButtonTextColor(int index, Question currentQuestion) {
-    if (!_answered) {
-      return Colors.white; // White text for default state
-    }
-    // After answering
-    if (index == currentQuestion.correctAnswerIndex ||
-        index == _selectedAnswerIndex) {
-      return Colors.white; // White text for highlighted answers (correct/wrong)
-    } else {
-      return Colors.grey.shade500; // Grey text for non-selected wrong answers
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     // Use a dark theme for the Scaffold background
     return Scaffold(
       backgroundColor: const Color(0xFF121212), // Very dark background
       appBar: AppBar(
-        title: const Text('Trees Quiz'),
+        title: const Text('Flowers Quiz'),
         backgroundColor: const Color(
           0xFF1E1E1E,
         ), // Slightly lighter dark for AppBar
@@ -388,38 +330,14 @@ class _TreesQuizState extends State<TreesQuiz> {
               if (index >= currentQuestion.options.length) {
                 return const SizedBox.shrink(); // Return empty widget if out of bounds
               }
-              // Generate A, B, C, D labels
-              String optionLabel = String.fromCharCode(
-                65 + index,
-              ); // 65 is ASCII for 'A'
 
-              return ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: _getButtonColor(index, currentQuestion),
-                  foregroundColor: _getButtonTextColor(index, currentQuestion),
-                  padding: const EdgeInsets.symmetric(
-                    vertical: 12,
-                    horizontal: 10,
-                  ),
-                  textStyle: const TextStyle(
-                    fontSize: 15,
-                    fontWeight: FontWeight.w500,
-                  ),
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(
-                      25.0,
-                    ), // Highly rounded corners
-                  ),
-                  elevation:
-                      _answered ? 2 : 5, // Reduce elevation when answered
-                ),
-                // Disable button if answered, otherwise call _answerQuestion
-                onPressed: _answered ? null : () => _answerQuestion(index),
-                child: Text(
-                  // Format as "A. Option Text"
-                  "$optionLabel. ${currentQuestion.options[index]}",
-                  textAlign: TextAlign.center,
-                ),
+              return QuizOptionButton(
+                optionIndex: index,
+                optionText: currentQuestion.options[index],
+                currentQuestion: currentQuestion,
+                selectedAnswerIndex: _selectedAnswerIndex,
+                answered: _answered,
+                onPressed: () => _answerQuestion(index),
               );
             }),
           ),
