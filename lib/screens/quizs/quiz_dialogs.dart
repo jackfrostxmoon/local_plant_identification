@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:local_plant_identification/screens/dashboard/dashboard.dart';
 
 class QuizResultsDialog extends StatelessWidget {
   final int score;
@@ -28,18 +29,28 @@ class QuizResultsDialog extends StatelessWidget {
         style: const TextStyle(color: Colors.black),
       ),
       actions: <Widget>[
-        TextButton(
-          style: TextButton.styleFrom(
-            foregroundColor: Colors.purple, // Text color
-          ),
-          onPressed: onPlayAgain,
-          child: const Text('Play Again'),
-        ),
+        // Play again button
         TextButton(
           style: TextButton.styleFrom(
             foregroundColor: Colors.black, // Text color
           ),
-          onPressed: onClose,
+          onPressed: () {
+            onPlayAgain(); // Call the play again function
+            Navigator.of(context).pop(); // Close the dialog
+          },
+          child: const Text('Play Again'),
+        ),
+
+        // Close and go to dashboard
+        TextButton(
+          style: TextButton.styleFrom(
+            foregroundColor: Colors.red, // Text color
+          ),
+          onPressed: () {
+            Navigator.of(context).pushReplacement(
+              MaterialPageRoute(builder: (context) => const DashboardScreen()),
+            );
+          },
           child: const Text('Close'),
         ),
       ],

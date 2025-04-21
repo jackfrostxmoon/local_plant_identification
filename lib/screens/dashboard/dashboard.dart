@@ -123,7 +123,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                 children: [
                   const Text(
                     'Plant Categories',
-                    style: TextStyle(fontSize: 25, color: Colors.black),
+                    style: TextStyle(
+                      fontSize: 25,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const Divider(color: Colors.black, thickness: 1),
                   // --- Plant Category Sections ---
@@ -256,7 +260,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
                   const Text(
                     'About Us',
-                    style: TextStyle(fontSize: 25, color: Colors.black),
+                    style: TextStyle(
+                      fontSize: 25,
+                      color: Colors.black,
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
                   const Divider(color: Colors.black, thickness: 1),
                   const Text(
