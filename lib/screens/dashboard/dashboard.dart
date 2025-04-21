@@ -55,6 +55,13 @@ class _DashboardScreenState extends State<DashboardScreen> {
             icon: const Icon(Icons.refresh),
             onPressed: _loadAllPlants,
           ),
+          IconButton(
+            tooltip: 'Logout',
+            icon: const Icon(Icons.logout),
+            onPressed: () {
+              // Add logout logic here
+            },
+          ),
         ],
       ),
       body: FutureBuilder<List<Map<String, dynamic>>>(
@@ -239,7 +246,17 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ],
                     ),
                   ),
+
                   const SizedBox(height: 16),
+                  const Divider(color: Colors.black, thickness: 1),
+                  const Text(
+                    'About Us',
+                    style: TextStyle(fontSize: 25, color: Colors.black),
+                  ),
+                  const Text(
+                    'This app is designed to help you identify and learn about various plants.',
+                    style: TextStyle(fontSize: 16, color: Colors.black),
+                  ),
                 ],
               ),
             ),

@@ -23,59 +23,58 @@ class QuizOptionButton extends StatelessWidget {
   // Determine button color based on answer state
   Color _getButtonColor() {
     if (!answered) {
-      // Default color before answering
-      return Color(0xFFA8E6A2); // Darker grey for options
+      return Color(0xFFA8E6A2);
     }
-    // After answering
     if (optionIndex == currentQuestion.correctAnswerIndex) {
-      return Colors.green.shade700; // Darker green for correct
-    } else if (optionIndex == selectedAnswerIndex) {
-      return Colors.red.shade700; // Darker red for incorrect selected
-    } else {
-      // Other incorrect options (fade them out slightly)
-      return Colors.grey.shade900; // Even darker grey
+      return Colors.green;
     }
+    if (optionIndex == selectedAnswerIndex) {
+      return Colors.red;
+    }
+    return Colors.grey;
   }
 
   // Determine text color for buttons for better contrast
   Color _getButtonTextColor() {
     if (!answered) {
-      return Colors.black; // White text for default state
+      return Colors.black;
     }
-    // After answering
-    if (optionIndex == currentQuestion.correctAnswerIndex ||
-        optionIndex == selectedAnswerIndex) {
-      return Colors.white; // White text for highlighted answers (correct/wrong)
-    } else {
-      return Colors.grey.shade500; // Grey text for non-selected wrong answers
-    }
+    return Colors.white;
   }
 
   @override
   Widget build(BuildContext context) {
-    // Generate A, B, C, D labels
-    String optionLabel = String.fromCharCode(
-      65 + optionIndex,
-    ); // 65 is ASCII for 'A'
+    String optionLabel = String.fromCharCode(65 + optionIndex);
 
     return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        backgroundColor: _getButtonColor(),
-        foregroundColor: _getButtonTextColor(),
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
-        textStyle: const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(25.0), // Highly rounded corners
+      style: ButtonStyle(
+        backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
+          if (states.contains(MaterialState.pressed)) {
+            return Colors.grey.shade400; // Color when button is pressed
+          }
+          return _getButtonColor();
+        }),
+        foregroundColor: MaterialStateProperty.resolveWith<Color>((states) {
+          if (states.contains(MaterialState.pressed)) {
+            return Colors.white; // Text color when button is pressed
+          }
+          return _getButtonTextColor();
+        }),
+        padding: MaterialStateProperty.all(
+          const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
         ),
-        elevation: answered ? 2 : 5, // Reduce elevation when answered
+        textStyle: MaterialStateProperty.all(
+          const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
+        ),
+        shape: MaterialStateProperty.all(
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
+        ),
+        elevation: MaterialStateProperty.resolveWith<double>(
+          (states) => answered ? 2 : 5,
+        ),
       ),
-      // Disable button if answered, otherwise call onPressed
       onPressed: answered ? null : onPressed,
-      child: Text(
-        // Format as "A. Option Text"
-        "$optionLabel. $optionText",
-        textAlign: TextAlign.center,
-      ),
+      child: Text("$optionLabel. $optionText", textAlign: TextAlign.center),
     );
   }
 }

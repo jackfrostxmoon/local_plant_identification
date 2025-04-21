@@ -180,8 +180,8 @@ class _FlowerQuizState extends State<FlowerQuiz> {
           _answered && _currentIndex < _questions.length
               ? FloatingActionButton.extended(
                 onPressed: _nextQuestion,
-                backgroundColor: Colors.blueAccent.shade700,
-                foregroundColor: Colors.white,
+                backgroundColor: const Color(0xFFA8E6A2),
+                foregroundColor: Colors.black,
                 label: Text(
                   _currentIndex < _questions.length - 1
                       ? 'Next Question'
