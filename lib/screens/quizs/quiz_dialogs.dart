@@ -17,30 +17,30 @@ class QuizResultsDialog extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      backgroundColor: const Color(0xFF1E1E1E), // Dark background
+      backgroundColor: const Color(0xFFA8E6A2), // Dark background
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(15.0)),
       title: const Text(
         'Quiz Finished!',
-        style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+        style: TextStyle(color: Colors.black, fontWeight: FontWeight.bold),
       ),
       content: Text(
         'Your final score is $score out of $totalQuestions.',
-        style: const TextStyle(color: Colors.white70),
+        style: const TextStyle(color: Colors.black),
       ),
       actions: <Widget>[
         TextButton(
           style: TextButton.styleFrom(
-            foregroundColor: Colors.lightBlueAccent, // Text color
+            foregroundColor: Colors.purple, // Text color
           ),
-          child: const Text('Play Again'),
           onPressed: onPlayAgain,
+          child: const Text('Play Again'),
         ),
         TextButton(
           style: TextButton.styleFrom(
-            foregroundColor: Colors.grey, // Text color
+            foregroundColor: Colors.black, // Text color
           ),
-          child: const Text('Close'),
           onPressed: onClose,
+          child: const Text('Close'),
         ),
       ],
     );

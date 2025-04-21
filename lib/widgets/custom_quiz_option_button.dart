@@ -48,28 +48,28 @@ class QuizOptionButton extends StatelessWidget {
 
     return ElevatedButton(
       style: ButtonStyle(
-        backgroundColor: MaterialStateProperty.resolveWith<Color>((states) {
-          if (states.contains(MaterialState.pressed)) {
+        backgroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+          if (states.contains(WidgetState.pressed)) {
             return Colors.grey.shade400; // Color when button is pressed
           }
           return _getButtonColor();
         }),
-        foregroundColor: MaterialStateProperty.resolveWith<Color>((states) {
-          if (states.contains(MaterialState.pressed)) {
+        foregroundColor: WidgetStateProperty.resolveWith<Color>((states) {
+          if (states.contains(WidgetState.pressed)) {
             return Colors.white; // Text color when button is pressed
           }
           return _getButtonTextColor();
         }),
-        padding: MaterialStateProperty.all(
+        padding: WidgetStateProperty.all(
           const EdgeInsets.symmetric(vertical: 12, horizontal: 10),
         ),
-        textStyle: MaterialStateProperty.all(
+        textStyle: WidgetStateProperty.all(
           const TextStyle(fontSize: 15, fontWeight: FontWeight.w500),
         ),
-        shape: MaterialStateProperty.all(
+        shape: WidgetStateProperty.all(
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(25.0)),
         ),
-        elevation: MaterialStateProperty.resolveWith<double>(
+        elevation: WidgetStateProperty.resolveWith<double>(
           (states) => answered ? 2 : 5,
         ),
       ),
