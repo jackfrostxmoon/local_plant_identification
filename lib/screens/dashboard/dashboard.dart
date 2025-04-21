@@ -121,6 +121,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const Text(
+                    'Plant Categories',
+                    style: TextStyle(fontSize: 25, color: Colors.black),
+                  ),
+                  const Divider(color: Colors.black, thickness: 1),
                   // --- Plant Category Sections ---
                   if (allPlants.isNotEmpty) ...[
                     // Only show categories if plants exist
@@ -248,11 +253,12 @@ class _DashboardScreenState extends State<DashboardScreen> {
                   ),
 
                   const SizedBox(height: 16),
-                  const Divider(color: Colors.black, thickness: 1),
+
                   const Text(
                     'About Us',
                     style: TextStyle(fontSize: 25, color: Colors.black),
                   ),
+                  const Divider(color: Colors.black, thickness: 1),
                   const Text(
                     'This app is designed to help you identify and learn about various plants.',
                     style: TextStyle(fontSize: 16, color: Colors.black),
