@@ -47,6 +47,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        backgroundColor: const Color(0xFFA8E6A2),
         // Maybe change title to reflect both parts?
         title: const Text('Plant Explorer & Quiz'),
         actions: [
@@ -157,6 +158,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           },
                           style: OutlinedButton.styleFrom(
                             minimumSize: const Size(double.infinity, 50),
+                            backgroundColor: const Color(0xFFA8E6A2),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(25),
                             ),
@@ -167,7 +169,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                           child: const Text(
                             'Flowers',
-                            style: TextStyle(fontSize: 18, color: Colors.black),
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -182,6 +188,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           },
                           style: OutlinedButton.styleFrom(
                             minimumSize: const Size(double.infinity, 50),
+                            backgroundColor: const Color(0xFFA8E6A2),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(25),
                             ),
@@ -192,7 +199,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                           child: const Text(
                             'Herbs',
-                            style: TextStyle(fontSize: 18, color: Colors.black),
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                         const SizedBox(height: 16),
@@ -207,6 +218,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           },
                           style: OutlinedButton.styleFrom(
                             minimumSize: const Size(double.infinity, 50),
+                            backgroundColor: const Color(0xFFA8E6A2),
                             shape: RoundedRectangleBorder(
                               borderRadius: BorderRadius.circular(25),
                             ),
@@ -217,7 +229,11 @@ class _DashboardScreenState extends State<DashboardScreen> {
                           ),
                           child: const Text(
                             'Trees',
-                            style: TextStyle(fontSize: 18, color: Colors.black),
+                            style: TextStyle(
+                              fontSize: 18,
+                              color: Colors.black,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ],

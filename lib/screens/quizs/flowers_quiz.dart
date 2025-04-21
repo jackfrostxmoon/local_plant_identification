@@ -261,7 +261,7 @@ class _FlowerQuizState extends State<FlowerQuiz> {
             "${_currentIndex + 1}. ${currentQuestion.questionText}",
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: Colors.black, // White text
+              color: Colors.black, // black text
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -272,7 +272,7 @@ class _FlowerQuizState extends State<FlowerQuiz> {
             height: 200, // Define a fixed height for the image container
             width: 200, // Define a fixed width to make it square
             decoration: BoxDecoration(
-              color: Colors.grey.shade800, // Placeholder background
+              color: Colors.white, // Placeholder background
               borderRadius: BorderRadius.circular(15.0), // Rounded corners
             ),
             child: ClipRRect(

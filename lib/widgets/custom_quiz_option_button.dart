@@ -24,7 +24,7 @@ class QuizOptionButton extends StatelessWidget {
   Color _getButtonColor() {
     if (!answered) {
       // Default color before answering
-      return Colors.grey.shade800; // Darker grey for options
+      return Color(0xFFA8E6A2); // Darker grey for options
     }
     // After answering
     if (optionIndex == currentQuestion.correctAnswerIndex) {
@@ -40,7 +40,7 @@ class QuizOptionButton extends StatelessWidget {
   // Determine text color for buttons for better contrast
   Color _getButtonTextColor() {
     if (!answered) {
-      return Colors.white; // White text for default state
+      return Colors.black; // White text for default state
     }
     // After answering
     if (optionIndex == currentQuestion.correctAnswerIndex ||

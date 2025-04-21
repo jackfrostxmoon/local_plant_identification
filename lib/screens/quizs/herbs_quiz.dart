@@ -154,13 +154,13 @@ class _HerbsQuizState extends State<HerbsQuiz> {
   Widget build(BuildContext context) {
     // Use a dark theme for the Scaffold background
     return Scaffold(
-      backgroundColor: const Color(0xFF121212), // Very dark background
+      backgroundColor: Colors.white, // Very dark background
       appBar: AppBar(
-        title: const Text('Flowers Quiz'),
+        title: const Text('Herbs Quiz'),
         backgroundColor: const Color(
-          0xFF1E1E1E,
+          0xFFA8E6A2,
         ), // Slightly lighter dark for AppBar
-        foregroundColor: Colors.white, // White title text
+        foregroundColor: Colors.black, // White title text
         elevation: 0, // No shadow
         actions: [
           Padding(
@@ -168,7 +168,7 @@ class _HerbsQuizState extends State<HerbsQuiz> {
             child: Center(
               child: Text(
                 'Score: $_score',
-                style: const TextStyle(fontSize: 18, color: Colors.white70),
+                style: const TextStyle(fontSize: 18, color: Colors.black),
               ),
             ),
           ),
@@ -272,7 +272,7 @@ class _HerbsQuizState extends State<HerbsQuiz> {
             height: 200, // Define a fixed height for the image container
             width: 200, // Define a fixed width to make it square
             decoration: BoxDecoration(
-              color: Colors.grey.shade800, // Placeholder background
+              color: Colors.white, // Placeholder background
               borderRadius: BorderRadius.circular(15.0), // Rounded corners
             ),
             child: ClipRRect(
