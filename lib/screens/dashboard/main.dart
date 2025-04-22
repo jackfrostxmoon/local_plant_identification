@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:local_plant_identification/screens/dashboard/dashboard.dart';
-// Adjust the package name 'local_plant_identification' if yours is different
+import 'package:local_plant_identification/screens/dashboard/dashboard_screen.dart';
 
 void main() {
   runApp(const MyApp());

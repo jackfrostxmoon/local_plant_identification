@@ -180,8 +180,8 @@ class _HerbsQuizState extends State<HerbsQuiz> {
           _answered && _currentIndex < _questions.length
               ? FloatingActionButton.extended(
                 onPressed: _nextQuestion,
-                backgroundColor: Colors.blueAccent.shade700,
-                foregroundColor: Colors.white,
+                backgroundColor: const Color(0xFFA8E6A2),
+                foregroundColor: Colors.black,
                 label: Text(
                   _currentIndex < _questions.length - 1
                       ? 'Next Question'
@@ -261,7 +261,7 @@ class _HerbsQuizState extends State<HerbsQuiz> {
             "${_currentIndex + 1}. ${currentQuestion.questionText}",
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: Colors.white, // White text
+              color: Colors.black, // White text
               fontWeight: FontWeight.bold,
             ),
           ),

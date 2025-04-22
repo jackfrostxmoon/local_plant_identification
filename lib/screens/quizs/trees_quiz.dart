@@ -180,7 +180,7 @@ class _TreesQuizState extends State<TreesQuiz> {
           _answered && _currentIndex < _questions.length
               ? FloatingActionButton.extended(
                 onPressed: _nextQuestion,
-                backgroundColor: Colors.blueAccent.shade700,
+                backgroundColor: const Color(0xFFA8E6A2),
                 foregroundColor: Colors.white,
                 label: Text(
                   _currentIndex < _questions.length - 1
@@ -261,7 +261,7 @@ class _TreesQuizState extends State<TreesQuiz> {
             "${_currentIndex + 1}. ${currentQuestion.questionText}",
             textAlign: TextAlign.center,
             style: Theme.of(context).textTheme.headlineSmall?.copyWith(
-              color: Colors.white, // White text
+              color: Colors.black, // White text
               fontWeight: FontWeight.bold,
             ),
           ),

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:local_plant_identification/screens/dashboard/dashboard.dart';
+import 'package:local_plant_identification/screens/dashboard/dashboard_screen.dart';
 
 class QuizResultsDialog extends StatelessWidget {
   final int score;
@@ -36,7 +36,8 @@ class QuizResultsDialog extends StatelessWidget {
           ),
           onPressed: () {
             onPlayAgain(); // Call the play again function
-            Navigator.of(context).pop(); // Close the dialog
+            Navigator.of(context).pop();
+            // Close the dialog
           },
           child: const Text('Play Again'),
         ),
