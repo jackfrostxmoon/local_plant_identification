@@ -64,7 +64,7 @@ class _SignupState extends State<Signup> {
             .doc(user.uid);
         await userDoc.set({
           'username': _typedUsername,
-          'fullname': _typedFullname,
+          'fullame': _typedFullname,
           'email': _typedEmail,
           'createdAt': FieldValue.serverTimestamp(),
           'points': 0,

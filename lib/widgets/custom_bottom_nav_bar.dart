@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:local_plant_identification/screens/dashboard/dashboard_screen.dart';
-import 'package:local_plant_identification/screens/search/search_screen.dart';
 
 class AppBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
@@ -27,7 +25,7 @@ class AppBottomNavigationBar extends StatelessWidget {
           label: 'Camera',
         ), // Changed from camera
         BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Favourite'),
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'User'),
+        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
       ],
       currentIndex: currentIndex, // Use the passed-in index
       selectedItemColor: Colors.black,

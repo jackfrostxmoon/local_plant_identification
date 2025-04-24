@@ -30,7 +30,8 @@ class AppwriteService {
   AppwriteService._internal() {
     client = Client()
         .setEndpoint(AppwriteConfig.endpoint)
-        .setProject(AppwriteConfig.projectId);
+        .setProject(AppwriteConfig.projectId)
+        .setSelfSigned(status: true);
 
     databases = Databases(client);
     storage = Storage(client);
@@ -102,6 +103,59 @@ class AppwriteService {
       // Rethrow the error so the FutureBuilder can catch it
       throw Exception("Failed to load plant data: $e");
     }
+  }
+
+  Future<Map<String, dynamic>?> getPlantDetailsById(String plantId) async {
+    // List of collection IDs and their corresponding types to check
+    final collectionsToSearch = [
+      {'id': AppwriteConfig.flowersCollectionId, 'type': 'Flower'},
+      {'id': AppwriteConfig.herbsCollectionId, 'type': 'Herb'},
+      {'id': AppwriteConfig.treesCollectionId, 'type': 'Tree'},
+    ];
+
+    for (var collectionInfo in collectionsToSearch) {
+      try {
+        final models.Document document = await databases.getDocument(
+          databaseId: AppwriteConfig.databaseId,
+          collectionId: collectionInfo['id']!,
+          documentId: plantId,
+        );
+
+        // Found it! Prepare the data map similar to _fetchCollectionData
+        final data = Map<String, dynamic>.from(document.data);
+        // IMPORTANT: Add the '$id' back, as PlantDetailScreen expects it
+        data['\$id'] = document.$id;
+        // Add the type for consistency, though PlantDetailScreen might not use it
+        data['item_type'] = collectionInfo['type'];
+        return data; // Return the data as soon as found
+      } on AppwriteException catch (e) {
+        // If it's a 404 (Not Found), just ignore and try the next collection
+        if (e.code != 404) {
+          // For other errors (permissions, network, etc.), log and rethrow
+          print(
+            'Appwrite Error fetching $plantId from ${collectionInfo['id']}: ${e.message}',
+          );
+          // Decide if you want to stop searching or just log and continue
+          // Rethrowing stops the search for this ID
+          throw Exception(
+            'Failed to fetch plant details for $plantId: ${e.message}',
+          );
+        }
+        // If code is 404, the loop continues to the next collection
+      } catch (e) {
+        // Catch other potential errors
+        print(
+          'Generic Error fetching $plantId from ${collectionInfo['id']}: $e',
+        );
+        throw Exception(
+          'An unexpected error occurred fetching plant details for $plantId.',
+        );
+      }
+    }
+
+    // If the loop completes without finding the document in any collection
+    print("Plant with ID $plantId not found in any specified collection.");
+    return null; // Indicate that the plant was not found
   }
 }
 

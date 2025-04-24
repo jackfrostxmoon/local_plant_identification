@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:local_plant_identification/screens/plant_configs/category_section.dart';
 import 'package:local_plant_identification/screens/plant_configs/empty_data_message.dart';
 import 'package:local_plant_identification/screens/plant_configs/error_display.dart';
-import 'package:local_plant_identification/screens/plant_configs/loading_indicator.dart';
+import 'package:local_plant_identification/widgets/custom_loading_indicator.dart';
 import 'package:local_plant_identification/screens/quizs/flowers_quiz.dart';
 import 'package:local_plant_identification/screens/quizs/herbs_quiz.dart';
 import 'package:local_plant_identification/screens/quizs/trees_quiz.dart';

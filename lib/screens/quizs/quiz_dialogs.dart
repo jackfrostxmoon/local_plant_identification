@@ -34,12 +34,11 @@ class QuizResultsDialog extends StatelessWidget {
           style: TextButton.styleFrom(
             foregroundColor: Colors.black, // Text color
           ),
-          onPressed: () {
-            onPlayAgain(); // Call the play again function
-            Navigator.of(context).pop();
-            // Close the dialog
-          },
-          child: const Text('Play Again'),
+          onPressed: onPlayAgain,
+          child: const Text(
+            'Play Again',
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
         ),
 
         // Close and go to dashboard
