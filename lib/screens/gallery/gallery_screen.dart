@@ -263,7 +263,7 @@ class _GalleryScreenState extends State<GalleryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Gallery'),
+        title: const Text('My Gallery'),
         backgroundColor: const Color(0xFFA8E6A2),
         actions: [
           // Refresh button remains useful

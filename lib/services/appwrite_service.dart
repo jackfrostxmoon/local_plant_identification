@@ -22,6 +22,16 @@ class AppwriteConfig {
   static const String flowersquizCollectionId = '68039868002e38039bb3';
   static const String herbsquizCollectionId = '6803b4d30025e1644b19';
   static const String treesquizCollectionId = '6803b92b0003cbbca918';
+
+  // --- Attributes to search across ---
+  // IMPORTANT: Ensure Full-Text Indexes exist for these in Appwrite!
+  static const List<String> searchableAttributes = [
+    'Name',
+    'Description',
+    'Growth_Habit',
+    'Interesting_fact',
+    'Toxicity_Humans_and_Pets',
+  ];
 }
 
 class AppwriteService {
@@ -38,44 +48,43 @@ class AppwriteService {
     client = Client()
         .setEndpoint(AppwriteConfig.endpoint)
         .setProject(AppwriteConfig.projectId)
-        .setSelfSigned(status: true);
+        .setSelfSigned(status: true); // Use true only for development
 
     databases = Databases(client);
     storage = Storage(client);
   }
 
   // --- Generic method to fetch documents from any collection ---
+  // (Keep this method as is)
   Future<List<Map<String, dynamic>>> _fetchCollectionData(
     String collectionId,
-    String itemType,
-  ) async {
+    String itemType, {
+    List<String>? queries,
+  }) async {
     try {
       final models.DocumentList response = await databases.listDocuments(
         databaseId: AppwriteConfig.databaseId,
         collectionId: collectionId,
+        queries: queries,
       );
-
-      // Map Appwrite documents and add the item type
       return response.documents.map((doc) {
-        // Create a mutable copy and add the type
         final data = Map<String, dynamic>.from(doc.data);
-        data['item_type'] = itemType; // Add a type identifier
+        data['item_type'] = itemType;
+        data['\$id'] = doc.$id;
         return data;
       }).toList();
     } on AppwriteException catch (e) {
       print(
-        'Appwrite Error fetching $itemType documents from $collectionId: ${e.message}',
+        'Appwrite Error fetching/searching $itemType from $collectionId: ${e.message}',
       );
-      throw Exception('Failed to fetch $itemType documents: ${e.message}');
+      return []; // Return empty on error during search aggregation
     } catch (e) {
-      print('Error fetching $itemType documents from $collectionId: $e');
-      throw Exception(
-        'An unexpected error occurred while fetching $itemType documents.',
-      );
+      print('Error fetching/searching $itemType from $collectionId: $e');
+      return []; // Return empty on unexpected error
     }
   }
 
-  // --- Specific methods using the generic fetcher ---
+  // --- Specific fetch methods (remain the same) ---
   Future<List<Map<String, dynamic>>> fetchAllFlowers() async {
     return _fetchCollectionData(AppwriteConfig.flowersCollectionId, 'Flower');
   }
@@ -88,32 +97,93 @@ class AppwriteService {
     return _fetchCollectionData(AppwriteConfig.treesCollectionId, 'Tree');
   }
 
-  // --- Combined method to fetch all plant types ---
+  // --- Combined fetch all (remains the same) ---
   Future<List<Map<String, dynamic>>> fetchAllPlants() async {
     try {
-      // Fetch all types concurrently
       final results = await Future.wait([
         fetchAllFlowers(),
         fetchAllHerbs(),
         fetchAllTrees(),
       ]);
-
-      // Combine the results from all fetches into a single list
       final combinedList = results.expand((list) => list).toList();
-
-      // Optional: Shuffle the list for variety if desired
-      // combinedList.shuffle();
-
       return combinedList;
     } catch (e) {
       print("Error fetching all plant data: $e");
-      // Rethrow the error so the FutureBuilder can catch it
       throw Exception("Failed to load plant data: $e");
     }
   }
 
+  // --- MODIFIED: Method to search plants across multiple attributes ---
+  Future<List<Map<String, dynamic>>> searchPlants(String query) async {
+    final trimmedQuery = query.trim();
+    if (trimmedQuery.isEmpty) {
+      return []; // Return empty list if query is empty
+    }
+
+    // Define collections to search
+    final collectionsToSearch = [
+      {'id': AppwriteConfig.flowersCollectionId, 'type': 'Flower'},
+      {'id': AppwriteConfig.herbsCollectionId, 'type': 'Herb'},
+      {'id': AppwriteConfig.treesCollectionId, 'type': 'Tree'},
+    ];
+
+    // List to hold all concurrent search futures
+    final List<Future<List<Map<String, dynamic>>>> searchFutures = [];
+
+    // Iterate over each collection and each searchable attribute
+    for (var collectionInfo in collectionsToSearch) {
+      for (var attribute in AppwriteConfig.searchableAttributes) {
+        // Create the specific search query for this attribute
+        final List<String> searchQueries = [
+          Query.search(attribute, trimmedQuery),
+          // Query.limit(10) // Optional: Limit results per attribute/collection search
+        ];
+
+        // Add the future task to the list
+        searchFutures.add(
+          _fetchCollectionData(
+            collectionInfo['id']!,
+            collectionInfo['type']!,
+            queries: searchQueries,
+          ),
+        );
+      }
+    }
+
+    try {
+      // Execute all search futures concurrently
+      final List<List<Map<String, dynamic>>> resultsByAttribute =
+          await Future.wait(searchFutures);
+
+      // Combine results and remove duplicates using document ID ('$id')
+      final Map<String, Map<String, dynamic>> uniqueResults = {};
+      for (var resultList in resultsByAttribute) {
+        for (var plantData in resultList) {
+          // Use '$id' as the key to ensure uniqueness
+          final String? docId = plantData['\$id'];
+          if (docId != null && !uniqueResults.containsKey(docId)) {
+            uniqueResults[docId] = plantData;
+          }
+        }
+      }
+
+      // Convert the map values back to a list
+      final combinedList = uniqueResults.values.toList();
+
+      print(
+        "Search for '$trimmedQuery' found ${combinedList.length} unique plants.",
+      );
+      return combinedList;
+    } catch (e) {
+      print("Error during combined plant search for '$trimmedQuery': $e");
+      // Return empty list or rethrow depending on desired error handling
+      return [];
+      // Or: throw Exception("Failed to search plants: $e");
+    }
+  }
+
+  // --- Get Plant Details by ID (remains the same) ---
   Future<Map<String, dynamic>?> getPlantDetailsById(String plantId) async {
-    // List of collection IDs and their corresponding types to check
     final collectionsToSearch = [
       {'id': AppwriteConfig.flowersCollectionId, 'type': 'Flower'},
       {'id': AppwriteConfig.herbsCollectionId, 'type': 'Herb'},
@@ -127,30 +197,20 @@ class AppwriteService {
           collectionId: collectionInfo['id']!,
           documentId: plantId,
         );
-
-        // Found it! Prepare the data map similar to _fetchCollectionData
         final data = Map<String, dynamic>.from(document.data);
-        // IMPORTANT: Add the '$id' back, as PlantDetailScreen expects it
         data['\$id'] = document.$id;
-        // Add the type for consistency, though PlantDetailScreen might not use it
         data['item_type'] = collectionInfo['type'];
-        return data; // Return the data as soon as found
+        return data;
       } on AppwriteException catch (e) {
-        // If it's a 404 (Not Found), just ignore and try the next collection
         if (e.code != 404) {
-          // For other errors (permissions, network, etc.), log and rethrow
           print(
             'Appwrite Error fetching $plantId from ${collectionInfo['id']}: ${e.message}',
           );
-          // Decide if you want to stop searching or just log and continue
-          // Rethrowing stops the search for this ID
           throw Exception(
             'Failed to fetch plant details for $plantId: ${e.message}',
           );
         }
-        // If code is 404, the loop continues to the next collection
       } catch (e) {
-        // Catch other potential errors
         print(
           'Generic Error fetching $plantId from ${collectionInfo['id']}: $e',
         );
@@ -159,14 +219,14 @@ class AppwriteService {
         );
       }
     }
-
-    // If the loop completes without finding the document in any collection
     print("Plant with ID $plantId not found in any specified collection.");
-    return null; // Indicate that the plant was not found
+    return null;
   }
 }
 
+// --- Question Class (remains the same) ---
 class Question {
+  // ... (keep existing Question class code)
   final String id; // Appwrite document ID
   final String questionText;
   final List<String> options;
@@ -182,27 +242,21 @@ class Question {
   });
 
   factory Question.fromAppwriteDoc(Document doc) {
-    // Ensure options are parsed correctly as List<String>
     List<String> parsedOptions = [];
     if (doc.data['Options'] is List) {
-      // Appwrite SDK might return List<dynamic>, so cast safely
       parsedOptions = List<String>.from(
         doc.data['Options'].map((item) => item.toString()),
       );
     }
-
-    // Handle potential null or empty image URL
     String? imageUrl = doc.data['Image'];
     if (imageUrl != null && imageUrl.trim().isEmpty) {
       imageUrl = null;
     }
-
     return Question(
       id: doc.$id,
       questionText: doc.data['Questions'] ?? 'Error: Missing question text',
       options: parsedOptions,
-      correctAnswerIndex:
-          doc.data['Correct_Answer_Index'] ?? 0, // Default to 0 if missing
+      correctAnswerIndex: doc.data['Correct_Answer_Index'] ?? 0,
       imageUrl: imageUrl,
     );
   }
