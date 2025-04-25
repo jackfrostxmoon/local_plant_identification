@@ -5,13 +5,20 @@ import 'package:appwrite/models.dart'; // Alias to avoid name conflicts
 
 // --- Appwrite Configuration ---
 class AppwriteConfig {
+  // Replace with your actual Appwrite project ID and endpoint
   static const String projectId = '67f50b9d003441bfb6ac';
   static const String endpoint = 'https://cloud.appwrite.io/v1';
   static const String databaseId = '67fc674000150e152998';
+
+  // Collection IDs for different plant types
   static const String flowersCollectionId = '67feed7f0034c6a85040';
   static const String herbsCollectionId = '67feefaf000e7e958cc3';
   static const String treesCollectionId = '67fef1a10005c250aa24';
+
+  // This is the ID for the storage bucket where images are stored
   static const String plantImagesStorageId = '67fc68bc003416307fcf';
+
+  // Quiz collection IDs
   static const String flowersquizCollectionId = '68039868002e38039bb3';
   static const String herbsquizCollectionId = '6803b4d30025e1644b19';
   static const String treesquizCollectionId = '6803b92b0003cbbca918';

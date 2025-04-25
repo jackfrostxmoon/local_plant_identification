@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:local_plant_identification/screens/gallery/gallery.dart';
+import 'package:local_plant_identification/screens/gallery/gallery_screen.dart';
 
 /// Displays the card for the Media/Gallery section.
 class MediaCard extends StatelessWidget {

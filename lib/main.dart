@@ -1,11 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:local_plant_identification/screens/dashboard/dashboard_screen.dart';
-import 'dart:ui';
 import 'package:local_plant_identification/screens/login_and_registration/login.dart';
 import 'package:local_plant_identification/screens/login_and_registration/signup.dart';
 import 'package:local_plant_identification/screens/login_and_registration/welcome.dart';
-//import 'package:local_plant_identification/screens/dashboard/dashboard.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:provider/provider.dart';
 import 'firebase_options.dart';

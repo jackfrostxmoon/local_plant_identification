@@ -3,8 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:local_plant_identification/screens/camera/camera_screen.dart';
 import 'package:local_plant_identification/screens/favourite/favorites_screen.dart';
 import 'package:local_plant_identification/screens/profile/user_profile_screen.dart';
-// Assuming User class is defined elsewhere, e.g.:
-// class User { final String id; const User({required this.id}); }
 import 'package:local_plant_identification/screens/search/search_screen.dart';
 import 'package:local_plant_identification/widgets/custom_bottom_nav_bar.dart';
 import 'dashboard_content_screen.dart';
@@ -12,9 +10,6 @@ import 'dashboard_content_screen.dart';
 // Placeholder for User class if not imported
 class User {
   final String id;
-  // Make constructor const if UserProfileScreen requires a const User
-  // const User({required this.id});
-  // Or keep it non-const if UserProfileScreen doesn't need const
   User({required this.id});
 }
 
@@ -33,9 +28,9 @@ class _DashboardScreenState extends State<DashboardScreen> {
   static final List<Widget> _widgetOptions = <Widget>[
     DashboardContentScreen(), // Index 0
     SearchScreen(), // Index 1
-    CameraScreen(), // Index 2 (assuming you have a CameraScreen widget)
+    CameraScreen(), // Index 2
     FavoritesScreen(), // Index 3
-    UserProfileScreen(), // Index 4 - Add this line
+    UserProfileScreen(), // Index 4
   ];
 
   // Callback when a tab is tapped
@@ -82,30 +77,32 @@ class _DashboardScreenState extends State<DashboardScreen> {
               ];
             },
           ),
-          IconButton(
-            tooltip: 'Refresh',
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              // Handle refresh based on current screen
-              switch (_selectedIndex) {
-                case 0:
-                  // Refresh Dashboard Content
-                  break;
-                case 1:
-                  // Refresh Search Screen
-                  break;
-                case 2:
-                  // Refresh Camera Screen
-                  break;
-                case 3:
-                  // Refresh Favourites Screen
-                  break;
-                case 4:
-                  // Refresh Profile Screen
-                  break;
-              }
-            },
-          ),
+
+          // Does not refresh the screen, but can be used to refresh data
+          // IconButton(
+          //   tooltip: 'Refresh',
+          //   icon: const Icon(Icons.refresh),
+          //   onPressed: () {
+          //     // Handle refresh based on current screen
+          //     switch (_selectedIndex) {
+          //       case 0:
+          //         // Refresh Dashboard Content
+          //         break;
+          //       case 1:
+          //         // Refresh Search Screen
+          //         break;
+          //       case 2:
+          //         // Refresh Camera Screen
+          //         break;
+          //       case 3:
+          //         // Refresh Favourites Screen
+          //         break;
+          //       case 4:
+          //         // Refresh Profile Screen
+          //         break;
+          //     }
+          //   },
+          // ),
           IconButton(
             tooltip: 'Logout',
             icon: const Icon(Icons.logout),
