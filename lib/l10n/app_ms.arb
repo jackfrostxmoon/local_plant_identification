@@ -59,13 +59,98 @@
   "@loginSignUpLink": {
     "description": "Teks pautan untuk navigasi ke skrin daftar"
   },
+  "forgotPasswordTitle": "Lupa Kata Laluan",
+  "@forgotPasswordTitle": {
+    "description": "Tajuk untuk skrin set semula kata laluan"
+  },
+  "forgotPasswordEmailLabel": "E-mel",
+  "@forgotPasswordEmailLabel": {
+    "description": "Label untuk medan input e-mel pada skrin set semula kata laluan"
+  },
+  "forgotPasswordResetButton": "Set Semula Kata Laluan",
+  "@forgotPasswordResetButton": {
+    "description": "Label untuk butang bagi memulakan set semula kata laluan"
+  },
+  "signupCreateAccountTitle": "Cipta Akaun",
+  "@signupCreateAccountTitle": {
+    "description": "Tajuk untuk skrin penciptaan akaun"
+  },
+  "signupFullNameLabel": "Nama Penuh",
+  "@signupFullNameLabel": {
+    "description": "Label untuk medan input nama penuh semasa pendaftaran"
+  },
+  "signupFullNameHint": "Masukkan nama penuh anda",
+  "@signupFullNameHint": {
+    "description": "Teks petunjuk untuk medan input nama penuh semasa pendaftaran"
+  },
+  "signupUsernameLabel": "Nama Pengguna",
+  "@signupUsernameLabel": {
+    "description": "Label untuk medan input nama pengguna semasa pendaftaran"
+  },
+  "signupUsernameHint": "Masukkan nama pengguna anda",
+  "@signupUsernameHint": {
+    "description": "Teks petunjuk untuk medan input nama pengguna semasa pendaftaran"
+  },
+  "signupEmailLabel": "E-mel",
+  "@signupEmailLabel": {
+    "description": "Label untuk medan input e-mel semasa pendaftaran"
+  },
+  "signupEmailHint": "Masukkan e-mel anda",
+  "@signupEmailHint": {
+    "description": "Teks petunjuk untuk medan input e-mel semasa pendaftaran"
+  },
+  "signupPasswordLabel": "Kata Laluan",
+  "@signupPasswordLabel": {
+    "description": "Label untuk medan input kata laluan semasa pendaftaran"
+  },
+  "signupPasswordHint": "Masukkan kata laluan anda",
+  "@signupPasswordHint": {
+    "description": "Teks petunjuk untuk medan input kata laluan semasa pendaftaran"
+  },
+  "signupConfirmPasswordLabel": "Sahkan Kata Laluan",
+  "@signupConfirmPasswordLabel": {
+    "description": "Label untuk medan input sahkan kata laluan semasa pendaftaran"
+  },
+  "signupConfirmPasswordHint": "Masukkan semula kata laluan anda",
+  "@signupConfirmPasswordHint": {
+    "description": "Teks petunjuk untuk medan input sahkan kata laluan semasa pendaftaran"
+  },
+  "signupSignUpButton": "Daftar",
+  "@signupSignUpButton": {
+    "description": "Label untuk butang daftar utama"
+  },
+  "signupHaveAccountPrompt": "Sudah mempunyai akaun?",
+  "@signupHaveAccountPrompt": {
+    "description": "Teks gesaan sebelum pautan log masuk"
+  },
+  "signupSignInLink": "Log Masuk",
+  "@signupSignInLink": {
+    "description": "Teks pautan untuk navigasi kembali ke skrin log masuk"
+  },
   "dashboardAppBarTitle": "Peneroka & Kuiz Tumbuhan",
   "@dashboardAppBarTitle": {
     "description": "Tajuk bar aplikasi untuk skrin papan pemuka utama"
   },
+  "searchEnterTextPrompt": "Masukkan teks untuk mencari tumbuhan.",
+  "@searchEnterTextPrompt": {
+    "description": "Mesej gesaan ditunjukkan di kawasan hasil carian apabila input carian kosong"
+  },
   "searchAppBarTitle": "Cari Tumbuhan",
   "@searchAppBarTitle": {
     "description": "Tajuk bar aplikasi untuk skrin carian"
+  },
+  "searchNoResultsGeneric": "Tiada tumbuhan ditemui yang sepadan dengan carian anda.",
+  "@searchNoResultsGeneric": {
+    "description": "Mesej ditunjukkan apabila carian tidak menghasilkan keputusan dengan penapis 'Semua Jenis'"
+  },
+  "searchNoResultsFiltered": "Tiada tumbuhan {plantType} ditemui yang sepadan dengan carian anda.",
+  "@searchNoResultsFiltered": {
+    "description": "Mesej ditunjukkan apabila carian tidak menghasilkan keputusan dengan penapis jenis tertentu.",
+    "placeholders": {
+      "plantType": {
+        "type": "String"
+      }
+    }
   },
   "cameraAppBarTitle": "Kamera",
   "@cameraAppBarTitle": {
@@ -122,6 +207,62 @@
   "quizTreesButton": "Kuiz Pokok",
   "@quizTreesButton": {
     "description": "Teks butang untuk memulakan kuiz Pokok"
+  },
+  "quizFlowersTitle": "Kuiz Bunga",
+  "@quizFlowersTitle": {
+    "description": "Tajuk untuk skrin Kuiz Bunga"
+  },
+  "quizHerbsTitle": "Kuiz Herba",
+  "@quizHerbsTitle": {
+    "description": "Tajuk untuk skrin Kuiz Herba"
+  },
+  "quizTreesTitle": "Kuiz Pokok",
+  "@quizTreesTitle": {
+    "description": "Tajuk untuk skrin Kuiz Pokok"
+  },
+  "quizScorePrefix": "Skor: ",
+  "@quizScorePrefix": {
+    "description": "Teks awalan ditunjukkan sebelum nombor skor dalam kuiz"
+  },
+  "quizNextButton": "Soalan Seterusnya",
+  "@quizNextButton": {
+    "description": "Label untuk butang untuk pergi ke soalan kuiz seterusnya"
+  },
+  "quizShowResultsButton": "Tunjuk Keputusan",
+  "@quizShowResultsButton": {
+    "description": "Label untuk butang untuk menunjukkan keputusan kuiz akhir"
+  },
+  "quizBodyNoQuestions": "Tiada soalan tersedia.",
+  "@quizBodyNoQuestions": {
+    "description": "Mesej ditunjukkan apabila tiada soalan kuiz untuk dipaparkan"
+  },
+  "quizBodyFinished": "Kuiz selesai. Menunjukkan keputusan...",
+  "@quizBodyFinished": {
+    "description": "Mesej ditunjukkan seketika apabila kuiz berakhir sebelum dialog keputusan muncul"
+  },
+  "quizDialogTitle": "Kuiz Selesai!",
+  "@quizDialogTitle": {
+    "description": "Tajuk dialog ditunjukkan di akhir kuiz"
+  },
+  "quizDialogContent": "Skor akhir anda ialah {score} daripada {totalQuestions}.",
+  "@quizDialogContent": {
+    "description": "Teks menunjukkan skor kuiz akhir pengguna.",
+    "placeholders": {
+      "score": {
+        "type": "int"
+      },
+      "totalQuestions": {
+        "type": "int"
+      }
+    }
+  },
+  "quizDialogPlayAgain": "Main Lagi",
+  "@quizDialogPlayAgain": {
+    "description": "Label untuk butang untuk memulakan semula kuiz"
+  },
+  "quizDialogClose": "Tutup",
+  "@quizDialogClose": {
+    "description": "Label untuk butang untuk menutup dialog keputusan kuiz"
   },
   "aboutUsContent": "Aplikasi ini direka untuk membantu anda mengenal pasti dan belajar tentang pelbagai tumbuhan.",
   "@aboutUsContent": {

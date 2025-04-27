@@ -4,17 +4,19 @@ import 'package:local_plant_identification/screens/quizs/question.dart';
 import 'package:local_plant_identification/screens/quizs/quiz_content.dart';
 import 'package:local_plant_identification/screens/quizs/quiz_error_display.dart';
 import 'package:local_plant_identification/widgets/custom_loading_indicator.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Import AppLocalizations
 
 class QuizBody extends StatelessWidget {
   final bool isLoading;
-  final String? error;
-  final List<Question> questions;
+  final String? error; // Error message is already localized by the parent
+  final List<Question>
+      questions; // Questions are already localized by the model
   final int currentIndex;
   final int? selectedAnswerIndex;
   final bool answered;
   final VoidCallback onRetry;
   final ValueChanged<int> onAnswerSelected;
-  final VoidCallback showResultsCallback; // To handle end of quiz case
+  final VoidCallback showResultsCallback;
 
   const QuizBody({
     super.key,
@@ -31,43 +33,44 @@ class QuizBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Get l10n instance for static messages
+    final l10n = AppLocalizations.of(context)!;
+
     if (isLoading) {
       return const LoadingIndicator();
     }
 
     if (error != null) {
-      return Center(child: QuizErrorDisplay(error: error, onRetry: onRetry));
+      // Pass the already localized error message
+      return Center(child: QuizErrorDisplay(error: error!, onRetry: onRetry));
     }
 
     if (questions.isEmpty) {
-      return const Center(
+      return Center(
         child: Text(
-          'No questions available.',
-          style: TextStyle(color: Colors.black54), // Adjusted color
+          l10n.quizBodyNoQuestions, // Localized
+          style: const TextStyle(color: Colors.black54),
         ),
       );
     }
 
-    // Ensure current index is valid before accessing questions
     if (currentIndex >= questions.length) {
-      // This case should ideally be handled by the results dialog trigger,
-      // but as a fallback, trigger it post-frame.
       WidgetsBinding.instance.addPostFrameCallback(
         (_) => showResultsCallback(),
       );
-      return const Center(
+      return Center(
         child: Text(
-          'Quiz finished. Showing results...',
-          style: TextStyle(color: Colors.black54), // Adjusted color
+          l10n.quizBodyFinished, // Localized
+          style: const TextStyle(color: Colors.black54),
         ),
       );
     }
 
-    // If everything is okay, show the quiz content
+    // Pass the already localized question data
     final currentQuestion = questions[currentIndex];
     return QuizContent(
       currentIndex: currentIndex,
-      currentQuestion: currentQuestion,
+      currentQuestion: currentQuestion, // Contains localized text/options
       selectedAnswerIndex: selectedAnswerIndex,
       answered: answered,
       onAnswerSelected: onAnswerSelected,

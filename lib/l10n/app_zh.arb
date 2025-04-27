@@ -59,13 +59,98 @@
   "@loginSignUpLink": {
     "description": "导航到注册屏幕的链接文本"
   },
+  "forgotPasswordTitle": "忘记密码",
+  "@forgotPasswordTitle": {
+    "description": "密码重置屏幕的标题"
+  },
+  "forgotPasswordEmailLabel": "电子邮件",
+  "@forgotPasswordEmailLabel": {
+    "description": "密码重置屏幕上电子邮件输入字段的标签"
+  },
+  "forgotPasswordResetButton": "重置密码",
+  "@forgotPasswordResetButton": {
+    "description": "用于启动密码重置的按钮标签"
+  },
+  "signupCreateAccountTitle": "创建账户",
+  "@signupCreateAccountTitle": {
+    "description": "账户创建屏幕的标题"
+  },
+  "signupFullNameLabel": "全名",
+  "@signupFullNameLabel": {
+    "description": "注册时全名输入字段的标签"
+  },
+  "signupFullNameHint": "输入您的全名",
+  "@signupFullNameHint": {
+    "description": "注册时全名输入字段的提示文本"
+  },
+  "signupUsernameLabel": "用户名",
+  "@signupUsernameLabel": {
+    "description": "注册时用户名输入字段的标签"
+  },
+  "signupUsernameHint": "输入您的用户名",
+  "@signupUsernameHint": {
+    "description": "注册时用户名输入字段的提示文本"
+  },
+  "signupEmailLabel": "电子邮件",
+  "@signupEmailLabel": {
+    "description": "注册时电子邮件输入字段的标签"
+  },
+  "signupEmailHint": "输入您的电子邮件",
+  "@signupEmailHint": {
+    "description": "注册时电子邮件输入字段的提示文本"
+  },
+  "signupPasswordLabel": "密码",
+  "@signupPasswordLabel": {
+    "description": "注册时密码输入字段的标签"
+  },
+  "signupPasswordHint": "输入您的密码",
+  "@signupPasswordHint": {
+    "description": "注册时密码输入字段的提示文本"
+  },
+  "signupConfirmPasswordLabel": "确认密码",
+  "@signupConfirmPasswordLabel": {
+    "description": "注册时确认密码输入字段的标签"
+  },
+  "signupConfirmPasswordHint": "再次输入您的密码",
+  "@signupConfirmPasswordHint": {
+    "description": "注册时确认密码输入字段的提示文本"
+  },
+  "signupSignUpButton": "注册",
+  "@signupSignUpButton": {
+    "description": "主注册按钮的标签"
+  },
+  "signupHaveAccountPrompt": "已经有账户了？",
+  "@signupHaveAccountPrompt": {
+    "description": "登录链接之前的提示文本"
+  },
+  "signupSignInLink": "登录",
+  "@signupSignInLink": {
+    "description": "导航回登录屏幕的链接文本"
+  },
   "dashboardAppBarTitle": "植物探索与测验",
   "@dashboardAppBarTitle": {
     "description": "主仪表板屏幕的应用栏标题"
   },
+  "searchEnterTextPrompt": "输入文本以搜索植物。",
+  "@searchEnterTextPrompt": {
+    "description": "当搜索输入为空时在搜索结果区域显示的提示消息"
+  },
   "searchAppBarTitle": "搜索植物",
   "@searchAppBarTitle": {
     "description": "搜索屏幕的应用栏标题"
+  },
+  "searchNoResultsGeneric": "未找到与您的搜索匹配的植物。",
+  "@searchNoResultsGeneric": {
+    "description": "当使用“所有类型”筛选器进行搜索未产生结果时显示的消息"
+  },
+  "searchNoResultsFiltered": "未找到与您的搜索匹配的{plantType}植物。",
+  "@searchNoResultsFiltered": {
+    "description": "当使用特定类型筛选器进行搜索未产生结果时显示的消息。",
+    "placeholders": {
+      "plantType": {
+        "type": "String"
+      }
+    }
   },
   "cameraAppBarTitle": "相机",
   "@cameraAppBarTitle": {
@@ -122,6 +207,62 @@
   "quizTreesButton": "树木测验",
   "@quizTreesButton": {
     "description": "开始树木测验的按钮文本"
+  },
+  "quizFlowersTitle": "花卉测验",
+  "@quizFlowersTitle": {
+    "description": "花卉测验屏幕的标题"
+  },
+  "quizHerbsTitle": "草药测验",
+  "@quizHerbsTitle": {
+    "description": "草药测验屏幕的标题"
+  },
+  "quizTreesTitle": "树木测验",
+  "@quizTreesTitle": {
+    "description": "树木测验屏幕的标题"
+  },
+  "quizScorePrefix": "分数：",
+  "@quizScorePrefix": {
+    "description": "测验中分数数字前显示的前缀文本"
+  },
+  "quizNextButton": "下一题",
+  "@quizNextButton": {
+    "description": "转到下一个测验问题的按钮标签"
+  },
+  "quizShowResultsButton": "显示结果",
+  "@quizShowResultsButton": {
+    "description": "显示最终测验结果的按钮标签"
+  },
+  "quizBodyNoQuestions": "没有可用的问题。",
+  "@quizBodyNoQuestions": {
+    "description": "没有测验问题可显示时显示的消息"
+  },
+  "quizBodyFinished": "测验结束。正在显示结果...",
+  "@quizBodyFinished": {
+    "description": "测验结束、结果对话框出现前短暂显示的消息"
+  },
+  "quizDialogTitle": "测验结束！",
+  "@quizDialogTitle": {
+    "description": "测验结束时显示的对话框标题"
+  },
+  "quizDialogContent": "您的最终得分是 {score} 分（共 {totalQuestions} 题）。",
+  "@quizDialogContent": {
+    "description": "显示用户最终测验分数的文本。",
+    "placeholders": {
+      "score": {
+        "type": "int"
+      },
+      "totalQuestions": {
+        "type": "int"
+      }
+    }
+  },
+  "quizDialogPlayAgain": "再玩一次",
+  "@quizDialogPlayAgain": {
+    "description": "重新开始测验的按钮标签"
+  },
+  "quizDialogClose": "关闭",
+  "@quizDialogClose": {
+    "description": "关闭测验结果对话框的按钮标签"
   },
   "aboutUsContent": "此应用程序旨在帮助您识别和了解各种植物。",
   "@aboutUsContent": {

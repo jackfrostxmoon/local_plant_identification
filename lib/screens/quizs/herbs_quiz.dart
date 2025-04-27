@@ -1,9 +1,11 @@
+// screens/quizs/herbs_quiz.dart
 import 'package:appwrite/appwrite.dart';
 import 'package:flutter/material.dart';
 import 'package:local_plant_identification/screens/quizs/question.dart';
 import 'package:local_plant_identification/screens/quizs/quiz_body.dart';
 import 'package:local_plant_identification/screens/quizs/quiz_dialogs.dart';
 import 'package:local_plant_identification/services/appwrite_service.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Import AppLocalizations
 
 class HerbsQuiz extends StatefulWidget {
   const HerbsQuiz({super.key});
@@ -19,17 +21,25 @@ class _HerbsQuizState extends State<HerbsQuiz> {
   int _currentIndex = 0;
   int _score = 0;
   bool _isLoading = true;
-  String? _error;
-  int? _selectedAnswerIndex; // Track selected answer for feedback
-  bool _answered = false; // To disable buttons after answering
+  String? _error; // Will store HARDCODED error messages
+  int? _selectedAnswerIndex;
+  bool _answered = false;
 
   @override
   void initState() {
     super.initState();
-    _initializeAppwriteAndFetchQuestions();
+    // Use WidgetsBinding to ensure context is available for first fetch
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (mounted) {
+        _initializeAppwriteAndFetchQuestions();
+      }
+    });
   }
 
   Future<void> _initializeAppwriteAndFetchQuestions() async {
+    if (!mounted) return;
+    // final l10n = AppLocalizations.of(context)!; // Not needed for hardcoded errors
+
     setState(() {
       _isLoading = true;
       _error = null;
@@ -47,21 +57,23 @@ class _HerbsQuizState extends State<HerbsQuiz> {
 
       final response = await databases.listDocuments(
         databaseId: AppwriteConfig.databaseId,
+        // --- Use the correct Collection ID for Herbs Quiz ---
         collectionId: AppwriteConfig.herbsquizCollectionId,
-        // queries: [Query.limit(10)] // Example query
       );
 
       if (response.documents.isNotEmpty) {
-        // Use the Question model factory
         final List<Question> fetchedQuestions = [];
+        // Pass context to the factory method
         for (var doc in response.documents) {
           try {
-            fetchedQuestions.add(Question.fromAppwriteDoc(doc));
+            // Pass context here for localization within the factory
+            fetchedQuestions.add(Question.fromAppwriteDoc(doc, context));
           } catch (e) {
             print("Error parsing question ${doc.$id}: $e");
-            // Optionally skip this question or handle the error differently
           }
         }
+
+        if (!mounted) return;
 
         if (fetchedQuestions.isNotEmpty) {
           setState(() {
@@ -71,34 +83,42 @@ class _HerbsQuizState extends State<HerbsQuiz> {
           });
         } else {
           setState(() {
+            // --- Hardcoded Error ---
             _error = "No valid questions could be parsed.";
             _isLoading = false;
           });
         }
       } else {
+        if (!mounted) return;
         setState(() {
+          // --- Hardcoded Error ---
           _error = "No questions found in the database.";
           _isLoading = false;
         });
       }
     } on AppwriteException catch (e) {
       print("Appwrite Error: ${e.message}");
+      if (!mounted) return;
       setState(() {
-        _error = "Failed to load questions: ${e.message}";
+        // --- Hardcoded Error ---
+        _error =
+            "Failed to load questions: ${e.message ?? 'Unknown Appwrite error'}";
         _isLoading = false;
       });
     } catch (e) {
       print("General Error fetching/parsing questions: $e");
+      if (!mounted) return;
       setState(() {
-        _error = "An unexpected error occurred: $e";
+        // --- Hardcoded Error ---
+        _error = "An unexpected error occurred: ${e.toString()}";
         _isLoading = false;
       });
     }
   }
 
+  // _answerQuestion remains the same
   void _answerQuestion(int selectedIndex) {
     if (_answered || _currentIndex >= _questions.length) return;
-
     final currentQuestion = _questions[_currentIndex];
     setState(() {
       _selectedAnswerIndex = selectedIndex;
@@ -109,6 +129,7 @@ class _HerbsQuizState extends State<HerbsQuiz> {
     });
   }
 
+  // _nextQuestion remains the same
   void _nextQuestion() {
     if (_currentIndex < _questions.length - 1) {
       setState(() {
@@ -121,112 +142,115 @@ class _HerbsQuizState extends State<HerbsQuiz> {
     }
   }
 
+  // _showResultsDialog remains the same (passes data to localized dialog)
   void _showResultsDialog() {
-    // Prevent dialog from showing if questions are empty or index is wrong
-    if (_questions.isEmpty && !_isLoading) return;
-
+    if (!mounted || (_questions.isEmpty && !_isLoading)) return;
     showDialog(
       context: context,
       barrierDismissible: false,
-      builder: (BuildContext context) {
+      builder: (BuildContext dialogContext) {
         return QuizResultsDialog(
           score: _score,
           totalQuestions: _questions.length,
           onPlayAgain: () {
-            Navigator.of(context).pop(); // Close dialog first
+            Navigator.of(dialogContext).pop();
             _resetQuiz();
           },
           onClose: () {
-            Navigator.of(context).pop();
+            Navigator.of(dialogContext).pop();
           },
         );
       },
     );
   }
 
+  // _resetQuiz remains the same
   void _resetQuiz() {
+    if (!mounted) return;
     setState(() {
       _currentIndex = 0;
       _score = 0;
       _selectedAnswerIndex = null;
       _answered = false;
-      _isLoading = false; // Ensure loading is false
-      _error = null; // Clear errors
+      _isLoading = false;
+      _error = null; // Clear error on reset
+
       if (_questions.isNotEmpty) {
-        _questions.shuffle(); // Shuffle existing questions
+        _questions.shuffle();
       } else {
-        // If questions were empty (e.g., due to initial error), retry fetching
-        _initializeAppwriteAndFetchQuestions();
+        WidgetsBinding.instance.addPostFrameCallback((_) {
+          if (mounted) {
+            _initializeAppwriteAndFetchQuestions();
+          }
+        });
+        _isLoading = true;
       }
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    // Get l10n instance for static text (AppBar title, score prefix, FAB)
+    final l10n = AppLocalizations.of(context)!;
+
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
-        title: const Text('Flowers Quiz'),
+        // --- Use localized title for Herbs Quiz ---
+        title: Text(l10n.quizHerbsTitle), // Localized title
         backgroundColor: const Color(0xFFA8E6A2),
         foregroundColor: Colors.black,
         elevation: 0,
         actions: [
-          // Only show score if questions are loaded and quiz hasn't ended unexpectedly
           if (!_isLoading && _error == null && _questions.isNotEmpty)
             Padding(
               padding: const EdgeInsets.only(right: 16.0),
               child: Center(
                 child: Text(
-                  'Score: $_score',
+                  '${l10n.quizScorePrefix}$_score', // Localized prefix
                   style: const TextStyle(fontSize: 18, color: Colors.black),
                 ),
               ),
             ),
         ],
       ),
-      // Use the new QuizBody widget
+      // Pass the potentially hardcoded error message to QuizBody
       body: QuizBody(
         isLoading: _isLoading,
-        error: _error,
-        questions: _questions,
+        error: _error, // Pass hardcoded error string if set
+        questions: _questions, // Questions are localized via the model
         currentIndex: _currentIndex,
         selectedAnswerIndex: _selectedAnswerIndex,
         answered: _answered,
         onRetry: _initializeAppwriteAndFetchQuestions,
-        onAnswerSelected: _answerQuestion, // Pass the answer handler
-        showResultsCallback: _showResultsDialog, // Pass callback for end case
+        onAnswerSelected: _answerQuestion,
+        showResultsCallback: _showResultsDialog,
       ),
-      floatingActionButton: _buildFab(), // Extracted FAB build logic
+      floatingActionButton: _buildFab(l10n), // Pass l10n to FAB builder
       floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 
-  // Helper method to build the FAB conditionally
-  Widget? _buildFab() {
-    // Show FAB only if:
-    // - Not loading
-    // - No error
-    // - Questions are available
-    // - An answer has been selected for the current question
-    // - There are still questions left or it's the last question
+  // Helper method to build the FAB conditionally (accepts l10n)
+  Widget? _buildFab(AppLocalizations l10n) {
     if (!_isLoading &&
         _error == null &&
         _questions.isNotEmpty &&
         _answered &&
         _currentIndex < _questions.length) {
-      // Check index validity
       return FloatingActionButton.extended(
         onPressed: _nextQuestion,
         backgroundColor: const Color(0xFFA8E6A2),
         foregroundColor: Colors.black,
         label: Text(
+          // Use localized labels
           _currentIndex < _questions.length - 1
-              ? 'Next Question'
-              : 'Show Results',
+              ? l10n.quizNextButton
+              : l10n.quizShowResultsButton,
         ),
         icon: const Icon(Icons.arrow_forward),
       );
     }
-    return null; // Return null if FAB shouldn't be shown
+    return null;
   }
 }

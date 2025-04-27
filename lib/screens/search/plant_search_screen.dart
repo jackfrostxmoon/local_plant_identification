@@ -77,7 +77,7 @@ class _PlantSearchScreenState extends State<PlantSearchScreen> {
       if (mounted) {
         setState(() {
           _isLoading = false;
-          // --- Hardcoded English error message (key missing in template) ---
+          // --- Hardcoded English error message (as requested previously) ---
           _error = "Failed to perform search. Please try again.";
           _searchResults = [];
         });
@@ -98,7 +98,7 @@ class _PlantSearchScreenState extends State<PlantSearchScreen> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
-          // --- Hardcoded English error message (key missing in template) ---
+          // --- Hardcoded English error message (as requested previously) ---
           content: Text('Error: Could not open plant details (Missing ID).'),
           backgroundColor: Colors.red,
         ),
@@ -199,26 +199,26 @@ class _PlantSearchScreenState extends State<PlantSearchScreen> {
                   },
                   itemBuilder: (BuildContext context) =>
                       <PopupMenuEntry<String>>[
-                    CheckedPopupMenuItem<String>(
+                    PopupMenuItem<String>(
                       value: _filterAll,
-                      checked: _selectedFilterType == _filterAll,
+
                       child:
                           Text(l10n.filterAllTypes), // Localized (Key exists)
                     ),
                     const PopupMenuDivider(),
-                    CheckedPopupMenuItem<String>(
+                    PopupMenuItem<String>(
                       value: _filterFlower,
-                      checked: _selectedFilterType == _filterFlower,
+
                       child: Text(l10n.filterFlowers), // Localized (Key exists)
                     ),
-                    CheckedPopupMenuItem<String>(
+                    PopupMenuItem<String>(
                       value: _filterHerb,
-                      checked: _selectedFilterType == _filterHerb,
+
                       child: Text(l10n.filterHerbs), // Localized (Key exists)
                     ),
-                    CheckedPopupMenuItem<String>(
+                    PopupMenuItem<String>(
                       value: _filterTree,
-                      checked: _selectedFilterType == _filterTree,
+
                       child: Text(l10n.filterTrees), // Localized (Key exists)
                     ),
                   ],
@@ -239,7 +239,8 @@ class _PlantSearchScreenState extends State<PlantSearchScreen> {
 
   // Build the results area (GridView or messages)
   Widget _buildResultsArea() {
-    // final l10n = AppLocalizations.of(context)!; // Not needed for hardcoded messages
+    // --- Get l10n instance for localized messages ---
+    final l10n = AppLocalizations.of(context)!;
 
     if (_isLoading) {
       return const Center(child: LoadingIndicator());
@@ -268,28 +269,37 @@ class _PlantSearchScreenState extends State<PlantSearchScreen> {
       }).toList();
     }
 
-    // Handle empty states with hardcoded messages
+    // Handle empty states
     if (displayedResults.isEmpty) {
       String message;
       if (_searchController.text.isNotEmpty) {
         if (_selectedFilterType == _filterAll) {
-          // --- Hardcoded English message (key missing) ---
-          message = 'No plants found matching your search.';
+          // --- Use localized message ---
+          message = l10n.searchNoResultsGeneric; // Use the key
         } else {
-          // --- Hardcoded English message (key missing) ---
-          // Use the localized filter name helper for better context
-          message =
-              'No ${_getLocalizedFilterName(context, _selectedFilterType).toLowerCase()} plants found matching your search.';
+          // Use localized message with placeholder
+          try {
+            String localizedFilterName =
+                _getLocalizedFilterName(context, _selectedFilterType);
+            message =
+                l10n.searchNoResultsFiltered(localizedFilterName.toLowerCase());
+          } catch (e) {
+            // Fallback if placeholder method fails or key is missing
+            print("Localization error for searchNoResultsFiltered: $e");
+            message =
+                "No ${_getLocalizedFilterName(context, _selectedFilterType).toLowerCase()} plants found matching your search.";
+          }
         }
       } else {
-        // --- Hardcoded English message (key missing) ---
-        message = 'Enter text to search for plants.';
+        // Use localized message for empty search prompt
+        message = l10n.searchEnterTextPrompt;
       }
+      // The rest of the return statement remains the same
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Text(
-            message,
+            message, // Display the correct localized message
             style: const TextStyle(fontSize: 16, color: Colors.grey),
             textAlign: TextAlign.center,
           ),

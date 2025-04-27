@@ -1,7 +1,11 @@
+// screens/login_and_registration/signup.dart
 import 'package:flutter/material.dart';
 import 'package:local_plant_identification/widgets/custom_scaffold_background.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:provider/provider.dart'; // Import Provider
+import 'package:local_plant_identification/main.dart'; // Import main for LocaleProvider
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Import AppLocalizations
 
 class Signup extends StatefulWidget {
   const Signup({super.key});
@@ -13,9 +17,8 @@ class Signup extends StatefulWidget {
 class _SignupState extends State<Signup> {
   final _signupFormKey = GlobalKey<FormState>();
 
-  // Visibility state for each password field
   bool _obscurePassword = true;
-  bool _obscureConfirmPassword = true; // Added state for confirm password
+  bool _obscureConfirmPassword = true;
 
   final TextEditingController _emailController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
@@ -24,11 +27,7 @@ class _SignupState extends State<Signup> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _fullnameController = TextEditingController();
 
-  // State variables for typed values (optional, could use controllers directly)
-  String _typedEmail = '';
-  String _typedPassword = '';
-  String _typedUsername = '';
-  String _typedFullname = '';
+  // Removed state variables for typed values, use controllers directly
 
   @override
   void dispose() {
@@ -45,37 +44,42 @@ class _SignupState extends State<Signup> {
       return;
     }
 
-    _typedEmail = _emailController.text.trim();
-    _typedPassword = _passwordController.text; // No trim for password
-    _typedUsername = _usernameController.text.trim();
-    _typedFullname = _fullnameController.text.trim();
+    final String typedEmail = _emailController.text.trim();
+    final String typedPassword = _passwordController.text;
+    final String typedUsername = _usernameController.text.trim();
+    final String typedFullname = _fullnameController.text.trim();
 
     try {
-      final credential = await FirebaseAuth.instance
-          .createUserWithEmailAndPassword(
-            email: _typedEmail,
-            password: _typedPassword,
-          );
+      final credential =
+          await FirebaseAuth.instance.createUserWithEmailAndPassword(
+        email: typedEmail,
+        password: typedPassword,
+      );
       User? user = credential.user;
 
       if (user != null) {
-        DocumentReference userDoc = FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid);
+        DocumentReference userDoc =
+            FirebaseFirestore.instance.collection('users').doc(user.uid);
         await userDoc.set({
-          'username': _typedUsername,
-          'fullame': _typedFullname,
-          'email': _typedEmail,
+          'username': typedUsername,
+          'fullname': typedFullname, // Corrected key to 'fullname'
+          'email': typedEmail,
           'createdAt': FieldValue.serverTimestamp(),
           'points': 0,
+          'gallery': [], // Initialize gallery as empty list
+          'favoritePlantIds': [], // Initialize favorites as empty list
+          // Add other fields like dateOfBirth, address if needed initially
+          'dateOfBirth': null,
+          'address': '',
         });
         // Optionally update Firebase Auth profile
-        // await user.updateDisplayName(_typedFullname);
+        // await user.updateDisplayName(typedFullname);
       }
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
+            // --- Hardcoded English Success Message ---
             content: Text('Registration successful! Please log in.'),
             backgroundColor: Colors.green,
           ),
@@ -85,19 +89,22 @@ class _SignupState extends State<Signup> {
         ).pushNamedAndRemoveUntil('/login', (Route<dynamic> route) => false);
       }
     } on FirebaseAuthException catch (e) {
-      String message = 'Unable to register. Please try again.';
+      String message;
+      // --- Error messages remain hardcoded English ---
       if (e.code == 'weak-password') {
         message = 'The password provided is too weak (min 6 characters).';
       } else if (e.code == 'email-already-in-use') {
         message = 'An account already exists for that email.';
       } else if (e.code == 'invalid-email') {
         message = 'The email address is not valid.';
+      } else {
+        message = 'Unable to register. Please try again.';
       }
       print('FirebaseAuthException: ${e.code} - ${e.message}');
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           SnackBar(
-            content: Text(message),
+            content: Text(message), // Hardcoded error message
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 4),
           ),
@@ -108,6 +115,7 @@ class _SignupState extends State<Signup> {
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(
+            // --- Hardcoded English Error Message ---
             content: Text('An unexpected error occurred. Please try again.'),
             backgroundColor: Colors.red,
             duration: const Duration(seconds: 3),
@@ -120,6 +128,9 @@ class _SignupState extends State<Signup> {
   @override
   Widget build(BuildContext context) {
     final lightColorScheme = Theme.of(context).colorScheme;
+    // --- Get AppLocalizations instance ---
+    final l10n = AppLocalizations.of(context)!;
+
     return CustomScaffold(
       child: Stack(
         children: [
@@ -127,7 +138,7 @@ class _SignupState extends State<Signup> {
             children: [
               const Expanded(flex: 1, child: SizedBox(height: 10)),
               Expanded(
-                flex: 9,
+                flex: 9, // Adjusted flex to give more space
                 child: Container(
                   padding: const EdgeInsets.fromLTRB(25.0, 40.0, 25.0, 20.0),
                   decoration: const BoxDecoration(
@@ -143,8 +154,9 @@ class _SignupState extends State<Signup> {
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
+                          // --- Localized Text ---
                           Text(
-                            'Create Account',
+                            l10n.signupCreateAccountTitle, // Use key
                             style: TextStyle(
                               fontSize: 30.0,
                               fontWeight: FontWeight.w900,
@@ -158,14 +170,16 @@ class _SignupState extends State<Signup> {
                             controller: _fullnameController,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
+                                // --- Hardcoded English Validation ---
                                 return 'Please enter your Full Name';
                               }
                               return null;
                             },
-                            decoration: const InputDecoration(
-                              labelText: 'Full Name',
-                              hintText: 'Enter your full name',
-                              prefixIcon: Icon(Icons.person_outline),
+                            decoration: InputDecoration(
+                              // --- Localized Text ---
+                              labelText: l10n.signupFullNameLabel, // Use key
+                              hintText: l10n.signupFullNameHint, // Use key
+                              prefixIcon: const Icon(Icons.person_outline),
                             ),
                             keyboardType: TextInputType.name,
                           ),
@@ -176,14 +190,17 @@ class _SignupState extends State<Signup> {
                             controller: _usernameController,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
+                                // --- Hardcoded English Validation ---
                                 return 'Please enter a Username';
                               }
                               return null;
                             },
-                            decoration: const InputDecoration(
-                              labelText: 'Username',
-                              hintText: 'Enter your username',
-                              prefixIcon: Icon(Icons.account_circle_outlined),
+                            decoration: InputDecoration(
+                              // --- Localized Text ---
+                              labelText: l10n.signupUsernameLabel, // Use key
+                              hintText: l10n.signupUsernameHint, // Use key
+                              prefixIcon:
+                                  const Icon(Icons.account_circle_outlined),
                             ),
                           ),
                           const SizedBox(height: 20.0),
@@ -193,17 +210,20 @@ class _SignupState extends State<Signup> {
                             controller: _emailController,
                             validator: (value) {
                               if (value == null || value.isEmpty) {
+                                // --- Hardcoded English Validation ---
                                 return 'Please enter Email';
                               }
                               if (!RegExp(r'\S+@\S+\.\S+').hasMatch(value)) {
+                                // --- Hardcoded English Validation ---
                                 return 'Please enter a valid email address';
                               }
                               return null;
                             },
-                            decoration: const InputDecoration(
-                              labelText: 'Email',
-                              hintText: 'Enter your email',
-                              prefixIcon: Icon(Icons.email_outlined),
+                            decoration: InputDecoration(
+                              // --- Localized Text ---
+                              labelText: l10n.signupEmailLabel, // Use key
+                              hintText: l10n.signupEmailHint, // Use key
+                              prefixIcon: const Icon(Icons.email_outlined),
                             ),
                             keyboardType: TextInputType.emailAddress,
                           ),
@@ -212,30 +232,31 @@ class _SignupState extends State<Signup> {
                           // --- Password Field ---
                           TextFormField(
                             controller: _passwordController,
-                            obscureText: _obscurePassword, // Use state variable
+                            obscureText: _obscurePassword,
                             obscuringCharacter: '*',
                             validator: (value) {
                               if (value == null || value.isEmpty) {
+                                // --- Hardcoded English Validation ---
                                 return 'Please enter Password';
                               }
                               if (value.length < 6) {
+                                // --- Hardcoded English Validation ---
                                 return 'Password must be at least 6 characters';
                               }
                               return null;
                             },
                             decoration: InputDecoration(
-                              labelText: 'Password',
-                              hintText: 'Enter your password',
+                              // --- Localized Text ---
+                              labelText: l10n.signupPasswordLabel, // Use key
+                              hintText: l10n.signupPasswordHint, // Use key
                               prefixIcon: const Icon(Icons.lock_outline),
                               suffixIcon: IconButton(
                                 icon: Icon(
-                                  // Toggle icon based on state
                                   _obscurePassword
                                       ? Icons.visibility_off
                                       : Icons.visibility,
                                 ),
                                 onPressed: () {
-                                  // Toggle the state for this field
                                   setState(() {
                                     _obscurePassword = !_obscurePassword;
                                   });
@@ -248,33 +269,33 @@ class _SignupState extends State<Signup> {
                           // --- Confirm Password Field ---
                           TextFormField(
                             controller: _confirmPasswordController,
-                            obscureText:
-                                _obscureConfirmPassword, // Use its own state variable
+                            obscureText: _obscureConfirmPassword,
                             obscuringCharacter: '*',
                             validator: (value) {
                               if (value == null || value.isEmpty) {
+                                // --- Hardcoded English Validation ---
                                 return 'Please confirm your Password';
                               }
                               if (value != _passwordController.text) {
+                                // --- Hardcoded English Validation ---
                                 return 'Passwords do not match';
                               }
                               return null;
                             },
                             decoration: InputDecoration(
-                              // Add InputDecoration here too
-                              labelText: 'Confirm Password',
-                              hintText: 'Enter your password again',
+                              // --- Localized Text ---
+                              labelText:
+                                  l10n.signupConfirmPasswordLabel, // Use key
+                              hintText:
+                                  l10n.signupConfirmPasswordHint, // Use key
                               prefixIcon: const Icon(Icons.lock_outline),
                               suffixIcon: IconButton(
-                                // Add the toggle icon
                                 icon: Icon(
-                                  // Toggle icon based on confirm password state
                                   _obscureConfirmPassword
                                       ? Icons.visibility_off
                                       : Icons.visibility,
                                 ),
                                 onPressed: () {
-                                  // Toggle the state for *this* field
                                   setState(() {
                                     _obscureConfirmPassword =
                                         !_obscureConfirmPassword;
@@ -299,9 +320,10 @@ class _SignupState extends State<Signup> {
                                 ),
                               ),
                               onPressed: _register,
-                              child: const Text(
-                                'Sign Up',
-                                style: TextStyle(
+                              // --- Localized Text ---
+                              child: Text(
+                                l10n.signupSignUpButton, // Use key
+                                style: const TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 16,
@@ -315,14 +337,16 @@ class _SignupState extends State<Signup> {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
-                              const Text('Already have an account?'),
+                              // --- Localized Text ---
+                              Text(l10n.signupHaveAccountPrompt), // Use key
                               TextButton(
                                 onPressed: () {
                                   Navigator.of(
                                     context,
                                   ).pushReplacementNamed('/login');
                                 },
-                                child: const Text('Sign In'),
+                                // --- Localized Text ---
+                                child: Text(l10n.signupSignInLink), // Use key
                               ),
                             ],
                           ),
@@ -335,16 +359,26 @@ class _SignupState extends State<Signup> {
               ),
             ],
           ),
-          // --- Language Popup (Keep as is) ---
+          // --- Language Popup (Keep as is, add LocaleProvider logic) ---
           Positioned(
             top: 10,
             right: 10,
             child: PopupMenuButton<String>(
-              icon: Icon(Icons.language, color: lightColorScheme.primary),
-              onSelected: (String value) {
-                // Handle language change logic here
+              icon: const Icon(Icons.language,
+                  color: Colors.white), // Icon color white
+              tooltip: 'Select Language', // Hardcoded tooltip
+              onSelected: (String langCode) {
+                // --- Added LocaleProvider logic ---
+                print('Language selected: $langCode');
+                final localeProvider = Provider.of<LocaleProvider>(
+                  context,
+                  listen: false,
+                );
+                localeProvider.setLocale(Locale(langCode));
+                // --- End Added Logic ---
               },
               itemBuilder: (BuildContext context) {
+                // --- Menu item text remains hardcoded English ---
                 return [
                   const PopupMenuItem<String>(
                     value: 'en',

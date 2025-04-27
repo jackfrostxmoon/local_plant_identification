@@ -19,6 +19,74 @@
   "@welcomeSignUpButton": {
     "description": "Label for the sign up button on the welcome screen"
   },
+  "signupCreateAccountTitle": "Create Account",
+  "@signupCreateAccountTitle": {
+    "description": "Title for the account creation screen"
+  },
+  "signupFullNameLabel": "Full Name",
+  "@signupFullNameLabel": {
+    "description": "Label for the full name input field on signup"
+  },
+  "signupFullNameHint": "Enter your full name",
+  "@signupFullNameHint": {
+    "description": "Hint text for the full name input field on signup"
+  },
+  "signupUsernameLabel": "Username",
+  "@signupUsernameLabel": {
+    "description": "Label for the username input field on signup"
+  },
+  "signupUsernameHint": "Enter your username",
+  "@signupUsernameHint": {
+    "description": "Hint text for the username input field on signup"
+  },
+  "signupEmailLabel": "Email",
+  "@signupEmailLabel": {
+    "description": "Label for the email input field on signup"
+  },
+  "signupEmailHint": "Enter your email",
+  "@signupEmailHint": {
+    "description": "Hint text for the email input field on signup"
+  },
+  "signupPasswordLabel": "Password",
+  "@signupPasswordLabel": {
+    "description": "Label for the password input field on signup"
+  },
+  "signupPasswordHint": "Enter your password",
+  "@signupPasswordHint": {
+    "description": "Hint text for the password input field on signup"
+  },
+  "forgotPasswordTitle": "Forget Password",
+  "@forgotPasswordTitle": {
+    "description": "Title for the password reset screen"
+  },
+  "forgotPasswordEmailLabel": "Email",
+  "@forgotPasswordEmailLabel": {
+    "description": "Label for the email input field on the password reset screen"
+  },
+  "forgotPasswordResetButton": "Reset Password",
+  "@forgotPasswordResetButton": {
+    "description": "Label for the button to initiate password reset"
+  },
+  "signupConfirmPasswordLabel": "Confirm Password",
+  "@signupConfirmPasswordLabel": {
+    "description": "Label for the confirm password input field on signup"
+  },
+  "signupConfirmPasswordHint": "Enter your password again",
+  "@signupConfirmPasswordHint": {
+    "description": "Hint text for the confirm password input field on signup"
+  },
+  "signupSignUpButton": "Sign Up",
+  "@signupSignUpButton": {
+    "description": "Label for the main sign up button"
+  },
+  "signupHaveAccountPrompt": "Already have an account?",
+  "@signupHaveAccountPrompt": {
+    "description": "Prompt text before the sign in link"
+  },
+  "signupSignInLink": "Sign In",
+  "@signupSignInLink": {
+    "description": "Link text to navigate back to the sign in screen"
+  },
   "loginWelcomeBack": "Welcome back",
   "@loginWelcomeBack": {
     "description": "Greeting on the login screen"
@@ -66,6 +134,23 @@
   "searchAppBarTitle": "Search Plants",
   "@searchAppBarTitle": {
     "description": "App bar title for the search screen"
+  },
+  "searchEnterTextPrompt": "Enter text to search for plants.",
+  "@searchEnterTextPrompt": {
+    "description": "Prompt message shown in the search results area when the search input is empty"
+  },
+  "searchNoResultsGeneric": "No plants found matching your search.",
+  "@searchNoResultsGeneric": {
+    "description": "Message shown when a search yields no results with 'All Types' filter"
+  },
+  "searchNoResultsFiltered": "No {plantType} plants found matching your search.",
+  "@searchNoResultsFiltered": {
+    "description": "Message shown when a search yields no results with a specific type filter.",
+    "placeholders": {
+      "plantType": {
+        "type": "String"
+      }
+    }
   },
   "cameraAppBarTitle": "Camera",
   "@cameraAppBarTitle": {
@@ -122,6 +207,62 @@
   "quizTreesButton": "Trees Quiz",
   "@quizTreesButton": {
     "description": "Button text to start the Trees quiz"
+  },
+  "quizFlowersTitle": "Flowers Quiz",
+  "@quizFlowersTitle": {
+    "description": "Title for the Flowers Quiz screen"
+  },
+  "quizHerbsTitle": "Herbs Quiz",
+  "@quizHerbsTitle": {
+    "description": "Title for the Herbs Quiz screen"
+  },
+  "quizTreesTitle": "Trees Quiz",
+  "@quizTreesTitle": {
+    "description": "Title for the Trees Quiz screen"
+  },
+  "quizScorePrefix": "Score: ",
+  "@quizScorePrefix": {
+    "description": "Prefix text shown before the score number in the quiz"
+  },
+  "quizNextButton": "Next Question",
+  "@quizNextButton": {
+    "description": "Label for the button to go to the next quiz question"
+  },
+  "quizShowResultsButton": "Show Results",
+  "@quizShowResultsButton": {
+    "description": "Label for the button to show the final quiz results"
+  },
+  "quizBodyNoQuestions": "No questions available.",
+  "@quizBodyNoQuestions": {
+    "description": "Message shown when there are no quiz questions to display"
+  },
+  "quizBodyFinished": "Quiz finished. Showing results...",
+  "@quizBodyFinished": {
+    "description": "Message shown briefly when the quiz ends before the results dialog appears"
+  },
+  "quizDialogTitle": "Quiz Finished!",
+  "@quizDialogTitle": {
+    "description": "Title of the dialog shown at the end of the quiz"
+  },
+  "quizDialogContent": "Your final score is {score} out of {totalQuestions}.",
+  "@quizDialogContent": {
+    "description": "Text showing the user's final quiz score.",
+    "placeholders": {
+      "score": {
+        "type": "int"
+      },
+      "totalQuestions": {
+        "type": "int"
+      }
+    }
+  },
+  "quizDialogPlayAgain": "Play Again",
+  "@quizDialogPlayAgain": {
+    "description": "Label for the button to restart the quiz"
+  },
+  "quizDialogClose": "Close",
+  "@quizDialogClose": {
+    "description": "Label for the button to close the quiz results dialog"
   },
   "aboutUsContent": "This app is designed to help you identify and learn about various plants.",
   "@aboutUsContent": {
