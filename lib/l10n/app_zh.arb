@@ -1,0 +1,242 @@
+{
+  "appTitle": "本地植物识别",
+  "@appTitle": {
+    "description": "应用程序的主标题"
+  },
+  "welcomeScreenTitle": "欢迎使用本地植物识别",
+  "@welcomeScreenTitle": {
+    "description": "欢迎屏幕的标题"
+  },
+  "dashboardAppBarTitle": "植物探索与测验",
+  "@dashboardAppBarTitle": {
+    "description": "主仪表板屏幕的应用栏标题"
+  },
+  "searchAppBarTitle": "搜索植物",
+  "@searchAppBarTitle": {
+    "description": "搜索屏幕的应用栏标题"
+  },
+  "cameraAppBarTitle": "相机",
+  "@cameraAppBarTitle": {
+    "description": "相机屏幕的应用栏标题"
+  },
+  "favoritesAppBarTitle": "我的收藏",
+  "@favoritesAppBarTitle": {
+    "description": "收藏夹屏幕的应用栏标题"
+  },
+  "profileAppBarTitle": "用户资料",
+  "@profileAppBarTitle": {
+    "description": "用户资料屏幕的应用栏标题"
+  },
+  "languageEnglish": "英语",
+  "@languageEnglish": {
+    "description": "英语语言选择标签"
+  },
+  "languageMalay": "马来语",
+  "@languageMalay": {
+    "description": "马来语语言选择标签"
+  },
+  "languageChinese": "中文",
+  "@languageChinese": {
+    "description": "中文语言选择标签"
+  },
+  "selectLanguageTooltip": "选择语言",
+  "@selectLanguageTooltip": {
+    "description": "语言选择菜单按钮的工具提示"
+  },
+  "logoutTooltip": "登出",
+  "@logoutTooltip": {
+    "description": "登出按钮的工具提示"
+  },
+  "plantCategoriesTitle": "植物类别",
+  "@plantCategoriesTitle": {
+    "description": "仪表板上植物类别部分的标题"
+  },
+  "quizTypeTitle": "测验类型",
+  "@quizTypeTitle": {
+    "description": "仪表板上测验选择部分的标题"
+  },
+  "aboutUsTitle": "关于我们",
+  "@aboutUsTitle": {
+    "description": "仪表板上“关于我们”信息部分的标题"
+  },
+  "quizFlowersButton": "花卉测验",
+  "@quizFlowersButton": {
+    "description": "开始花卉测验的按钮文本"
+  },
+  "quizHerbsButton": "草药测验",
+  "@quizHerbsButton": {
+    "description": "开始草药测验的按钮文本"
+  },
+  "quizTreesButton": "树木测验",
+  "@quizTreesButton": {
+    "description": "开始树木测验的按钮文本"
+  },
+  "aboutUsContent": "此应用程序旨在帮助您识别和了解各种植物。",
+  "@aboutUsContent": {
+    "description": "“关于我们”部分的文本内容"
+  },
+  "plantDetailNameLabel": "名称",
+  "@plantDetailNameLabel": {
+    "description": "植物详情屏幕上“名称”字段的标签"
+  },
+  "plantDetailDescriptionLabel": "描述",
+  "@plantDetailDescriptionLabel": {
+    "description": "植物详情屏幕上“描述”字段的标签"
+  },
+  "plantDetailGrowthHabitLabel": "生长习性",
+  "@plantDetailGrowthHabitLabel": {
+    "description": "植物详情屏幕上“生长习性”字段的标签"
+  },
+  "plantDetailInterestingFactLabel": "有趣的事实",
+  "@plantDetailInterestingFactLabel": {
+    "description": "植物详情屏幕上“有趣的事实”字段的标签"
+  },
+  "plantDetailToxicityLabel": "毒性（人类和宠物）",
+  "@plantDetailToxicityLabel": {
+    "description": "植物详情屏幕上“毒性”字段的标签"
+  },
+  "addToFavoritesTooltip": "添加到收藏夹",
+  "@addToFavoritesTooltip": {
+    "description": "添加到收藏夹按钮的工具提示"
+  },
+  "removeFromFavoritesTooltip": "从收藏夹中删除",
+  "@removeFromFavoritesTooltip": {
+    "description": "从收藏夹中删除按钮的工具提示"
+  },
+  "imagePickerNoImageSelected": "未选择图片",
+  "@imagePickerNoImageSelected": {
+    "description": "尚未选择图片时在图片预览区域显示的占位符文本"
+  },
+  "imageUnavailableError": "图片不可用",
+  "@imageUnavailableError": {
+    "description": "图片加载失败时显示的文本"
+  },
+  "searchHintText": "搜索植物...",
+  "@searchHintText": {
+    "description": "搜索输入字段中显示的提示文本"
+  },
+  "clearSearchTooltip": "清除搜索",
+  "@clearSearchTooltip": {
+    "description": "搜索输入字段中清除按钮的工具提示"
+  },
+  "filterTooltip": "按植物类型筛选",
+  "@filterTooltip": {
+    "description": "搜索栏旁边筛选按钮的工具提示"
+  },
+  "filterAllTypes": "所有类型",
+  "@filterAllTypes": {
+    "description": "显示所有植物类型的筛选选项文本"
+  },
+  "filterFlowers": "花卉",
+  "@filterFlowers": {
+    "description": "仅显示花卉的筛选选项文本"
+  },
+  "filterHerbs": "草药",
+  "@filterHerbs": {
+    "description": "仅显示草药的筛选选项文本"
+  },
+  "filterTrees": "树木",
+  "@filterTrees": {
+    "description": "仅显示树木的筛选选项文本"
+  },
+  "accountDetailsTitle": "账户详情",
+  "@accountDetailsTitle": {
+    "description": "用户资料中账户详情部分的标题"
+  },
+  "profileFullNameLabel": "全名",
+  "@profileFullNameLabel": {
+    "description": "用户资料中“全名”字段的标签"
+  },
+  "profileUsernameLabel": "用户名",
+  "@profileUsernameLabel": {
+    "description": "用户资料中“用户名”字段的标签"
+  },
+  "profileEmailLabel": "电子邮件",
+  "@profileEmailLabel": {
+    "description": "用户资料中“电子邮件”字段的标签"
+  },
+  "profileDobLabel": "出生日期",
+  "@profileDobLabel": {
+    "description": "用户资料中“出生日期”字段的标签"
+  },
+  "profileAddressLabel": "地址",
+  "@profileAddressLabel": {
+    "description": "用户资料中“地址”字段的标签"
+  },
+  "tooltipCancel": "取消",
+  "@tooltipCancel": {
+    "description": "取消操作按钮或图标的通用工具提示"
+  },
+  "tooltipEditDob": "编辑出生日期",
+  "@tooltipEditDob": {
+    "description": "“出生日期”字段旁边编辑按钮的工具提示"
+  },
+  "mediaTitle": "媒体",
+  "@mediaTitle": {
+    "description": "用户资料中“媒体”部分的标题"
+  },
+  "galleryAppBarTitle": "我的相册",
+  "@galleryAppBarTitle": {
+    "description": "“我的相册”屏幕的标签"
+  },
+  "galleryLabel": "相册",
+  "@galleryLabel": {
+    "description": "“媒体”部分中“相册”项目的标签"
+  },
+  "pickImageButtonLabel": "选择图片",
+  "@pickImageButtonLabel": {
+    "description": "允许用户从设备选择图片的按钮标签"
+  },
+  "uploadImageButtonLabel": "上传图片",
+  "@uploadImageButtonLabel": {
+    "description": "用于启动图片上传的按钮标签"
+  },
+  "uploadingButtonLabel": "上传中...",
+  "@uploadingButtonLabel": {
+    "description": "上传过程中上传按钮上显示的标签"
+  },
+  "profileNotSet": "未设置",
+  "@profileNotSet": {
+    "description": "当个人资料字段没有值时显示的默认文本"
+  },
+  "profileEditHintFullName": "输入全名",
+  "@profileEditHintFullName": {
+    "description": "编辑时全名输入字段的提示文本"
+  },
+  "profileEditHintUsername": "输入用户名",
+  "@profileEditHintUsername": {
+    "description": "编辑时用户名输入字段的提示文本"
+  },
+  "profileEditHintAddress": "输入地址",
+  "@profileEditHintAddress": {
+    "description": "编辑时地址输入字段的提示文本"
+  },
+  "profileSaveTooltipFullName": "保存全名",
+  "@profileSaveTooltipFullName": {
+    "description": "编辑全名时保存按钮的工具提示"
+  },
+  "profileSaveTooltipUsername": "保存用户名",
+  "@profileSaveTooltipUsername": {
+    "description": "编辑用户名时保存按钮的工具提示"
+  },
+  "profileSaveTooltipAddress": "保存地址",
+  "@profileSaveTooltipAddress": {
+    "description": "编辑地址时保存按钮的工具提示"
+  },
+  "profileEditTooltipFullName": "编辑全名",
+  "@profileEditTooltipFullName": {
+    "description": "全名编辑按钮的工具提示"
+  },
+  "profileEditTooltipUsername": "编辑用户名",
+  "@profileEditTooltipUsername": {
+    "description": "用户名编辑按钮的工具提示"
+  },
+  "profileEditTooltipAddress": "编辑地址",
+  "@profileEditTooltipAddress": {
+    "description": "地址编辑按钮的工具提示"
+  },
+  "profileCancelEditTooltip": "取消编辑",
+  "@profileCancelEditTooltip": {
+    "description": "编辑个人资料字段时取消按钮的工具提示"
+  }
+}

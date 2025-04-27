@@ -1,3 +1,4 @@
+// screens/profile/user_profile_screen.dart
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -6,6 +7,7 @@ import 'package:local_plant_identification/screens/profile/account_details_card.
 import 'package:local_plant_identification/screens/profile/media_card.dart';
 import 'package:local_plant_identification/screens/profile/profile_header.dart';
 import 'package:local_plant_identification/widgets/custom_loading_indicator.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Import AppLocalizations
 
 // Import your service
 import '../../services/firestore_service.dart';
@@ -39,7 +41,12 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   String _currentDob = '';
   Timestamp? _currentDobTimestamp;
   String _currentAddress = '';
-  String? _currentPhotoURL; // Store photo URL
+  String? _currentPhotoURL;
+
+  // --- Localized Default Value ---
+  // Helper to get the localized "Not Set" string easily (Key exists in template)
+  String _notSet(BuildContext context) =>
+      AppLocalizations.of(context)!.profileNotSet;
 
   @override
   void dispose() {
@@ -50,18 +57,36 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     super.dispose();
   }
 
-  // --- Generic Update Function ---
+  // --- Get Update Messages (Hardcoded English - Keys missing) ---
+  String _getUpdatingMessage(String fieldKey) {
+    return 'Updating ${fieldKey.toLowerCase()}...';
+  }
+
+  String _getUpdateSuccessMessage(String fieldKey) {
+    // Basic capitalization for display
+    String capitalizedField = fieldKey[0].toUpperCase() + fieldKey.substring(1);
+    return '$capitalizedField updated successfully!';
+  }
+
+  String _getUpdateFailedMessage(String fieldKey, String error) {
+    return 'Failed to update $fieldKey: $error';
+  }
+  // --- End Hardcoded Messages ---
+
+  // --- Generic Update Function (Uses Hardcoded Messages) ---
   Future<void> _updateField(
     String fieldKey,
     dynamic newValue,
-    dynamic currentLocalValue, // Can be String or Timestamp
+    dynamic currentLocalValue,
     VoidCallback exitEditingMode,
   ) async {
-    // Allow empty strings for name/address, but not username
+    if (!mounted) return;
+    // final l10n = AppLocalizations.of(context)!; // Not needed for hardcoded messages
+    final messenger = ScaffoldMessenger.of(context);
+
     bool isEmptyString = newValue is String && newValue.trim().isEmpty;
     bool isUsername = fieldKey == 'username';
 
-    // Prevent update if value is unchanged OR if it's an empty username
     if (newValue == currentLocalValue || (isEmptyString && isUsername)) {
       exitEditingMode();
       return;
@@ -70,10 +95,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     final user = FirebaseAuth.instance.currentUser;
     if (user == null) return;
 
-    final messenger = ScaffoldMessenger.of(context);
     messenger.hideCurrentSnackBar();
     messenger.showSnackBar(
-      SnackBar(content: Text('Updating ${fieldKey.toLowerCase()}...')),
+      SnackBar(content: Text(_getUpdatingMessage(fieldKey))), // Hardcoded
     );
 
     try {
@@ -82,6 +106,8 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         fieldKey,
         newValue,
       );
+
+      if (!mounted) return;
       setState(() {
         switch (fieldKey) {
           case 'username':
@@ -92,7 +118,7 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             break;
           case 'dateOfBirth':
             _currentDobTimestamp = newValue as Timestamp?;
-            _currentDob = _formatDate(newValue);
+            _currentDob = _formatDate(context, newValue); // Pass context
             _dobController.text = _currentDob;
             break;
           case 'address':
@@ -102,25 +128,24 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
         exitEditingMode();
       });
 
-      if (mounted) {
-        messenger.hideCurrentSnackBar();
-        messenger.showSnackBar(
-          SnackBar(
-            content: Text('${_capitalize(fieldKey)} updated successfully!'),
-            backgroundColor: Colors.green,
-          ),
-        );
-      }
+      messenger.hideCurrentSnackBar();
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(_getUpdateSuccessMessage(fieldKey)), // Hardcoded
+          backgroundColor: Colors.green,
+        ),
+      );
     } catch (e) {
-      if (mounted) {
-        messenger.hideCurrentSnackBar();
-        messenger.showSnackBar(
-          SnackBar(
-            content: Text('Failed to update $fieldKey: $e'),
-            backgroundColor: Theme.of(context).colorScheme.error,
-          ),
-        );
-      }
+      messenger.hideCurrentSnackBar();
+      messenger.showSnackBar(
+        SnackBar(
+          content: Text(_getUpdateFailedMessage(
+            fieldKey,
+            e.toString(),
+          )), // Hardcoded
+          backgroundColor: Theme.of(context).colorScheme.error,
+        ),
+      );
     }
   }
 
@@ -129,8 +154,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     setState(() {
       _isEditingUsername = !_isEditingUsername;
       if (_isEditingUsername) {
-        _usernameController.text =
-            _currentUsername == 'N/A' ? '' : _currentUsername;
+        _usernameController.text = _currentUsername == 'N/A'
+            ? ''
+            : _currentUsername; // N/A isn't localized usually
         _isEditingFullName = false;
         _isEditingDob = false;
         _isEditingAddress = false;
@@ -144,8 +170,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     setState(() {
       _isEditingFullName = !_isEditingFullName;
       if (_isEditingFullName) {
+        // Use helper for localized "Not Set" (Key exists)
         _fullNameController.text =
-            _currentFullName == 'Not Set' ? '' : _currentFullName;
+            _currentFullName == _notSet(context) ? '' : _currentFullName;
         _isEditingUsername = false;
         _isEditingDob = false;
         _isEditingAddress = false;
@@ -173,8 +200,9 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     setState(() {
       _isEditingAddress = !_isEditingAddress;
       if (_isEditingAddress) {
+        // Use helper for localized "Not Set" (Key exists)
         _addressController.text =
-            _currentAddress == 'Not Set' ? '' : _currentAddress;
+            _currentAddress == _notSet(context) ? '' : _currentAddress;
         _isEditingUsername = false;
         _isEditingFullName = false;
         _isEditingDob = false;
@@ -186,17 +214,23 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 
   // --- Date Picker ---
   Future<void> _selectDate(BuildContext context) async {
+    final currentContext = context;
+    final currentDobTimestamp = _currentDobTimestamp;
+
     final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _currentDobTimestamp?.toDate() ?? DateTime.now(),
+      context: currentContext,
+      initialDate: currentDobTimestamp?.toDate() ?? DateTime.now(),
       firstDate: DateTime(1900),
       lastDate: DateTime.now(),
+      locale: Localizations.localeOf(currentContext),
     );
-    if (picked != null && picked != _currentDobTimestamp?.toDate()) {
+
+    if (!mounted) return;
+
+    if (picked != null && picked != currentDobTimestamp?.toDate()) {
       final newTimestamp = Timestamp.fromDate(picked);
-      // Pass _currentDobTimestamp for comparison in _updateField
-      await _updateField('dateOfBirth', newTimestamp, _currentDobTimestamp, () {
-        setState(() => _isEditingDob = false);
+      await _updateField('dateOfBirth', newTimestamp, currentDobTimestamp, () {
+        if (mounted) setState(() => _isEditingDob = false);
       });
     } else {
       setState(() => _isEditingDob = false);
@@ -204,36 +238,28 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
   }
 
   // --- Helper Functions ---
-  String _formatDate(dynamic dateValue) {
+  String _formatDate(BuildContext context, dynamic dateValue) {
+// Still needed for other keys
     if (dateValue is Timestamp) {
       try {
-        return DateFormat.yMMMd().format(dateValue.toDate());
+        // --- CHANGE THIS LINE ---
+        // OLD: return DateFormat.yMMMd(l10n.localeName).format(dateValue.toDate());
+        // NEW: Get locale directly from context
+        final currentLocale = Localizations.localeOf(context);
+        return DateFormat.yMMMd(currentLocale.languageCode)
+            .format(dateValue.toDate());
+        // --- END CHANGE ---
       } catch (e) {
-        return 'Invalid Date';
+        // Use hardcoded or add a specific key if needed
+        return 'Invalid Date'; // Or l10n.profileInvalidDate if you add the key
       }
     }
-    return 'Not Set';
+    return _notSet(context); // Use helper for localized "Not Set"
   }
 
-  String _capitalize(String s) {
-    if (s.isEmpty) return s;
-    final spaced = s.replaceAllMapped(
-      RegExp(r'[A-Z]'),
-      (match) => ' ${match.group(0)}',
-    );
-    return spaced[0].toUpperCase() + spaced.substring(1);
-  }
-
-  void _viewGallery() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Navigate to Gallery Screen...')),
-    );
-    // Navigator.of(context).pushNamed('/gallery');
-  }
-
-  // --- Reusable Widget Builder for Editable Fields ---
+  // --- Reusable Widget Builder for Editable Fields (Uses Localized Texts from Template) ---
   Widget _buildEditableField({
-    required String label,
+    required String label, // Expect localized label from caller
     required String value,
     required IconData icon,
     required bool isEditing,
@@ -242,125 +268,155 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
     required VoidCallback updateAction,
     TextInputType keyboardType = TextInputType.text,
     bool isMultiline = false,
+    // Pass specific keys for hints and tooltips (These keys exist in template)
+    required String editHintKey,
+    required String saveTooltipKey,
+    required String editTooltipKey,
   }) {
-    // (Implementation remains the same as before)
+    if (!mounted) return const SizedBox.shrink();
+    final l10n = AppLocalizations.of(context)!;
+    final theme = Theme.of(context);
+
+    // Helper to get text based on key (Keys exist in template)
+    String getText(String key) {
+      final Map<String, String Function()> keyMap = {
+        'profileEditHintFullName': () => l10n.profileEditHintFullName,
+        'profileEditHintUsername': () => l10n.profileEditHintUsername,
+        'profileEditHintAddress': () => l10n.profileEditHintAddress,
+        'profileSaveTooltipFullName': () => l10n.profileSaveTooltipFullName,
+        'profileSaveTooltipUsername': () => l10n.profileSaveTooltipUsername,
+        'profileSaveTooltipAddress': () => l10n.profileSaveTooltipAddress,
+        'profileEditTooltipFullName': () => l10n.profileEditTooltipFullName,
+        'profileEditTooltipUsername': () => l10n.profileEditTooltipUsername,
+        'profileEditTooltipAddress': () => l10n.profileEditTooltipAddress,
+      };
+      return keyMap[key]?.call() ?? key;
+    }
+
     return ListTile(
-      leading: Icon(icon, color: Theme.of(context).colorScheme.primary),
-      title:
-          isEditing
-              ? TextFormField(
-                controller: controller,
-                autofocus: true,
-                keyboardType: keyboardType,
-                maxLines: isMultiline ? null : 1,
-                decoration: InputDecoration(
-                  hintText: 'Enter $label',
-                  border: InputBorder.none,
-                  isDense: true,
-                  contentPadding: EdgeInsets.zero,
-                ),
-                onFieldSubmitted: (_) => updateAction(),
-              )
-              : Text(label),
-      subtitle:
-          !isEditing
-              ? Text(
-                value.isEmpty || value == 'Not Set' || value == 'N/A'
-                    ? 'Not Set'
-                    : value,
-                style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                  color: Theme.of(context).colorScheme.onSurfaceVariant,
-                ),
-                maxLines: isMultiline ? 3 : 1,
-                overflow: TextOverflow.ellipsis,
-              )
-              : null,
-      trailing:
-          isEditing
-              ? Row(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  IconButton(
-                    icon: Icon(Icons.check, color: Colors.green[600]),
-                    tooltip: 'Save $label',
-                    onPressed: updateAction,
-                  ),
-                  IconButton(
-                    icon: Icon(
-                      Icons.close,
-                      color: Theme.of(context).colorScheme.error,
-                    ),
-                    tooltip: 'Cancel Edit',
-                    onPressed: toggleEdit,
-                  ),
-                ],
-              )
-              : IconButton(
-                icon: Icon(
-                  Icons.edit_outlined,
-                  color: Theme.of(context).colorScheme.secondary,
-                ),
-                tooltip: 'Edit $label',
-                onPressed: toggleEdit,
+      leading: Icon(icon, color: theme.colorScheme.primary),
+      title: isEditing
+          ? TextFormField(
+              controller: controller,
+              autofocus: true,
+              keyboardType: keyboardType,
+              maxLines: isMultiline ? null : 1,
+              decoration: InputDecoration(
+                hintText: getText(editHintKey), // Localized hint
+                border: InputBorder.none,
+                isDense: true,
+                contentPadding: EdgeInsets.zero,
               ),
-      isThreeLine: isMultiline && !isEditing && value.length > 50,
+              onFieldSubmitted: (_) => updateAction(),
+            )
+          : Text(label), // Display the localized label passed in
+      subtitle: !isEditing
+          ? Text(
+              value.isEmpty || value == _notSet(context)
+                  ? _notSet(context) // Use helper for localized "Not Set"
+                  : value,
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+              maxLines: isMultiline ? 3 : 1,
+              overflow: TextOverflow.ellipsis,
+            )
+          : null,
+      trailing: isEditing
+          ? Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                IconButton(
+                  icon: Icon(Icons.check, color: Colors.green[600]),
+                  tooltip: getText(saveTooltipKey), // Localized tooltip
+                  onPressed: updateAction,
+                ),
+                IconButton(
+                  icon: Icon(Icons.close, color: theme.colorScheme.error),
+                  tooltip: l10n
+                      .profileCancelEditTooltip, // Localized tooltip (Key exists)
+                  onPressed: toggleEdit,
+                ),
+              ],
+            )
+          : IconButton(
+              icon:
+                  Icon(Icons.edit_outlined, color: theme.colorScheme.secondary),
+              tooltip: getText(editTooltipKey), // Localized tooltip
+              onPressed: toggleEdit,
+            ),
+      isThreeLine: isMultiline &&
+          !isEditing &&
+          value.isNotEmpty &&
+          value != _notSet(context) &&
+          value.length > 50,
     );
   }
 
   @override
   Widget build(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!; // Needed for existing keys
     final user = FirebaseAuth.instance.currentUser;
 
     if (user == null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         if (mounted) Navigator.of(context).pushReplacementNamed('/login');
       });
-      return const Scaffold(body: Center(child: Text('Redirecting...')));
+      // --- Hardcoded English (key missing) ---
+      return const Scaffold(
+        body: Center(child: Text('Redirecting...')),
+      );
     }
 
-    // Update photoURL from user object (can also be stored in Firestore)
     _currentPhotoURL = user.photoURL;
 
     return Scaffold(
       body: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
         stream: _firestoreService.getUserStream(user.uid),
         builder: (context, snapshot) {
+          // final l10nBuilder = AppLocalizations.of(context)!; // Not needed if errors are hardcoded
+
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const LoadingIndicator();
           }
           if (snapshot.hasError) {
-            return Center(child: Text('Error: ${snapshot.error}'));
+            // --- Hardcoded English (key missing) ---
+            return Center(
+              child: Text('Error: ${snapshot.error}'),
+            );
           }
-          // Handle profile creation if document doesn't exist yet
           if (!snapshot.hasData || !snapshot.data!.exists) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              // Attempt creation, no need to await here, stream will update
-              _firestoreService.createBasicUserProfileIfNeeded(
-                user,
-                user.email ??
-                    user.phoneNumber ??
-                    user.uid, // Provide identifier
-              );
+              if (mounted) {
+                _firestoreService.createBasicUserProfileIfNeeded(
+                  user,
+                  user.email ?? user.phoneNumber ?? user.uid,
+                );
+              }
             });
-            return const Center(
-              child: Text('Loading profile...'),
-            ); // Show loading
+            // --- Hardcoded English (key missing) ---
+            return const Center(child: Text('Loading profile...'));
           }
 
           final userData = snapshot.data!.data() ?? {};
 
-          // Update local state only if not currently editing that field
-          if (!_isEditingUsername)
+          // Update local state using localized "Not Set" (Key exists)
+          final String localizedNotSet = _notSet(context);
+          if (!_isEditingUsername) {
             _currentUsername = userData['username'] as String? ?? 'N/A';
-          if (!_isEditingFullName)
-            _currentFullName = userData['fullname'] as String? ?? 'Not Set';
+          }
+          if (!_isEditingFullName) {
+            _currentFullName =
+                userData['fullname'] as String? ?? localizedNotSet;
+          }
           if (!_isEditingDob) {
             _currentDobTimestamp = userData['dateOfBirth'] as Timestamp?;
-            _currentDob = _formatDate(_currentDobTimestamp);
+            _currentDob = _formatDate(context, _currentDobTimestamp);
             _dobController.text = _currentDob;
           }
-          if (!_isEditingAddress)
-            _currentAddress = userData['address'] as String? ?? 'Not Set';
+          if (!_isEditingAddress) {
+            _currentAddress = userData['address'] as String? ?? localizedNotSet;
+          }
 
           final email = user.email ?? userData['email'] as String? ?? 'N/A';
 
@@ -369,43 +425,87 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
             child: ListView(
               padding: const EdgeInsets.all(16.0),
               children: [
-                // --- Use Extracted Widgets ---
                 ProfileHeader(
-                  displayName:
-                      _currentFullName.isNotEmpty &&
-                              _currentFullName != 'Not Set'
-                          ? _currentFullName
-                          : _currentUsername,
+                  displayName: _currentFullName.isNotEmpty &&
+                          _currentFullName != localizedNotSet
+                      ? _currentFullName
+                      : _currentUsername,
                   email: email,
-                  photoURL: _currentPhotoURL, // Pass photoURL
+                  photoURL: _currentPhotoURL,
                 ),
                 const SizedBox(height: 30),
 
                 AccountDetailsCard(
-                  buildEditableField: _buildEditableField,
-                  // Pass all required props...
+                  // Pass the _buildEditableField method reference
+                  buildEditableField: (
+                      { // Destructure args
+                      required String label,
+                      required String value,
+                      required IconData icon,
+                      required bool isEditing,
+                      required TextEditingController controller,
+                      required VoidCallback toggleEdit,
+                      required VoidCallback updateAction,
+                      TextInputType keyboardType = TextInputType.text,
+                      bool isMultiline = false}) {
+                    // Determine specific keys based on the localized label
+                    // Use l10n from the outer build scope
+                    String editHintKey = '';
+                    String saveTooltipKey = '';
+                    String editTooltipKey = '';
+                    if (label == l10n.profileFullNameLabel) {
+                      // Key exists
+                      editHintKey = 'profileEditHintFullName';
+                      saveTooltipKey = 'profileSaveTooltipFullName';
+                      editTooltipKey = 'profileEditTooltipFullName';
+                    } else if (label == l10n.profileUsernameLabel) {
+                      // Key exists
+                      editHintKey = 'profileEditHintUsername';
+                      saveTooltipKey = 'profileSaveTooltipUsername';
+                      editTooltipKey = 'profileEditTooltipUsername';
+                    } else if (label == l10n.profileAddressLabel) {
+                      // Key exists
+                      editHintKey = 'profileEditHintAddress';
+                      saveTooltipKey = 'profileSaveTooltipAddress';
+                      editTooltipKey = 'profileEditTooltipAddress';
+                    }
+                    // Call the actual builder function from the state class
+                    return _buildEditableField(
+                      label: label,
+                      value: value,
+                      icon: icon,
+                      isEditing: isEditing,
+                      controller: controller,
+                      toggleEdit: toggleEdit,
+                      updateAction: updateAction,
+                      keyboardType: keyboardType,
+                      isMultiline: isMultiline,
+                      editHintKey: editHintKey,
+                      saveTooltipKey: saveTooltipKey,
+                      editTooltipKey: editTooltipKey,
+                    );
+                  },
+                  // Pass other props...
                   currentFullName: _currentFullName,
                   isEditingFullName: _isEditingFullName,
                   fullNameController: _fullNameController,
                   toggleEditFullName: _toggleEditFullName,
-                  updateFullNameAction:
-                      () => _updateField(
-                        'fullname',
-                        _fullNameController.text.trim(),
-                        _currentFullName,
-                        _toggleEditFullName,
-                      ),
+                  updateFullNameAction: () => _updateField(
+                    'fullname',
+                    _fullNameController.text.trim(),
+                    _currentFullName,
+                    _toggleEditFullName,
+                  ),
                   currentUsername: _currentUsername,
                   isEditingUsername: _isEditingUsername,
                   usernameController: _usernameController,
                   toggleEditUsername: _toggleEditUsername,
-                  updateUsernameAction:
-                      () => _updateField(
-                        'username',
-                        _usernameController.text.trim(),
-                        _currentUsername,
-                        _toggleEditUsername,
-                      ),
+                  updateUsernameAction: () => _updateField(
+                    'username',
+                    _usernameController.text.trim(),
+                    _currentUsername,
+                    _toggleEditUsername,
+                  ),
                   email: email,
                   currentDob: _currentDob,
                   isEditingDob: _isEditingDob,
@@ -414,17 +514,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                   isEditingAddress: _isEditingAddress,
                   addressController: _addressController,
                   toggleEditAddress: _toggleEditAddress,
-                  updateAddressAction:
-                      () => _updateField(
-                        'address',
-                        _addressController.text.trim(),
-                        _currentAddress,
-                        _toggleEditAddress,
-                      ),
+                  updateAddressAction: () => _updateField(
+                    'address',
+                    _addressController.text.trim(),
+                    _currentAddress,
+                    _toggleEditAddress,
+                  ),
                 ),
                 const SizedBox(height: 30),
 
-                MediaCard(onViewGallery: _viewGallery),
+                const MediaCard(), // Assumes MediaCard uses keys from template
                 const SizedBox(height: 40),
               ],
             ),

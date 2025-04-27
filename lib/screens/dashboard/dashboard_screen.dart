@@ -1,21 +1,15 @@
 // screens/dashboard_screen.dart
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:local_plant_identification/screens/camera/camera_screen.dart';
 import 'package:local_plant_identification/screens/favourite/favorites_screen.dart';
 import 'package:local_plant_identification/screens/profile/user_profile_screen.dart';
-// Import the new search screen
 import 'package:local_plant_identification/screens/search/plant_search_screen.dart';
-// Remove the old placeholder import if it exists
-// import 'package:local_plant_identification/screens/search/search_screen.dart';
 import 'package:local_plant_identification/widgets/custom_bottom_nav_bar.dart';
-import 'dashboard_content_screen.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Import AppLocalizations
+import 'package:local_plant_identification/widgets/custom_language_selection_menu.dart';
+import 'package:local_plant_identification/widgets/custom_logout_button.dart';
 
-// Placeholder for User class if not imported
-class User {
-  final String id;
-  User({required this.id});
-}
+import 'dashboard_content_screen.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -27,13 +21,13 @@ class DashboardScreen extends StatefulWidget {
 class _DashboardScreenState extends State<DashboardScreen> {
   int _selectedIndex = 0;
 
-  // Use the new PlantSearchScreen
+  // Widget options remain the same
   static final List<Widget> _widgetOptions = <Widget>[
-    const DashboardContentScreen(), // Index 0
-    const PlantSearchScreen(), // Index 1 - UPDATED
-    const CameraScreen(), // Index 2
-    const FavoritesScreen(), // Index 3
-    const UserProfileScreen(), // Index 4
+    const DashboardContentScreen(),
+    const PlantSearchScreen(),
+    const CameraScreen(),
+    const FavoritesScreen(),
+    const UserProfileScreen(),
   ];
 
   void _onItemTapped(int index) {
@@ -42,57 +36,33 @@ class _DashboardScreenState extends State<DashboardScreen> {
     });
   }
 
-  static const List<String> _appBarTitles = <String>[
-    'Plant Explorer & Quiz',
-    'Search Plants', // Title for the search screen
-    'Camera',
-    'My Favourites',
-    'User Profile',
-  ];
+  // --- Use AppLocalizations for titles ---
+  List<String> _getAppBarTitles(BuildContext context) {
+    final l10n = AppLocalizations.of(context)!;
+    return <String>[
+      l10n.dashboardAppBarTitle, // Localized
+      l10n.searchAppBarTitle, // Localized
+      l10n.cameraAppBarTitle, // Localized
+      l10n.favoritesAppBarTitle, // Localized
+      l10n.profileAppBarTitle, // Localized
+    ];
+  }
+  // --- End localized titles ---
 
   @override
   Widget build(BuildContext context) {
+    // Get the localized titles based on the current context
+    final appBarTitles = _getAppBarTitles(context);
+
     return Scaffold(
       appBar: AppBar(
         backgroundColor: const Color(0xFFA8E6A2),
-        title: Text(_appBarTitles[_selectedIndex]),
-        actions: [
-          // ... (keep existing actions: language, logout)
-          PopupMenuButton<String>(
-            icon: const Icon(Icons.language),
-            onSelected: (String value) {
-              print('Language selected: $value');
-              // Add language change logic here
-            },
-            itemBuilder: (BuildContext context) {
-              return [
-                const PopupMenuItem<String>(
-                  value: 'en',
-                  child: Text('English'),
-                ),
-                const PopupMenuItem<String>(value: 'ms', child: Text('Malay')),
-                const PopupMenuItem<String>(
-                  value: 'zh',
-                  child: Text('Chinese'),
-                ),
-              ];
-            },
-          ),
-
-          IconButton(
-            tooltip: 'Logout',
-            icon: const Icon(Icons.logout),
-            onPressed: () async {
-              await FirebaseAuth.instance.signOut();
-              if (mounted) {
-                // Use pushNamedAndRemoveUntil for better navigation stack management on logout
-                Navigator.of(context).pushNamedAndRemoveUntil(
-                  '/login',
-                  (Route<dynamic> route) => false, // Remove all previous routes
-                );
-              }
-            },
-          ),
+        // Use the localized title based on the selected index
+        title: Text(appBarTitles[_selectedIndex]),
+        actions: const [
+          // Use the extracted widgets
+          LanguageSelectionMenu(),
+          LogoutButton(),
         ],
       ),
       body: IndexedStack(index: _selectedIndex, children: _widgetOptions),

@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/foundation.dart' show kIsWeb, Uint8List;
 import 'package:flutter/material.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class ImagePickerUploader extends StatelessWidget {
   final Uint8List? imageBytes; // For Web
@@ -38,24 +39,25 @@ class ImagePickerUploader extends StatelessWidget {
             alignment: Alignment.center,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8),
-              child:
-                  kIsWeb
-                      ? (imageBytes != null
-                          ? Image.memory(
-                            imageBytes!,
-                            fit: BoxFit.cover,
-                            width: 200,
-                            height: 200,
-                          )
-                          : const Text('No image selected (Web)'))
-                      : (imagePath != null
-                          ? Image.file(
-                            File(imagePath!),
-                            fit: BoxFit.cover,
-                            width: 200,
-                            height: 200,
-                          )
-                          : const Text('No image selected (Mobile)')),
+              child: kIsWeb
+                  ? (imageBytes != null
+                      ? Image.memory(
+                          imageBytes!,
+                          fit: BoxFit.cover,
+                          width: 200,
+                          height: 200,
+                        )
+                      : Text(AppLocalizations.of(context)!
+                          .imagePickerNoImageSelected))
+                  : (imagePath != null
+                      ? Image.file(
+                          File(imagePath!),
+                          fit: BoxFit.cover,
+                          width: 200,
+                          height: 200,
+                        )
+                      : Text(AppLocalizations.of(context)!
+                          .imagePickerNoImageSelected)),
             ),
           ),
           const SizedBox(height: 10),
@@ -68,8 +70,8 @@ class ImagePickerUploader extends StatelessWidget {
               ElevatedButton.icon(
                 onPressed: onPickImage,
                 icon: const Icon(Icons.image_search, color: Colors.black),
-                label: const Text(
-                  'Pick Image',
+                label: Text(
+                  AppLocalizations.of(context)!.pickImageButtonLabel,
                   style: TextStyle(color: Colors.black),
                 ),
                 style: ElevatedButton.styleFrom(
@@ -83,23 +85,23 @@ class ImagePickerUploader extends StatelessWidget {
               // --- Upload Image Button ---
               ElevatedButton.icon(
                 onPressed: hasImage && !isUploading ? onUploadImage : null,
-                icon:
-                    isUploading
-                        ? const SizedBox(
-                          width: 16,
-                          height: 16,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color:
-                                Colors.white, // Spinner color on active button
-                          ),
-                        )
-                        : const Icon(
-                          Icons.cloud_upload,
-                          color: Colors.black, // Icon color when enabled
+                icon: isUploading
+                    ? const SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(
+                          strokeWidth: 2,
+                          color: Colors.white, // Spinner color on active button
                         ),
+                      )
+                    : const Icon(
+                        Icons.cloud_upload,
+                        color: Colors.black, // Icon color when enabled
+                      ),
                 label: Text(
-                  isUploading ? 'Uploading...' : 'Upload Image',
+                  isUploading
+                      ? AppLocalizations.of(context)!.uploadingButtonLabel
+                      : AppLocalizations.of(context)!.uploadImageButtonLabel,
                   style: const TextStyle(color: Colors.black), // Text color
                 ),
                 style: ElevatedButton.styleFrom(

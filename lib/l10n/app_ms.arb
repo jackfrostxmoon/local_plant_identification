@@ -1,0 +1,242 @@
+{
+  "appTitle": "ID Tumbuhan Tempatan",
+  "@appTitle": {
+    "description": "Tajuk utama aplikasi"
+  },
+  "welcomeScreenTitle": "Selamat Datang ke Pengecaman Tumbuhan Tempatan",
+  "@welcomeScreenTitle": {
+    "description": "Tajuk untuk skrin alu-aluan"
+  },
+  "dashboardAppBarTitle": "Peneroka & Kuiz Tumbuhan",
+  "@dashboardAppBarTitle": {
+    "description": "Tajuk bar aplikasi untuk skrin papan pemuka utama"
+  },
+  "searchAppBarTitle": "Cari Tumbuhan",
+  "@searchAppBarTitle": {
+    "description": "Tajuk bar aplikasi untuk skrin carian"
+  },
+  "cameraAppBarTitle": "Kamera",
+  "@cameraAppBarTitle": {
+    "description": "Tajuk bar aplikasi untuk skrin kamera"
+  },
+  "favoritesAppBarTitle": "Kegemaran Saya",
+  "@favoritesAppBarTitle": {
+    "description": "Tajuk bar aplikasi untuk skrin kegemaran"
+  },
+  "profileAppBarTitle": "Profil Pengguna",
+  "@profileAppBarTitle": {
+    "description": "Tajuk bar aplikasi untuk skrin profil pengguna"
+  },
+  "languageEnglish": "Inggeris",
+  "@languageEnglish": {
+    "description": "Label untuk pemilihan bahasa Inggeris"
+  },
+  "languageMalay": "Melayu",
+  "@languageMalay": {
+    "description": "Label untuk pemilihan bahasa Melayu"
+  },
+  "languageChinese": "Cina",
+  "@languageChinese": {
+    "description": "Label untuk pemilihan bahasa Cina"
+  },
+  "selectLanguageTooltip": "Pilih Bahasa",
+  "@selectLanguageTooltip": {
+    "description": "Petua alat untuk butang menu pemilihan bahasa"
+  },
+  "logoutTooltip": "Log keluar",
+  "@logoutTooltip": {
+    "description": "Petua alat untuk butang log keluar"
+  },
+  "plantCategoriesTitle": "Kategori Tumbuhan",
+  "@plantCategoriesTitle": {
+    "description": "Tajuk bahagian pada papan pemuka untuk kategori tumbuhan"
+  },
+  "quizTypeTitle": "Jenis Kuiz",
+  "@quizTypeTitle": {
+    "description": "Tajuk bahagian pada papan pemuka untuk pemilihan kuiz"
+  },
+  "aboutUsTitle": "Tentang Kami",
+  "@aboutUsTitle": {
+    "description": "Tajuk bahagian pada papan pemuka untuk maklumat Tentang Kami"
+  },
+  "quizFlowersButton": "Kuiz Bunga",
+  "@quizFlowersButton": {
+    "description": "Teks butang untuk memulakan kuiz Bunga"
+  },
+  "quizHerbsButton": "Kuiz Herba",
+  "@quizHerbsButton": {
+    "description": "Teks butang untuk memulakan kuiz Herba"
+  },
+  "quizTreesButton": "Kuiz Pokok",
+  "@quizTreesButton": {
+    "description": "Teks butang untuk memulakan kuiz Pokok"
+  },
+  "aboutUsContent": "Aplikasi ini direka untuk membantu anda mengenal pasti dan belajar tentang pelbagai tumbuhan.",
+  "@aboutUsContent": {
+    "description": "Teks kandungan untuk bahagian Tentang Kami"
+  },
+  "plantDetailNameLabel": "Nama",
+  "@plantDetailNameLabel": {
+    "description": "Label untuk medan Nama pada skrin butiran tumbuhan"
+  },
+  "plantDetailDescriptionLabel": "Penerangan",
+  "@plantDetailDescriptionLabel": {
+    "description": "Label untuk medan Penerangan pada skrin butiran tumbuhan"
+  },
+  "plantDetailGrowthHabitLabel": "Tabiat Pertumbuhan",
+  "@plantDetailGrowthHabitLabel": {
+    "description": "Label untuk medan Tabiat Pertumbuhan pada skrin butiran tumbuhan"
+  },
+  "plantDetailInterestingFactLabel": "Fakta Menarik",
+  "@plantDetailInterestingFactLabel": {
+    "description": "Label untuk medan Fakta Menarik pada skrin butiran tumbuhan"
+  },
+  "plantDetailToxicityLabel": "Ketoksikan (Manusia & Haiwan Peliharaan)",
+  "@plantDetailToxicityLabel": {
+    "description": "Label untuk medan Ketoksikan pada skrin butiran tumbuhan"
+  },
+  "addToFavoritesTooltip": "Tambah ke kegemaran",
+  "@addToFavoritesTooltip": {
+    "description": "Petua alat untuk butang tambah ke kegemaran"
+  },
+  "removeFromFavoritesTooltip": "Keluarkan daripada kegemaran",
+  "@removeFromFavoritesTooltip": {
+    "description": "Petua alat untuk butang keluarkan daripada kegemaran"
+  },
+  "imagePickerNoImageSelected": "Tiada imej dipilih",
+  "@imagePickerNoImageSelected": {
+    "description": "Teks pemegang tempat ditunjukkan di kawasan pratonton imej apabila tiada imej dipilih lagi"
+  },
+  "imageUnavailableError": "Imej tidak tersedia",
+  "@imageUnavailableError": {
+    "description": "Teks ditunjukkan apabila imej gagal dimuatkan"
+  },
+  "searchHintText": "Cari tumbuhan...",
+  "@searchHintText": {
+    "description": "Teks petunjuk ditunjukkan dalam medan input carian"
+  },
+  "clearSearchTooltip": "Padamkan carian",
+  "@clearSearchTooltip": {
+    "description": "Petua alat untuk butang padam dalam medan input carian"
+  },
+  "filterTooltip": "Tapis mengikut jenis tumbuhan",
+  "@filterTooltip": {
+    "description": "Petua alat untuk butang tapis di sebelah bar carian"
+  },
+  "filterAllTypes": "Semua Jenis",
+  "@filterAllTypes": {
+    "description": "Teks pilihan tapis untuk menunjukkan semua jenis tumbuhan"
+  },
+  "filterFlowers": "Bunga",
+  "@filterFlowers": {
+    "description": "Teks pilihan tapis untuk menunjukkan bunga sahaja"
+  },
+  "filterHerbs": "Herba",
+  "@filterHerbs": {
+    "description": "Teks pilihan tapis untuk menunjukkan herba sahaja"
+  },
+  "filterTrees": "Pokok",
+  "@filterTrees": {
+    "description": "Teks pilihan tapis untuk menunjukkan pokok sahaja"
+  },
+  "accountDetailsTitle": "Butiran Akaun",
+  "@accountDetailsTitle": {
+    "description": "Tajuk untuk bahagian butiran akaun dalam profil pengguna"
+  },
+  "profileFullNameLabel": "Nama Penuh",
+  "@profileFullNameLabel": {
+    "description": "Label untuk medan Nama Penuh dalam profil pengguna"
+  },
+  "profileUsernameLabel": "Nama Pengguna",
+  "@profileUsernameLabel": {
+    "description": "Label untuk medan Nama Pengguna dalam profil pengguna"
+  },
+  "profileEmailLabel": "E-mel",
+  "@profileEmailLabel": {
+    "description": "Label untuk medan E-mel dalam profil pengguna"
+  },
+  "profileDobLabel": "Tarikh Lahir",
+  "@profileDobLabel": {
+    "description": "Label untuk medan Tarikh Lahir dalam profil pengguna"
+  },
+  "profileAddressLabel": "Alamat",
+  "@profileAddressLabel": {
+    "description": "Label untuk medan Alamat dalam profil pengguna"
+  },
+  "tooltipCancel": "Batal",
+  "@tooltipCancel": {
+    "description": "Petua alat generik untuk butang atau ikon tindakan batal"
+  },
+  "tooltipEditDob": "Edit Tarikh Lahir",
+  "@tooltipEditDob": {
+    "description": "Petua alat untuk butang edit di sebelah medan Tarikh Lahir"
+  },
+  "mediaTitle": "Media",
+  "@mediaTitle": {
+    "description": "Tajuk untuk bahagian Media dalam profil pengguna"
+  },
+  "galleryAppBarTitle": "Galeri Saya",
+  "@galleryAppBarTitle": {
+    "description": "Label untuk skrin 'Galeri Saya'"
+  },
+  "galleryLabel": "Galeri",
+  "@galleryLabel": {
+    "description": "Label untuk item Galeri dalam bahagian Media"
+  },
+  "pickImageButtonLabel": "Pilih Imej",
+  "@pickImageButtonLabel": {
+    "description": "Label untuk butang yang membolehkan pengguna memilih imej dari peranti mereka"
+  },
+  "uploadImageButtonLabel": "Muat Naik Imej",
+  "@uploadImageButtonLabel": {
+    "description": "Label untuk butang bagi memulakan muat naik imej"
+  },
+  "uploadingButtonLabel": "Memuat naik...",
+  "@uploadingButtonLabel": {
+    "description": "Label ditunjukkan pada butang muat naik semasa muat naik sedang berjalan"
+  },
+  "profileNotSet": "Belum Ditetapkan",
+  "@profileNotSet": {
+    "description": "Teks lalai dipaparkan apabila medan profil tiada nilai"
+  },
+  "profileEditHintFullName": "Masukkan Nama Penuh",
+  "@profileEditHintFullName": {
+    "description": "Teks petunjuk untuk medan input nama penuh semasa mengedit"
+  },
+  "profileEditHintUsername": "Masukkan Nama Pengguna",
+  "@profileEditHintUsername": {
+    "description": "Teks petunjuk untuk medan input nama pengguna semasa mengedit"
+  },
+  "profileEditHintAddress": "Masukkan Alamat",
+  "@profileEditHintAddress": {
+    "description": "Teks petunjuk untuk medan input alamat semasa mengedit"
+  },
+  "profileSaveTooltipFullName": "Simpan Nama Penuh",
+  "@profileSaveTooltipFullName": {
+    "description": "Petua alat untuk butang simpan semasa mengedit nama penuh"
+  },
+  "profileSaveTooltipUsername": "Simpan Nama Pengguna",
+  "@profileSaveTooltipUsername": {
+    "description": "Petua alat untuk butang simpan semasa mengedit nama pengguna"
+  },
+  "profileSaveTooltipAddress": "Simpan Alamat",
+  "@profileSaveTooltipAddress": {
+    "description": "Petua alat untuk butang simpan semasa mengedit alamat"
+  },
+  "profileEditTooltipFullName": "Edit Nama Penuh",
+  "@profileEditTooltipFullName": {
+    "description": "Petua alat untuk butang edit untuk nama penuh"
+  },
+  "profileEditTooltipUsername": "Edit Nama Pengguna",
+  "@profileEditTooltipUsername": {
+    "description": "Petua alat untuk butang edit untuk nama pengguna"
+  },
+  "profileEditTooltipAddress": "Edit Alamat",
+  "@profileEditTooltipAddress": {
+    "description": "Petua alat untuk butang edit untuk alamat"
+  },
+  "profileCancelEditTooltip": "Batal Edit",
+  "@profileCancelEditTooltip": {
+    "description": "Petua alat untuk butang batal semasa mengedit medan profil"
+  }
+}

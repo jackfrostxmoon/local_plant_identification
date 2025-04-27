@@ -31,40 +31,39 @@ class PlantGridItem extends StatelessWidget {
               // Image takes up the available space above the name
               child: Container(
                 color: Colors.grey[200], // Background for placeholder/loading
-                child:
-                    (imageUrl != null && imageUrl.isNotEmpty)
-                        ? Image.network(
-                          imageUrl,
-                          fit: BoxFit.cover, // Cover the area
-                          loadingBuilder: (context, child, loadingProgress) {
-                            if (loadingProgress == null) return child;
-                            // Smaller indicator for grid item
-                            return const Center(
-                              child: SizedBox(
-                                width: 24,
-                                height: 24,
-                                child: CircularProgressIndicator(
-                                  strokeWidth: 2,
-                                ),
+                child: (imageUrl != null && imageUrl.isNotEmpty)
+                    ? Image.network(
+                        imageUrl,
+                        fit: BoxFit.cover, // Cover the area
+                        loadingBuilder: (context, child, loadingProgress) {
+                          if (loadingProgress == null) return child;
+                          // Smaller indicator for grid item
+                          return const Center(
+                            child: SizedBox(
+                              width: 24,
+                              height: 24,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
                               ),
-                            );
-                          },
-                          errorBuilder: (context, error, stackTrace) {
-                            // Placeholder icon if image fails
-                            return Icon(
-                              Icons.image_not_supported_outlined,
-                              size: 40, // Slightly smaller icon
-                              color: Colors.grey[500],
-                            );
-                          },
-                        )
-                        :
-                        // Placeholder icon if no image URL
-                        Icon(
-                          Icons.image_outlined, // Generic image placeholder
-                          size: 40, // Slightly smaller icon
-                          color: Colors.grey[500],
-                        ),
+                            ),
+                          );
+                        },
+                        errorBuilder: (context, error, stackTrace) {
+                          // Placeholder icon if image fails
+                          return Icon(
+                            Icons.image_not_supported_outlined,
+                            size: 40, // Slightly smaller icon
+                            color: Colors.grey[500],
+                          );
+                        },
+                      )
+                    :
+                    // Placeholder icon if no image URL
+                    Icon(
+                        Icons.image_outlined, // Generic image placeholder
+                        size: 40, // Slightly smaller icon
+                        color: Colors.grey[500],
+                      ),
               ),
             ),
             // --- Divider Line ---

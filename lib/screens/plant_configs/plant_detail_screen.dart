@@ -48,10 +48,48 @@ String? getCurrentUserId() {
 }
 // --- End Placeholder implementations ---
 
+// --- PASTE THE _getLocalizedValue function HERE if not in a separate file ---
+String _getLocalizedValue(
+  BuildContext context,
+  Map<String, dynamic> data,
+  String baseKey,
+) {
+  final locale = Localizations.localeOf(context);
+  final langCode = locale.languageCode; // 'en', 'ms', 'zh', etc.
+
+  String localeKey;
+  switch (langCode) {
+    case 'ms': // Malay
+      localeKey = '${baseKey}_MS';
+      break;
+    case 'zh': // Chinese
+      localeKey = '${baseKey}_ZH';
+      break;
+    default: // Default to English or if locale is 'en'
+      localeKey = baseKey;
+      break;
+  }
+
+  // 1. Try fetching the locale-specific value
+  if (data.containsKey(localeKey) &&
+      data[localeKey] != null &&
+      data[localeKey].toString().isNotEmpty) {
+    return data[localeKey].toString();
+  }
+
+  // 2. Fallback to the base (English) value if locale-specific is missing/empty
+  if (data.containsKey(baseKey) &&
+      data[baseKey] != null &&
+      data[baseKey].toString().isNotEmpty) {
+    return data[baseKey].toString();
+  }
+
+  // 3. Fallback if even the base value is missing/empty
+  return 'N/A'; // Or return baseKey, or 'Unknown', etc.
+}
+// --- End helper function ---
+
 class PlantDetailScreen extends StatefulWidget {
-  // Expecting the full data map for the selected plant FROM APPWRITE
-  // IMPORTANT: Ensure this map includes the Appwrite Document ID, typically '$id'
-  // and other keys like 'Name', 'Description', 'image', etc.
   final Map<String, dynamic> plantData;
 
   const PlantDetailScreen({required this.plantData, super.key});
@@ -61,30 +99,25 @@ class PlantDetailScreen extends StatefulWidget {
 }
 
 class _PlantDetailScreenState extends State<PlantDetailScreen> {
-  // State variables specific to this detail screen
   bool _isFavorited = false;
-  bool _isLoadingFavorite =
-      true; // To show loading indicator for the icon initially
-  StreamSubscription? _userDocSubscription; // To listen for Firestore changes
-  String? _plantId; // Store the Appwrite plant ID
+  bool _isLoadingFavorite = true;
+  StreamSubscription? _userDocSubscription;
+  String? _plantId;
 
   @override
   void initState() {
     super.initState();
-    // Extract the Appwrite Document ID. Adjust '$id' if your key is different.
-    _plantId = widget.plantData['\$id']; // Make sure '$id' is the correct key
+    _plantId = widget.plantData['\$id'];
 
     if (_plantId != null) {
       _listenToFavoriteStatus();
     } else {
-      // Handle case where plant ID is missing - cannot favorite
       print(
         "Error: Plant ID ('\$id') is missing from plantData in PlantDetailScreen.",
       );
       if (mounted) {
         setState(() {
           _isLoadingFavorite = false;
-          // Optionally show an error message or disable button permanently
         });
       }
     }
@@ -92,50 +125,42 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
 
   @override
   void dispose() {
-    _userDocSubscription
-        ?.cancel(); // Cancel subscription to prevent memory leaks
+    _userDocSubscription?.cancel();
     super.dispose();
   }
 
-  // Listens to Firestore for changes in the user's favorites
   void _listenToFavoriteStatus() {
     final userId = getCurrentUserId();
     if (userId == null || _plantId == null) {
       if (mounted) {
         setState(() {
           _isLoadingFavorite = false;
-          _isFavorited =
-              false; // Can't be favorited if not logged in or no plant ID
+          _isFavorited = false;
         });
       }
       return;
     }
 
-    final userDocRef = FirebaseFirestore.instance
-        .collection('users')
-        .doc(userId);
+    final userDocRef =
+        FirebaseFirestore.instance.collection('users').doc(userId);
 
-    // Cancel any previous subscription
     _userDocSubscription?.cancel();
 
     _userDocSubscription = userDocRef.snapshots().listen(
       (snapshot) {
         if (mounted) {
-          // Check if the widget is still in the tree
           bool currentlyFavorited = false;
           if (snapshot.exists && snapshot.data() != null) {
             final data = snapshot.data() as Map<String, dynamic>;
-            // Ensure 'favoritePlantIds' exists and is a list
             final favoriteIds = data['favoritePlantIds'];
             if (favoriteIds is List && favoriteIds.contains(_plantId)) {
               currentlyFavorited = true;
             }
           }
-          // Update state only if the favorite status actually changed
           if (_isFavorited != currentlyFavorited || _isLoadingFavorite) {
             setState(() {
               _isFavorited = currentlyFavorited;
-              _isLoadingFavorite = false; // Loading is complete
+              _isLoadingFavorite = false;
             });
           }
         }
@@ -145,14 +170,12 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
         if (mounted) {
           setState(() {
             _isLoadingFavorite = false;
-            // Optionally show an error message
           });
         }
       },
     );
   }
 
-  // Toggles the favorite status in Firestore
   Future<void> _toggleFavorite() async {
     final userId = getCurrentUserId();
     if (_plantId == null || userId == null) {
@@ -167,6 +190,12 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
       }
       return;
     }
+
+    // Show loading state immediately for responsiveness
+    // Note: Firestore listener will update the final state
+    // setState(() {
+    //   _isLoadingFavorite = true; // Optional: show loader during toggle
+    // });
 
     try {
       if (_isFavorited) {
@@ -195,6 +224,7 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
           );
         }
       }
+      // No need to manually setState here, the listener will handle it
     } catch (e) {
       print("Error toggling favorite: $e");
       if (mounted) {
@@ -205,29 +235,42 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
             duration: Duration(seconds: 2),
           ),
         );
+        // Revert loading state if toggle failed and listener didn't update
+        // setState(() {
+        //   _isLoadingFavorite = false;
+        // });
       }
     }
   }
 
-  // Helper to build a row for displaying an attribute
-  Widget _buildAttributeRow(BuildContext context, String label, String? value) {
+  // --- MODIFIED Helper to build attribute row using localization ---
+  Widget _buildAttributeRow(
+    BuildContext context,
+    String label,
+    String baseKey,
+  ) {
+    // Use the helper function to get the localized value based on the baseKey
+    final String localizedValue = _getLocalizedValue(
+      context,
+      widget.plantData,
+      baseKey,
+    );
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            label,
+            label, // Label remains the same (could also be localized if needed)
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.bold,
-              color: Theme.of(context).colorScheme.primary,
-            ),
+                  fontWeight: FontWeight.bold,
+                  color: Theme.of(context).colorScheme.primary,
+                ),
           ),
           const SizedBox(height: 4),
           Text(
-            value?.isNotEmpty ?? false
-                ? value!
-                : 'N/A', // Handle null or empty values
+            localizedValue, // Display the localized value
             style: Theme.of(context).textTheme.bodyLarge,
           ),
           const Divider(height: 16), // Add a separator
@@ -238,22 +281,22 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
 
   @override
   Widget build(BuildContext context) {
-    // Extract data using the keys from your Appwrite attributes
-    // Use widget.plantData here as we are in the State class
-    final String name = widget.plantData['Name'] ?? 'Unknown Plant';
-    final String? description = widget.plantData['Description'];
-    final String? growthHabit = widget.plantData['Growth_Habit'];
-    final String? interestingFact = widget.plantData['Interesting_fact'];
-    final String? toxicity = widget.plantData['Toxicity_Humans_and_Pets'];
-    // Ensure 'image' key exists and corresponds to your Appwrite storage setup
+    // Get localized name for the AppBar title
+    final String localizedName = _getLocalizedValue(
+      context,
+      widget.plantData,
+      'Name',
+    );
+
+    // Extract image URL (doesn't need localization)
     final String? imageUrl = widget.plantData['image'];
 
-    // Determine icon based on loading and favorite state
+    // Determine icon based on loading and favorite state (unchanged)
     Widget favoriteActionIcon;
     if (_isLoadingFavorite) {
       favoriteActionIcon = Container(
-        padding: const EdgeInsets.all(8.0), // Padding for loader visibility
-        width: 40, // Consistent size with IconButton
+        padding: const EdgeInsets.all(8.0),
+        width: 40,
         height: 40,
         child: const CircularProgressIndicator(strokeWidth: 2),
       );
@@ -261,34 +304,29 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
       favoriteActionIcon = IconButton(
         icon: Icon(
           _isFavorited ? Icons.favorite : Icons.favorite_border,
-          color: _isFavorited ? Colors.red : null, // Make it red when favorited
+          color: _isFavorited ? Colors.red : null,
         ),
         tooltip: _isFavorited ? 'Remove from favorites' : 'Add to favorites',
-        onPressed: _toggleFavorite, // Directly call the toggle function
+        onPressed: _toggleFavorite,
       );
     }
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(name),
-        backgroundColor: const Color(0xFFA8E6A2), // Or your theme color
-        actions: [
-          // Only show button if we have a plant ID
-          if (_plantId != null) favoriteActionIcon,
-        ],
+        title: Text(localizedName), // Use localized name
+        backgroundColor: const Color(0xFFA8E6A2),
+        actions: [if (_plantId != null) favoriteActionIcon],
       ),
-      // The body should be the content of the detail screen
       body: ListView(
-        // Use ListView for scrollable content
         children: [
-          // Display Image
+          // Display Image (unchanged)
           if (imageUrl != null && imageUrl.isNotEmpty)
             Padding(
               padding: const EdgeInsets.all(16.0),
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(12.0),
                 child: Image.network(
-                  imageUrl, // Assuming this is a direct URL from Appwrite Storage
+                  imageUrl,
                   height: 250,
                   width: double.infinity,
                   fit: BoxFit.cover,
@@ -301,7 +339,7 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
                     );
                   },
                   errorBuilder: (context, error, stackTrace) {
-                    print("Error loading image: $error"); // Log image errors
+                    print("Error loading image: $error");
                     return Container(
                       height: 250,
                       color: Colors.grey[200],
@@ -328,7 +366,6 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
               ),
             )
           else
-            // Placeholder if no image
             Container(
               height: 200,
               margin: const EdgeInsets.all(16.0),
@@ -338,21 +375,26 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
               ),
               child: Center(
                 child: Icon(
-                  Icons.image_not_supported_outlined, // More specific icon
+                  Icons.image_not_supported_outlined,
                   size: 60,
                   color: Colors.grey[500],
                 ),
               ),
             ),
 
-          // Display Attributes using the helper
-          _buildAttributeRow(context, 'Name', name),
-          _buildAttributeRow(context, 'Description', description),
-          _buildAttributeRow(context, 'Growth Habit', growthHabit),
-          _buildAttributeRow(context, 'Interesting Fact', interestingFact),
-          _buildAttributeRow(context, 'Toxicity (Humans & Pets)', toxicity),
+          // --- MODIFIED: Display Attributes using the helper and base keys ---
+          _buildAttributeRow(context, 'Name', 'Name'),
+          _buildAttributeRow(context, 'Description', 'Description'),
+          _buildAttributeRow(context, 'Growth Habit', 'Growth_Habit'),
+          _buildAttributeRow(context, 'Interesting Fact', 'Interesting_fact'),
+          _buildAttributeRow(
+            context,
+            'Toxicity (Humans & Pets)',
+            'Toxicity_Humans_and_Pets',
+          ),
 
-          const SizedBox(height: 20), // Add some padding at the bottom
+          // --- End Modified Attributes ---
+          const SizedBox(height: 20),
         ],
       ),
     );

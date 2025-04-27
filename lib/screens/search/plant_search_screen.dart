@@ -2,13 +2,13 @@
 import 'dart:async'; // For Timer (debouncing)
 
 import 'package:flutter/material.dart';
-import 'package:local_plant_identification/screens/plant_configs/plant_detail_screen.dart'; // Import detail screen
-import 'package:local_plant_identification/screens/search/plant_grid_item.dart';
+import 'package:local_plant_identification/screens/plant_configs/plant_detail_screen.dart';
+import 'package:local_plant_identification/screens/search/plant_grid_item.dart'; // Assuming this handles localization internally
 import 'package:local_plant_identification/services/appwrite_service.dart';
-import 'package:local_plant_identification/widgets/custom_loading_indicator.dart'; // Your loading indicator
-// --- Import the new widget ---
+import 'package:local_plant_identification/widgets/custom_loading_indicator.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Import AppLocalizations
 
-// Define constants for filter types to avoid typos
+// Constants for filter types (internal logic, no localization needed)
 const String _filterAll = 'All';
 const String _filterFlower = 'Flower';
 const String _filterHerb = 'Herb';
@@ -28,12 +28,13 @@ class _PlantSearchScreenState extends State<PlantSearchScreen> {
   bool _isLoading = false;
   String? _error;
   Timer? _debounce;
-  String _selectedFilterType = _filterAll;
+  String _selectedFilterType = _filterAll; // Default filter
 
   @override
   void initState() {
     super.initState();
     _searchController.addListener(_onSearchChanged);
+    // _performSearch(''); // Optional: Initial fetch
   }
 
   @override
@@ -44,24 +45,15 @@ class _PlantSearchScreenState extends State<PlantSearchScreen> {
     super.dispose();
   }
 
+  // Debounce search input
   void _onSearchChanged() {
     if (_debounce?.isActive ?? false) _debounce!.cancel();
     _debounce = Timer(const Duration(milliseconds: 500), () {
-      final query = _searchController.text.trim();
-      if (query.isNotEmpty) {
-        _performSearch(query);
-      } else {
-        if (mounted) {
-          setState(() {
-            _searchResults = [];
-            _isLoading = false;
-            _error = null;
-          });
-        }
-      }
+      _performSearch(_searchController.text.trim());
     });
   }
 
+  // Perform the actual search using AppwriteService
   Future<void> _performSearch(String query) async {
     if (!mounted) return;
     setState(() {
@@ -70,7 +62,10 @@ class _PlantSearchScreenState extends State<PlantSearchScreen> {
     });
 
     try {
-      final results = await _appwriteService.searchPlants(query);
+      final results = query.isEmpty
+          ? await _appwriteService.fetchAllPlants()
+          : await _appwriteService.searchPlants(query);
+
       if (mounted) {
         setState(() {
           _searchResults = results;
@@ -82,6 +77,7 @@ class _PlantSearchScreenState extends State<PlantSearchScreen> {
       if (mounted) {
         setState(() {
           _isLoading = false;
+          // --- Hardcoded English error message (key missing in template) ---
           _error = "Failed to perform search. Please try again.";
           _searchResults = [];
         });
@@ -89,8 +85,9 @@ class _PlantSearchScreenState extends State<PlantSearchScreen> {
     }
   }
 
+  // Navigate to plant detail screen
   void _navigateToDetail(Map<String, dynamic> plantData) {
-    // Keep navigation logic here as it uses context and PlantDetailScreen
+    // final l10n = AppLocalizations.of(context)!; // Not needed for hardcoded message
     if (plantData.containsKey('\$id')) {
       Navigator.push(
         context,
@@ -101,6 +98,7 @@ class _PlantSearchScreenState extends State<PlantSearchScreen> {
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
+          // --- Hardcoded English error message (key missing in template) ---
           content: Text('Error: Could not open plant details (Missing ID).'),
           backgroundColor: Colors.red,
         ),
@@ -110,16 +108,32 @@ class _PlantSearchScreenState extends State<PlantSearchScreen> {
     }
   }
 
-  // --- REMOVED _buildSearchPlantCard helper method ---
+  // Helper to get localized filter name (Uses keys from template)
+  String _getLocalizedFilterName(BuildContext context, String filterType) {
+    final l10n = AppLocalizations.of(context)!;
+    switch (filterType) {
+      case _filterFlower:
+        return l10n.filterFlowers;
+      case _filterHerb:
+        return l10n.filterHerbs;
+      case _filterTree:
+        return l10n.filterTrees;
+      case _filterAll:
+      default:
+        return l10n.filterAllTypes;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
-    // Main build method remains largely the same
+    // Get l10n instance for keys that exist in the template
+    final l10n = AppLocalizations.of(context)!;
+
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          // --- Row for Search Bar and Filter Button (Stays the same) ---
+          // --- Row for Search Bar and Filter Button ---
           Row(
             children: [
               Expanded(
@@ -127,7 +141,7 @@ class _PlantSearchScreenState extends State<PlantSearchScreen> {
                   controller: _searchController,
                   autofocus: false,
                   decoration: InputDecoration(
-                    hintText: 'Search plants...',
+                    hintText: l10n.searchHintText, // Localized (Key exists)
                     prefixIcon: const Icon(Icons.search),
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(25.0),
@@ -149,73 +163,65 @@ class _PlantSearchScreenState extends State<PlantSearchScreen> {
                       vertical: 10.0,
                       horizontal: 15.0,
                     ),
-                    suffixIcon:
-                        _searchController.text.isNotEmpty
-                            ? IconButton(
-                              icon: const Icon(Icons.clear, size: 20),
-                              tooltip: 'Clear search',
-                              onPressed: () {
-                                _searchController.clear();
-                                setState(() {
-                                  _searchResults = [];
-                                  _isLoading = false;
-                                  _error = null;
-                                });
-                              },
-                            )
-                            : null,
+                    suffixIcon: _searchController.text.isNotEmpty
+                        ? IconButton(
+                            icon: const Icon(Icons.clear, size: 20),
+                            tooltip: l10n
+                                .clearSearchTooltip, // Localized (Key exists)
+                            onPressed: () {
+                              _searchController.clear();
+                              _performSearch('');
+                            },
+                          )
+                        : null,
                   ),
                 ),
               ),
               const SizedBox(width: 8),
+              // --- Filter Button ---
               Material(
                 color: Colors.grey[200],
                 borderRadius: BorderRadius.circular(25.0),
                 child: PopupMenuButton<String>(
                   icon: Icon(
                     Icons.filter_list,
-                    color:
-                        _selectedFilterType == _filterAll
-                            ? Colors.black54
-                            : Theme.of(context).primaryColor,
+                    color: _selectedFilterType == _filterAll
+                        ? Colors.black54
+                        : Theme.of(context).primaryColor,
                   ),
-                  tooltip: 'Filter by plant type',
+                  tooltip: l10n.filterTooltip, // Localized (Key exists)
                   onSelected: (String result) {
-                    // Clear results when changing filter to avoid flicker
                     if (result != _selectedFilterType) {
-                      _searchController.clear();
                       setState(() {
                         _selectedFilterType = result;
-                        _searchResults = [];
-                        _isLoading = false;
-                        _error = null;
                       });
                     }
                   },
-                  itemBuilder:
-                      (BuildContext context) => <PopupMenuEntry<String>>[
-                        CheckedPopupMenuItem<String>(
-                          value: _filterAll,
-                          checked: _selectedFilterType == _filterAll,
-                          child: const Text('All Types'),
-                        ),
-                        const PopupMenuDivider(),
-                        CheckedPopupMenuItem<String>(
-                          value: _filterFlower,
-                          checked: _selectedFilterType == _filterFlower,
-                          child: const Text('Flowers'),
-                        ),
-                        CheckedPopupMenuItem<String>(
-                          value: _filterHerb,
-                          checked: _selectedFilterType == _filterHerb,
-                          child: const Text('Herbs'),
-                        ),
-                        CheckedPopupMenuItem<String>(
-                          value: _filterTree,
-                          checked: _selectedFilterType == _filterTree,
-                          child: const Text('Trees'),
-                        ),
-                      ],
+                  itemBuilder: (BuildContext context) =>
+                      <PopupMenuEntry<String>>[
+                    CheckedPopupMenuItem<String>(
+                      value: _filterAll,
+                      checked: _selectedFilterType == _filterAll,
+                      child:
+                          Text(l10n.filterAllTypes), // Localized (Key exists)
+                    ),
+                    const PopupMenuDivider(),
+                    CheckedPopupMenuItem<String>(
+                      value: _filterFlower,
+                      checked: _selectedFilterType == _filterFlower,
+                      child: Text(l10n.filterFlowers), // Localized (Key exists)
+                    ),
+                    CheckedPopupMenuItem<String>(
+                      value: _filterHerb,
+                      checked: _selectedFilterType == _filterHerb,
+                      child: Text(l10n.filterHerbs), // Localized (Key exists)
+                    ),
+                    CheckedPopupMenuItem<String>(
+                      value: _filterTree,
+                      checked: _selectedFilterType == _filterTree,
+                      child: Text(l10n.filterTrees), // Localized (Key exists)
+                    ),
+                  ],
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10.0),
                   ),
@@ -224,16 +230,17 @@ class _PlantSearchScreenState extends State<PlantSearchScreen> {
             ],
           ),
           const SizedBox(height: 16),
-          // --- Results Area (using GridView) ---
+          // --- Results Area ---
           Expanded(child: _buildResultsArea()),
         ],
       ),
     );
   }
 
-  // --- Updated results area applying the filter ---
+  // Build the results area (GridView or messages)
   Widget _buildResultsArea() {
-    // Logic for loading, error, filtering remains the same
+    // final l10n = AppLocalizations.of(context)!; // Not needed for hardcoded messages
+
     if (_isLoading) {
       return const Center(child: LoadingIndicator());
     }
@@ -243,7 +250,7 @@ class _PlantSearchScreenState extends State<PlantSearchScreen> {
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Text(
-            _error!,
+            _error!, // Already hardcoded in _performSearch
             style: const TextStyle(color: Colors.red, fontSize: 16),
             textAlign: TextAlign.center,
           ),
@@ -251,24 +258,38 @@ class _PlantSearchScreenState extends State<PlantSearchScreen> {
       );
     }
 
+    // Apply client-side filtering
     final List<Map<String, dynamic>> displayedResults;
     if (_selectedFilterType == _filterAll) {
       displayedResults = _searchResults;
     } else {
-      displayedResults =
-          _searchResults.where((plant) {
-            return plant['item_type'] == _selectedFilterType;
-          }).toList();
+      displayedResults = _searchResults.where((plant) {
+        return plant['item_type'] == _selectedFilterType;
+      }).toList();
     }
 
-    if (_searchController.text.isNotEmpty && displayedResults.isEmpty) {
+    // Handle empty states with hardcoded messages
+    if (displayedResults.isEmpty) {
+      String message;
+      if (_searchController.text.isNotEmpty) {
+        if (_selectedFilterType == _filterAll) {
+          // --- Hardcoded English message (key missing) ---
+          message = 'No plants found matching your search.';
+        } else {
+          // --- Hardcoded English message (key missing) ---
+          // Use the localized filter name helper for better context
+          message =
+              'No ${_getLocalizedFilterName(context, _selectedFilterType).toLowerCase()} plants found matching your search.';
+        }
+      } else {
+        // --- Hardcoded English message (key missing) ---
+        message = 'Enter text to search for plants.';
+      }
       return Center(
         child: Padding(
           padding: const EdgeInsets.all(16.0),
           child: Text(
-            _selectedFilterType == _filterAll
-                ? 'No plants found matching your search.'
-                : 'No $_selectedFilterType plants found matching your search.',
+            message,
             style: const TextStyle(fontSize: 16, color: Colors.grey),
             textAlign: TextAlign.center,
           ),
@@ -276,20 +297,7 @@ class _PlantSearchScreenState extends State<PlantSearchScreen> {
       );
     }
 
-    if (_searchController.text.isEmpty && displayedResults.isEmpty) {
-      return const Center(
-        child: Padding(
-          padding: EdgeInsets.all(16.0),
-          child: Text(
-            'Enter text to search for plants.',
-            style: TextStyle(fontSize: 16, color: Colors.grey),
-            textAlign: TextAlign.center,
-          ),
-        ),
-      );
-    }
-
-    // --- Display Filtered Results using GridView ---
+    // Display Filtered Results using GridView
     return GridView.builder(
       gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
         crossAxisCount: 2,
@@ -300,12 +308,11 @@ class _PlantSearchScreenState extends State<PlantSearchScreen> {
       itemCount: displayedResults.length,
       itemBuilder: (context, index) {
         final plant = displayedResults[index];
-        // --- Use the new PlantGridItem widget ---
+        // PlantGridItem uses getLocalizedValue internally for dynamic name
         return PlantGridItem(
           plant: plant,
-          onTap: () => _navigateToDetail(plant), // Pass navigation logic
+          onTap: () => _navigateToDetail(plant),
         );
-        // --- End widget usage ---
       },
     );
   }

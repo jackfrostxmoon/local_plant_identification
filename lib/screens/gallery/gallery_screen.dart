@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:appwrite/appwrite.dart'; // Still needed for AppwriteException, ID, InputFile
 import 'package:flutter/foundation.dart' show kIsWeb, Uint8List;
 import 'package:file_picker/file_picker.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // Import the new widgets
 import 'image_picker_uploader.dart';
@@ -18,6 +19,8 @@ class GalleryScreen extends StatefulWidget {
 }
 
 class _GalleryScreenState extends State<GalleryScreen> {
+  // Localization getter
+  AppLocalizations get l10n => AppLocalizations.of(context)!;
   // Services and State remain the same
   final AppwriteService _appwriteService = AppwriteService();
   Uint8List? _imageBytes;
@@ -60,11 +63,11 @@ class _GalleryScreenState extends State<GalleryScreen> {
     }
 
     try {
-      DocumentSnapshot<Map<String, dynamic>> userDoc =
-          await FirebaseFirestore.instance
-              .collection('users')
-              .doc(user.uid)
-              .get();
+      DocumentSnapshot<Map<String, dynamic>> userDoc = await FirebaseFirestore
+          .instance
+          .collection('users')
+          .doc(user.uid)
+          .get();
 
       if (mounted) {
         if (userDoc.exists && userDoc.data() != null) {
@@ -177,9 +180,8 @@ class _GalleryScreenState extends State<GalleryScreen> {
       uploadedFileId = result.$id;
       print("Appwrite upload successful, File ID: $uploadedFileId");
 
-      DocumentReference userDoc = FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid);
+      DocumentReference userDoc =
+          FirebaseFirestore.instance.collection('users').doc(user.uid);
       await userDoc.set({
         'gallery': FieldValue.arrayUnion([uploadedFileId]),
       }, SetOptions(merge: true));
@@ -228,9 +230,8 @@ class _GalleryScreenState extends State<GalleryScreen> {
       );
       print("Appwrite delete successful for $imageId");
 
-      DocumentReference userDoc = FirebaseFirestore.instance
-          .collection('users')
-          .doc(user.uid);
+      DocumentReference userDoc =
+          FirebaseFirestore.instance.collection('users').doc(user.uid);
       await userDoc.update({
         'gallery': FieldValue.arrayRemove([imageId]),
       });
@@ -262,17 +263,16 @@ class _GalleryScreenState extends State<GalleryScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('My Gallery'),
+        title: Text(l10n.galleryAppBarTitle),
         backgroundColor: const Color(0xFFA8E6A2),
         actions: [
           // Refresh button remains useful
           IconButton(
             icon: const Icon(Icons.refresh),
             // Disable refresh while loading/uploading/deleting
-            onPressed:
-                _isLoadingImages || _isUploading || _isDeleting
-                    ? null
-                    : _loadImages,
+            onPressed: _isLoadingImages || _isUploading || _isDeleting
+                ? null
+                : _loadImages,
           ),
         ],
       ),

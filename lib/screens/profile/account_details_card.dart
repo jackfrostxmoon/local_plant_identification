@@ -1,20 +1,20 @@
+// widgets/account_details_card.dart
 import 'package:flutter/material.dart';
+// --- Import AppLocalizations ---
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // Define a type for the buildEditableField function signature
-// This typedef is used by UserProfileScreenState to define the function
-// and passed as a parameter here.
-typedef EditableFieldBuilder =
-    Widget Function({
-      required String label,
-      required String value,
-      required IconData icon,
-      required bool isEditing,
-      required TextEditingController controller,
-      required VoidCallback toggleEdit,
-      required VoidCallback updateAction,
-      TextInputType keyboardType,
-      bool isMultiline,
-    });
+typedef EditableFieldBuilder = Widget Function({
+  required String label, // Label will be passed localized
+  required String value,
+  required IconData icon,
+  required bool isEditing,
+  required TextEditingController controller,
+  required VoidCallback toggleEdit,
+  required VoidCallback updateAction,
+  TextInputType keyboardType,
+  bool isMultiline,
+});
 
 /// Displays the card containing user account details (editable/read-only fields).
 class AccountDetailsCard extends StatelessWidget {
@@ -71,11 +71,14 @@ class AccountDetailsCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context); // Get theme for convenience
+    // --- Get AppLocalizations instance ---
+    final l10n = AppLocalizations.of(context)!;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text('Account Details', style: theme.textTheme.titleLarge),
+        // --- Localized Title ---
+        Text(l10n.accountDetailsTitle, style: theme.textTheme.titleLarge),
         const SizedBox(height: 8),
         Card(
           elevation: 2,
@@ -84,7 +87,7 @@ class AccountDetailsCard extends StatelessWidget {
             children: [
               // --- Full Name (Editable) ---
               buildEditableField(
-                label: 'Full Name',
+                label: l10n.profileFullNameLabel, // Localized label
                 value: currentFullName,
                 icon: Icons.badge_outlined,
                 isEditing: isEditingFullName,
@@ -97,7 +100,7 @@ class AccountDetailsCard extends StatelessWidget {
 
               // --- Username (Editable) ---
               buildEditableField(
-                label: 'Username',
+                label: l10n.profileUsernameLabel, // Localized label
                 value: currentUsername,
                 icon: Icons.account_circle_outlined,
                 isEditing: isEditingUsername,
@@ -114,13 +117,14 @@ class AccountDetailsCard extends StatelessWidget {
                   Icons.email_outlined,
                   color: theme.colorScheme.primary,
                 ),
-                title: const Text('Email'),
+                title: Text(l10n.profileEmailLabel), // Localized label
                 subtitle: Text(
                   email,
                   style: theme.textTheme.bodyLarge?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
                 ),
+                // No edit action for email
               ),
               const Divider(height: 1, indent: 16, endIndent: 16),
 
@@ -130,7 +134,7 @@ class AccountDetailsCard extends StatelessWidget {
                   Icons.cake_outlined,
                   color: theme.colorScheme.primary,
                 ),
-                title: const Text('Date of Birth'),
+                title: Text(l10n.profileDobLabel), // Localized label
                 subtitle: Text(
                   currentDob, // Display formatted date
                   style: theme.textTheme.bodyLarge?.copyWith(
@@ -140,12 +144,13 @@ class AccountDetailsCard extends StatelessWidget {
                 trailing: IconButton(
                   icon: Icon(
                     isEditingDob ? Icons.close : Icons.edit_outlined,
-                    color:
-                        isEditingDob
-                            ? theme.colorScheme.error
-                            : theme.colorScheme.secondary,
+                    color: isEditingDob
+                        ? theme.colorScheme.error
+                        : theme.colorScheme.secondary,
                   ),
-                  tooltip: isEditingDob ? 'Cancel' : 'Edit Date of Birth',
+                  // --- Localized Tooltips ---
+                  tooltip:
+                      isEditingDob ? l10n.tooltipCancel : l10n.tooltipEditDob,
                   onPressed: toggleEditDob,
                 ),
               ),
@@ -153,7 +158,7 @@ class AccountDetailsCard extends StatelessWidget {
 
               // --- Address (Editable) ---
               buildEditableField(
-                label: 'Address',
+                label: l10n.profileAddressLabel, // Localized label
                 value: currentAddress,
                 icon: Icons.location_on_outlined,
                 isEditing: isEditingAddress,

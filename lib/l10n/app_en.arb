@@ -1,22 +1,242 @@
 {
-  "@@locale": "en",
-  "appTitle": "My Plant App",
-  "attributesTitle": "Attributes",
-  "createAttributeButton": "Create attribute",
-  "attributeNameLabel": "Name",
-  "attributeDescriptionLabel": "Description",
-  "attributeGrowthHabitLabel": "Growth Habit",
-  "attributeInterestingFactLabel": "Interesting Fact",
-  "attributeToxicityLabel": "Toxicity (Humans & Pets)",
-  "attributeImageLabel": "Image",
-  "totalResults": "Total results: {count}",
-  "@totalResults": {
-    "description": "Label showing the total number of results",
-    "placeholders": {
-      "count": {
-        "type": "int",
-        "example": "6"
-      }
-    }
+  "appTitle": "Local Plant ID",
+  "@appTitle": {
+    "description": "The main title of the application"
+  },
+  "welcomeScreenTitle": "Welcome to Local Plant Identification",
+  "@welcomeScreenTitle": {
+    "description": "Title for the welcome screen"
+  },
+  "dashboardAppBarTitle": "Plant Explorer & Quiz",
+  "@dashboardAppBarTitle": {
+    "description": "App bar title for the main dashboard screen"
+  },
+  "searchAppBarTitle": "Search Plants",
+  "@searchAppBarTitle": {
+    "description": "App bar title for the search screen"
+  },
+  "cameraAppBarTitle": "Camera",
+  "@cameraAppBarTitle": {
+    "description": "App bar title for the camera screen"
+  },
+  "favoritesAppBarTitle": "My Favourites",
+  "@favoritesAppBarTitle": {
+    "description": "App bar title for the favorites screen"
+  },
+  "profileAppBarTitle": "User Profile",
+  "@profileAppBarTitle": {
+    "description": "App bar title for the user profile screen"
+  },
+  "languageEnglish": "English",
+  "@languageEnglish": {
+    "description": "Label for English language selection"
+  },
+  "languageMalay": "Malay",
+  "@languageMalay": {
+    "description": "Label for Malay language selection"
+  },
+  "languageChinese": "Chinese",
+  "@languageChinese": {
+    "description": "Label for Chinese language selection"
+  },
+  "selectLanguageTooltip": "Select Language",
+  "@selectLanguageTooltip": {
+    "description": "Tooltip for the language selection menu button"
+  },
+  "logoutTooltip": "Logout",
+  "@logoutTooltip": {
+    "description": "Tooltip for the logout button"
+  },
+  "plantCategoriesTitle": "Plant Categories",
+  "@plantCategoriesTitle": {
+    "description": "Section title on the dashboard for plant categories"
+  },
+  "quizTypeTitle": "Quiz Type",
+  "@quizTypeTitle": {
+    "description": "Section title on the dashboard for quiz selection"
+  },
+  "aboutUsTitle": "About Us",
+  "@aboutUsTitle": {
+    "description": "Section title on the dashboard for the About Us info"
+  },
+  "quizFlowersButton": "Flowers Quiz",
+  "@quizFlowersButton": {
+    "description": "Button text to start the Flowers quiz"
+  },
+  "quizHerbsButton": "Herbs Quiz",
+  "@quizHerbsButton": {
+    "description": "Button text to start the Herbs quiz"
+  },
+  "quizTreesButton": "Trees Quiz",
+  "@quizTreesButton": {
+    "description": "Button text to start the Trees quiz"
+  },
+  "aboutUsContent": "This app is designed to help you identify and learn about various plants.",
+  "@aboutUsContent": {
+    "description": "Content text for the About Us section"
+  },
+  "plantDetailNameLabel": "Name",
+  "@plantDetailNameLabel": {
+    "description": "Label for the Name field on the plant detail screen"
+  },
+  "plantDetailDescriptionLabel": "Description",
+  "@plantDetailDescriptionLabel": {
+    "description": "Label for the Description field on the plant detail screen"
+  },
+  "plantDetailGrowthHabitLabel": "Growth Habit",
+  "@plantDetailGrowthHabitLabel": {
+    "description": "Label for the Growth Habit field on the plant detail screen"
+  },
+  "plantDetailInterestingFactLabel": "Interesting Fact",
+  "@plantDetailInterestingFactLabel": {
+    "description": "Label for the Interesting Fact field on the plant detail screen"
+  },
+  "plantDetailToxicityLabel": "Toxicity (Humans & Pets)",
+  "@plantDetailToxicityLabel": {
+    "description": "Label for the Toxicity field on the plant detail screen"
+  },
+  "addToFavoritesTooltip": "Add to favorites",
+  "@addToFavoritesTooltip": {
+    "description": "Tooltip for the add to favorites button"
+  },
+  "removeFromFavoritesTooltip": "Remove from favorites",
+  "@removeFromFavoritesTooltip": {
+    "description": "Tooltip for the remove from favorites button"
+  },
+  "imagePickerNoImageSelected": "No image selected",
+  "@imagePickerNoImageSelected": {
+    "description": "Placeholder text shown in the image preview area when no image has been picked yet"
+  },
+  "imageUnavailableError": "Image unavailable",
+  "@imageUnavailableError": {
+    "description": "Text shown when an image fails to load"
+  },
+  "searchHintText": "Search plants...",
+  "@searchHintText": {
+    "description": "Hint text shown in the search input field"
+  },
+  "clearSearchTooltip": "Clear search",
+  "@clearSearchTooltip": {
+    "description": "Tooltip for the clear button in the search input field"
+  },
+  "filterTooltip": "Filter by plant type",
+  "@filterTooltip": {
+    "description": "Tooltip for the filter button next to the search bar"
+  },
+  "filterAllTypes": "All Types",
+  "@filterAllTypes": {
+    "description": "Filter option text for showing all plant types"
+  },
+  "filterFlowers": "Flowers",
+  "@filterFlowers": {
+    "description": "Filter option text for showing only flowers"
+  },
+  "filterHerbs": "Herbs",
+  "@filterHerbs": {
+    "description": "Filter option text for showing only herbs"
+  },
+  "filterTrees": "Trees",
+  "@filterTrees": {
+    "description": "Filter option text for showing only trees"
+  },
+  "accountDetailsTitle": "Account Details",
+  "@accountDetailsTitle": {
+    "description": "Title for the account details section in the user profile"
+  },
+  "profileFullNameLabel": "Full Name",
+  "@profileFullNameLabel": {
+    "description": "Label for the Full Name field in the user profile"
+  },
+  "profileUsernameLabel": "Username",
+  "@profileUsernameLabel": {
+    "description": "Label for the Username field in the user profile"
+  },
+  "profileEmailLabel": "Email",
+  "@profileEmailLabel": {
+    "description": "Label for the Email field in the user profile"
+  },
+  "profileDobLabel": "Date of Birth",
+  "@profileDobLabel": {
+    "description": "Label for the Date of Birth field in the user profile"
+  },
+  "profileAddressLabel": "Address",
+  "@profileAddressLabel": {
+    "description": "Label for the Address field in the user profile"
+  },
+  "tooltipCancel": "Cancel",
+  "@tooltipCancel": {
+    "description": "Generic tooltip for a cancel action button or icon"
+  },
+  "tooltipEditDob": "Edit Date of Birth",
+  "@tooltipEditDob": {
+    "description": "Tooltip for the edit button next to the Date of Birth field"
+  },
+  "mediaTitle": "Media",
+  "@mediaTitle": {
+    "description": "Title for the Media section in the user profile"
+  },
+  "galleryAppBarTitle": "My Gallery",
+  "@galleryAppBarTitle": {
+    "description": " Label for the My Gallery with the gallery"
+  },
+  "galleryLabel": "Gallery",
+  "@galleryLabel": {
+    "description": "Label for the Gallery item within the Media section"
+  },
+  "pickImageButtonLabel": "Pick Image",
+  "@pickImageButtonLabel": {
+    "description": "Label for the button that allows users to select an image from their device"
+  },
+  "uploadImageButtonLabel": "Upload Image",
+  "@uploadImageButtonLabel": {
+    "description": "Label for the button to initiate image upload"
+  },
+  "uploadingButtonLabel": "Uploading...",
+  "@uploadingButtonLabel": {
+    "description": "Label shown on the upload button while the upload is in progress"
+  },
+  "profileNotSet": "Not Set",
+  "@profileNotSet": {
+    "description": "Default text displayed when a profile field has no value"
+  },
+  "profileEditHintFullName": "Enter Full Name",
+  "@profileEditHintFullName": {
+    "description": "Hint text for the full name input field when editing"
+  },
+  "profileEditHintUsername": "Enter Username",
+  "@profileEditHintUsername": {
+    "description": "Hint text for the username input field when editing"
+  },
+  "profileEditHintAddress": "Enter Address",
+  "@profileEditHintAddress": {
+    "description": "Hint text for the address input field when editing"
+  },
+  "profileSaveTooltipFullName": "Save Full Name",
+  "@profileSaveTooltipFullName": {
+    "description": "Tooltip for the save button when editing full name"
+  },
+  "profileSaveTooltipUsername": "Save Username",
+  "@profileSaveTooltipUsername": {
+    "description": "Tooltip for the save button when editing username"
+  },
+  "profileSaveTooltipAddress": "Save Address",
+  "@profileSaveTooltipAddress": {
+    "description": "Tooltip for the save button when editing address"
+  },
+  "profileEditTooltipFullName": "Edit Full Name",
+  "@profileEditTooltipFullName": {
+    "description": "Tooltip for the edit button for full name"
+  },
+  "profileEditTooltipUsername": "Edit Username",
+  "@profileEditTooltipUsername": {
+    "description": "Tooltip for the edit button for username"
+  },
+  "profileEditTooltipAddress": "Edit Address",
+  "@profileEditTooltipAddress": {
+    "description": "Tooltip for the edit button for address"
+  },
+  "profileCancelEditTooltip": "Cancel Edit",
+  "@profileCancelEditTooltip": {
+    "description": "Tooltip for the cancel button when editing a profile field"
   }
 }
