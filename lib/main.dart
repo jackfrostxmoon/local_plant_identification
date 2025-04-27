@@ -1,14 +1,14 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart'; // Import localization delegates
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:local_plant_identification/firebase_options.dart';
 import 'package:local_plant_identification/screens/dashboard/dashboard_screen.dart';
 import 'package:local_plant_identification/screens/login_and_registration/login.dart';
 import 'package:local_plant_identification/screens/login_and_registration/signup.dart';
 import 'package:local_plant_identification/screens/login_and_registration/welcome.dart';
 import 'package:provider/provider.dart';
-import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Import generated localizations
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 // --- LocaleProvider to manage the app's current locale ---
 class LocaleProvider extends ChangeNotifier {
@@ -18,14 +18,10 @@ class LocaleProvider extends ChangeNotifier {
   Locale get locale => _locale;
 
   void setLocale(Locale locale) {
-    // Optional: Check if the locale is supported before setting
-    // if (!AppLocalizations.supportedLocales.contains(locale)) return;
-
     _locale = locale;
     notifyListeners(); // Notify listeners to rebuild widgets with the new locale
   }
 }
-// --- End LocaleProvider ---
 
 void main() async {
   // Ensure Flutter bindings are initialized
@@ -51,9 +47,6 @@ class MyApp extends StatelessWidget {
     final localeProvider = Provider.of<LocaleProvider>(context);
 
     return MaterialApp(
-      // TODO: Localize the app title using AppLocalizations if needed.
-      // This often requires a Builder widget to get the correct context
-      // or handling it differently depending on where the title is displayed.
       title: 'Local Plant Identification',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
@@ -74,12 +67,9 @@ class MyApp extends StatelessWidget {
         GlobalMaterialLocalizations.delegate, // Localizes Material widgets
         GlobalWidgetsLocalizations
             .delegate, // Localizes basic text directionality, etc.
-        GlobalCupertinoLocalizations
-            .delegate, // Localizes Cupertino widgets (iOS style)
+        GlobalCupertinoLocalizations.delegate,
       ],
-      supportedLocales: AppLocalizations
-          .supportedLocales, // Locales generated from .arb files
-      // --- End Localization Configuration ---
+      supportedLocales: AppLocalizations.supportedLocales,
 
       // Determine the initial route based on user login status
       initialRoute:
@@ -88,14 +78,11 @@ class MyApp extends StatelessWidget {
       // Define the app's routes
       routes: {
         '/welcome': (context) => WelcomeScreen(
-              // Localize the title passed to the WelcomeScreen
-              // Assumes you have a key 'welcomeScreenTitle' in your .arb files
               title: AppLocalizations.of(context)!.welcomeScreenTitle,
             ),
         '/login': (context) => const Login(),
         '/signup': (context) => const Signup(),
         '/dashboard': (context) => const DashboardScreen(),
-        // Add other routes as needed
       },
     );
   }

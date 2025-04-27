@@ -6,7 +6,7 @@ import 'package:local_plant_identification/screens/profile/user_profile_screen.d
 import 'package:local_plant_identification/screens/search/plant_search_screen.dart';
 import 'package:local_plant_identification/widgets/custom_bottom_nav_bar.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // Import AppLocalizations
-import 'package:local_plant_identification/widgets/custom_language_selection_menu.dart';
+import 'package:local_plant_identification/widgets/localization_helper.dart';
 import 'package:local_plant_identification/widgets/custom_logout_button.dart';
 
 import 'dashboard_content_screen.dart';

@@ -1,21 +1,54 @@
 // lib/utils/localization_helper.dart
 import 'package:flutter/material.dart';
+import 'package:local_plant_identification/main.dart'; // Assuming LocaleProvider is in main.dart
+import 'package:provider/provider.dart';
+import 'package:flutter_gen/gen_l10n/app_localizations.dart'; // For localized strings
 
-/// Fetches a localized string value from a data map based on the current locale.
-///
-/// This helper function is designed to work with data structures (like those
-/// fetched from Appwrite) where localized fields follow a convention:
-/// - Base field name (e.g., 'Name') for the default language (English).
-/// - Field name with language suffix (e.g., 'Name_MS', 'Name_CN') for other languages.
-///
-/// Args:
-///   context: The BuildContext used to determine the current locale.
-///   data: The map containing the data fields (e.g., a plant data map).
-///   baseKey: The base key for the field (e.g., 'Name', 'Description').
-///
-/// Returns:
-///   The localized string value if found, falling back to the base language
-///   value, or 'N/A' if neither is found or valid.
+class LanguageSelectionMenu extends StatelessWidget {
+  const LanguageSelectionMenu({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    // Get the localization strings
+    final l10n = AppLocalizations.of(context)!;
+    // Get the LocaleProvider to know the current locale
+    final localeProvider = Provider.of<LocaleProvider>(context);
+    final currentLangCode = localeProvider.locale.languageCode;
+
+    return PopupMenuButton<String>(
+      icon: const Icon(Icons.language),
+      // Use localized tooltip
+      tooltip: l10n.selectLanguageTooltip, // Use the key from .arb file
+      onSelected: (String langCode) {
+        // Only update if a different language is selected
+        if (langCode != currentLangCode) {
+          print('Language selected: $langCode');
+          // Get the provider (listen: false because we're in a callback)
+          final provider = Provider.of<LocaleProvider>(context, listen: false);
+          // Update the locale
+          provider.setLocale(Locale(langCode));
+        }
+      },
+      // Use CheckedPopupMenuItem to indicate the current selection
+      itemBuilder: (BuildContext context) => <PopupMenuEntry<String>>[
+        PopupMenuItem<String>(
+          value: 'en',
+          // Check if this item's value matches the current language code
+          child: Text(l10n.languageEnglish), // Localized text
+        ),
+        PopupMenuItem<String>(
+          value: 'ms',
+          child: Text(l10n.languageMalay), // Localized text
+        ),
+        PopupMenuItem<String>(
+          value: 'zh',
+          child: Text(l10n.languageChinese), // Localized text
+        ),
+      ],
+    );
+  }
+}
+
 String getLocalizedValue(
   BuildContext context,
   Map<String, dynamic> data,
@@ -41,30 +74,17 @@ String getLocalizedValue(
       break;
   }
 
-  // --- Fallback Logic ---
-
-  // 1. Try fetching the locale-specific value first.
-  // Check if the key exists, the value is not null, and it's not an empty string.
   if (data.containsKey(localeKey) &&
       data[localeKey] != null &&
       data[localeKey].toString().isNotEmpty) {
     return data[localeKey].toString();
   }
 
-  // 2. If locale-specific value is missing or empty, fallback to the base key (English).
-  // Check if the base key exists, the value is not null, and it's not an empty string.
   if (data.containsKey(baseKey) &&
       data[baseKey] != null &&
       data[baseKey].toString().isNotEmpty) {
-    // Optionally, log a warning if a specific locale was expected but not found
-    // if (langCode != 'en') {
-    //   print("Warning: Locale '$langCode' requested for key '$baseKey', but value for '$localeKey' was missing or empty. Falling back to base.");
-    // }
     return data[baseKey].toString();
   }
 
-  // 3. If even the base value is missing or empty, return a placeholder.
-  // Optionally, log an error here as data seems incomplete.
-  // print("Error: Missing value for base key '$baseKey' and locale key '$localeKey'.");
-  return 'N/A'; // Or return baseKey, or an empty string '', etc.
+  return 'N/A';
 }

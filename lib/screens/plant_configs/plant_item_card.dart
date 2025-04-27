@@ -1,50 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:local_plant_identification/screens/plant_configs/plant_detail_screen.dart';
+import 'package:local_plant_identification/widgets/localization_helper.dart';
 
-// --- Localization Helper Function ---
-// NOTE: Ideally, move this to a separate utility file (e.g., utils/localization_helper.dart)
-// and import it here and in PlantDetailScreen.dart.
-String _getLocalizedValue(
-  BuildContext context,
-  Map<String, dynamic> data,
-  String baseKey,
-) {
-  final locale = Localizations.localeOf(context);
-  final langCode = locale.languageCode; // 'en', 'ms', 'zh', etc.
-
-  String localeKey;
-  switch (langCode) {
-    case 'ms': // Malay
-      localeKey = '${baseKey}_MS';
-      break;
-    case 'zh': // Chinese
-      localeKey = '${baseKey}_ZH';
-      break;
-    default: // Default to English or if locale is 'en'
-      localeKey = baseKey;
-      break;
-  }
-
-  // 1. Try fetching the locale-specific value
-  if (data.containsKey(localeKey) &&
-      data[localeKey] != null &&
-      data[localeKey].toString().isNotEmpty) {
-    return data[localeKey].toString();
-  }
-
-  // 2. Fallback to the base (English) value if locale-specific is missing/empty
-  if (data.containsKey(baseKey) &&
-      data[baseKey] != null &&
-      data[baseKey].toString().isNotEmpty) {
-    return data[baseKey].toString();
-  }
-
-  // 3. Fallback if even the base value is missing/empty
-  return 'N/A'; // Or return baseKey, or 'Unknown', etc.
-}
-// --- End Localization Helper Function ---
-
-/// Displays a single plant item with image, divider, and localized name. Clickable.
 class PlantItemCard extends StatelessWidget {
   final Map<String, dynamic> plant;
 
@@ -53,7 +10,7 @@ class PlantItemCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     // Get the localized name using the helper function
-    final String localizedName = _getLocalizedValue(
+    final String localizedName = getLocalizedValue(
       context, // Pass the BuildContext
       plant, // Pass the plant data map
       'Name', // Specify the base key for the name

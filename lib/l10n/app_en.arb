@@ -7,6 +7,58 @@
   "@welcomeScreenTitle": {
     "description": "Title for the welcome screen"
   },
+  "welcomeGreeting": "Welcome Back",
+  "@welcomeGreeting": {
+    "description": "Greeting text on the welcome screen"
+  },
+  "welcomeSignInButton": "SIGN IN",
+  "@welcomeSignInButton": {
+    "description": "Label for the sign in button on the welcome screen"
+  },
+  "welcomeSignUpButton": "SIGN UP",
+  "@welcomeSignUpButton": {
+    "description": "Label for the sign up button on the welcome screen"
+  },
+  "loginWelcomeBack": "Welcome back",
+  "@loginWelcomeBack": {
+    "description": "Greeting on the login screen"
+  },
+  "loginEmailLabel": "Email",
+  "@loginEmailLabel": {
+    "description": "Label for the email input field on login screen"
+  },
+  "loginEmailHint": "Enter Email",
+  "@loginEmailHint": {
+    "description": "Hint text for the email input field on login screen"
+  },
+  "loginPasswordLabel": "Password",
+  "@loginPasswordLabel": {
+    "description": "Label for the password input field on login screen"
+  },
+  "loginPasswordHint": "Enter Password",
+  "@loginPasswordHint": {
+    "description": "Hint text for the password input field on login screen"
+  },
+  "loginRememberMe": "Remember me",
+  "@loginRememberMe": {
+    "description": "Label for the 'Remember me' checkbox on login screen"
+  },
+  "loginForgotPassword": "Forget password?",
+  "@loginForgotPassword": {
+    "description": "Link text to navigate to the password reset screen"
+  },
+  "loginSignInButton": "Sign in",
+  "@loginSignInButton": {
+    "description": "Label for the main login button"
+  },
+  "loginNoAccountPrompt": "Don't have an account? ",
+  "@loginNoAccountPrompt": {
+    "description": "Prompt text before the sign up link"
+  },
+  "loginSignUpLink": "Sign up",
+  "@loginSignUpLink": {
+    "description": "Link text to navigate to the sign up screen"
+  },
   "dashboardAppBarTitle": "Plant Explorer & Quiz",
   "@dashboardAppBarTitle": {
     "description": "App bar title for the main dashboard screen"

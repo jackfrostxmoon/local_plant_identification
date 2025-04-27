@@ -7,6 +7,58 @@
   "@welcomeScreenTitle": {
     "description": "欢迎屏幕的标题"
   },
+  "welcomeGreeting": "欢迎回来",
+  "@welcomeGreeting": {
+    "description": "欢迎屏幕上的问候语"
+  },
+  "welcomeSignInButton": "登录",
+  "@welcomeSignInButton": {
+    "description": "欢迎屏幕上登录按钮的标签"
+  },
+  "welcomeSignUpButton": "注册",
+  "@welcomeSignUpButton": {
+    "description": "欢迎屏幕上注册按钮的标签"
+  },
+  "loginWelcomeBack": "欢迎回来",
+  "@loginWelcomeBack": {
+    "description": "登录屏幕上的问候语"
+  },
+  "loginEmailLabel": "电子邮件",
+  "@loginEmailLabel": {
+    "description": "登录屏幕上电子邮件输入字段的标签"
+  },
+  "loginEmailHint": "输入电子邮件",
+  "@loginEmailHint": {
+    "description": "登录屏幕上电子邮件输入字段的提示文本"
+  },
+  "loginPasswordLabel": "密码",
+  "@loginPasswordLabel": {
+    "description": "登录屏幕上密码输入字段的标签"
+  },
+  "loginPasswordHint": "输入密码",
+  "@loginPasswordHint": {
+    "description": "登录屏幕上密码输入字段的提示文本"
+  },
+  "loginRememberMe": "记住我",
+  "@loginRememberMe": {
+    "description": "登录屏幕上“记住我”复选框的标签"
+  },
+  "loginForgotPassword": "忘记密码？",
+  "@loginForgotPassword": {
+    "description": "导航到密码重置屏幕的链接文本"
+  },
+  "loginSignInButton": "登录",
+  "@loginSignInButton": {
+    "description": "主登录按钮的标签"
+  },
+  "loginNoAccountPrompt": "还没有账户？ ",
+  "@loginNoAccountPrompt": {
+    "description": "注册链接之前的提示文本"
+  },
+  "loginSignUpLink": "注册",
+  "@loginSignUpLink": {
+    "description": "导航到注册屏幕的链接文本"
+  },
   "dashboardAppBarTitle": "植物探索与测验",
   "@dashboardAppBarTitle": {
     "description": "主仪表板屏幕的应用栏标题"

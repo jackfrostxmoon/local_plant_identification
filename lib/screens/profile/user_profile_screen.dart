@@ -242,22 +242,16 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
 // Still needed for other keys
     if (dateValue is Timestamp) {
       try {
-        // --- CHANGE THIS LINE ---
-        // OLD: return DateFormat.yMMMd(l10n.localeName).format(dateValue.toDate());
-        // NEW: Get locale directly from context
         final currentLocale = Localizations.localeOf(context);
         return DateFormat.yMMMd(currentLocale.languageCode)
             .format(dateValue.toDate());
-        // --- END CHANGE ---
       } catch (e) {
-        // Use hardcoded or add a specific key if needed
-        return 'Invalid Date'; // Or l10n.profileInvalidDate if you add the key
+        return 'Invalid Date';
       }
     }
-    return _notSet(context); // Use helper for localized "Not Set"
+    return _notSet(context);
   }
 
-  // --- Reusable Widget Builder for Editable Fields (Uses Localized Texts from Template) ---
   Widget _buildEditableField({
     required String label, // Expect localized label from caller
     required String value,
@@ -374,13 +368,10 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
       body: StreamBuilder<DocumentSnapshot<Map<String, dynamic>>>(
         stream: _firestoreService.getUserStream(user.uid),
         builder: (context, snapshot) {
-          // final l10nBuilder = AppLocalizations.of(context)!; // Not needed if errors are hardcoded
-
           if (snapshot.connectionState == ConnectionState.waiting) {
             return const LoadingIndicator();
           }
           if (snapshot.hasError) {
-            // --- Hardcoded English (key missing) ---
             return Center(
               child: Text('Error: ${snapshot.error}'),
             );
@@ -394,13 +385,11 @@ class _UserProfileScreenState extends State<UserProfileScreen> {
                 );
               }
             });
-            // --- Hardcoded English (key missing) ---
             return const Center(child: Text('Loading profile...'));
           }
 
           final userData = snapshot.data!.data() ?? {};
 
-          // Update local state using localized "Not Set" (Key exists)
           final String localizedNotSet = _notSet(context);
           if (!_isEditingUsername) {
             _currentUsername = userData['username'] as String? ?? 'N/A';

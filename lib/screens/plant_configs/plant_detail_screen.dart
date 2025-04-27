@@ -3,12 +3,9 @@ import 'dart:async'; // Import for StreamSubscription
 import 'package:flutter/material.dart';
 import 'package:cloud_firestore/cloud_firestore.dart'; // Import Firestore
 import 'package:firebase_auth/firebase_auth.dart'; // Import Firebase Auth
+import 'package:local_plant_identification/widgets/localization_helper.dart'
+    as LocalizationHelper;
 
-// Assuming these functions are defined elsewhere and imported correctly
-// import 'path/to/your/favorites_utils.dart'; // Example import
-
-// --- Placeholder implementations for demonstration ---
-// Ensure these are defined or imported correctly in your actual project
 Future<void> addFavoritePlant(String plantId) async {
   final userId = getCurrentUserId();
   if (userId == null) return;
@@ -46,48 +43,6 @@ Future<void> removeFavoritePlant(String plantId) async {
 String? getCurrentUserId() {
   return FirebaseAuth.instance.currentUser?.uid;
 }
-// --- End Placeholder implementations ---
-
-// --- PASTE THE _getLocalizedValue function HERE if not in a separate file ---
-String _getLocalizedValue(
-  BuildContext context,
-  Map<String, dynamic> data,
-  String baseKey,
-) {
-  final locale = Localizations.localeOf(context);
-  final langCode = locale.languageCode; // 'en', 'ms', 'zh', etc.
-
-  String localeKey;
-  switch (langCode) {
-    case 'ms': // Malay
-      localeKey = '${baseKey}_MS';
-      break;
-    case 'zh': // Chinese
-      localeKey = '${baseKey}_ZH';
-      break;
-    default: // Default to English or if locale is 'en'
-      localeKey = baseKey;
-      break;
-  }
-
-  // 1. Try fetching the locale-specific value
-  if (data.containsKey(localeKey) &&
-      data[localeKey] != null &&
-      data[localeKey].toString().isNotEmpty) {
-    return data[localeKey].toString();
-  }
-
-  // 2. Fallback to the base (English) value if locale-specific is missing/empty
-  if (data.containsKey(baseKey) &&
-      data[baseKey] != null &&
-      data[baseKey].toString().isNotEmpty) {
-    return data[baseKey].toString();
-  }
-
-  // 3. Fallback if even the base value is missing/empty
-  return 'N/A'; // Or return baseKey, or 'Unknown', etc.
-}
-// --- End helper function ---
 
 class PlantDetailScreen extends StatefulWidget {
   final Map<String, dynamic> plantData;
@@ -190,13 +145,6 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
       }
       return;
     }
-
-    // Show loading state immediately for responsiveness
-    // Note: Firestore listener will update the final state
-    // setState(() {
-    //   _isLoadingFavorite = true; // Optional: show loader during toggle
-    // });
-
     try {
       if (_isFavorited) {
         await removeFavoritePlant(_plantId!);
@@ -235,22 +183,17 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
             duration: Duration(seconds: 2),
           ),
         );
-        // Revert loading state if toggle failed and listener didn't update
-        // setState(() {
-        //   _isLoadingFavorite = false;
-        // });
       }
     }
   }
 
-  // --- MODIFIED Helper to build attribute row using localization ---
   Widget _buildAttributeRow(
     BuildContext context,
     String label,
     String baseKey,
   ) {
     // Use the helper function to get the localized value based on the baseKey
-    final String localizedValue = _getLocalizedValue(
+    final String localizedValue = LocalizationHelper.getLocalizedValue(
       context,
       widget.plantData,
       baseKey,
@@ -262,7 +205,7 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            label, // Label remains the same (could also be localized if needed)
+            label,
             style: Theme.of(context).textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.bold,
                   color: Theme.of(context).colorScheme.primary,
@@ -282,16 +225,15 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
   @override
   Widget build(BuildContext context) {
     // Get localized name for the AppBar title
-    final String localizedName = _getLocalizedValue(
+    final String localizedName = LocalizationHelper.getLocalizedValue(
       context,
       widget.plantData,
       'Name',
     );
 
-    // Extract image URL (doesn't need localization)
+    // Extract image URL
     final String? imageUrl = widget.plantData['image'];
 
-    // Determine icon based on loading and favorite state (unchanged)
     Widget favoriteActionIcon;
     if (_isLoadingFavorite) {
       favoriteActionIcon = Container(
@@ -382,7 +324,6 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
               ),
             ),
 
-          // --- MODIFIED: Display Attributes using the helper and base keys ---
           _buildAttributeRow(context, 'Name', 'Name'),
           _buildAttributeRow(context, 'Description', 'Description'),
           _buildAttributeRow(context, 'Growth Habit', 'Growth_Habit'),
@@ -393,7 +334,6 @@ class _PlantDetailScreenState extends State<PlantDetailScreen> {
             'Toxicity_Humans_and_Pets',
           ),
 
-          // --- End Modified Attributes ---
           const SizedBox(height: 20),
         ],
       ),

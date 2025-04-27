@@ -7,6 +7,58 @@
   "@welcomeScreenTitle": {
     "description": "Tajuk untuk skrin alu-aluan"
   },
+  "welcomeGreeting": "Selamat Kembali",
+  "@welcomeGreeting": {
+    "description": "Teks ucapan pada skrin alu-aluan"
+  },
+  "welcomeSignInButton": "LOG MASUK",
+  "@welcomeSignInButton": {
+    "description": "Label untuk butang log masuk pada skrin alu-aluan"
+  },
+  "welcomeSignUpButton": "DAFTAR",
+  "@welcomeSignUpButton": {
+    "description": "Label untuk butang daftar pada skrin alu-aluan"
+  },
+  "loginWelcomeBack": "Selamat kembali",
+  "@loginWelcomeBack": {
+    "description": "Ucapan pada skrin log masuk"
+  },
+  "loginEmailLabel": "E-mel",
+  "@loginEmailLabel": {
+    "description": "Label untuk medan input e-mel pada skrin log masuk"
+  },
+  "loginEmailHint": "Masukkan E-mel",
+  "@loginEmailHint": {
+    "description": "Teks petunjuk untuk medan input e-mel pada skrin log masuk"
+  },
+  "loginPasswordLabel": "Kata Laluan",
+  "@loginPasswordLabel": {
+    "description": "Label untuk medan input kata laluan pada skrin log masuk"
+  },
+  "loginPasswordHint": "Masukkan Kata Laluan",
+  "@loginPasswordHint": {
+    "description": "Teks petunjuk untuk medan input kata laluan pada skrin log masuk"
+  },
+  "loginRememberMe": "Ingat saya",
+  "@loginRememberMe": {
+    "description": "Label untuk kotak semak 'Ingat saya' pada skrin log masuk"
+  },
+  "loginForgotPassword": "Lupa kata laluan?",
+  "@loginForgotPassword": {
+    "description": "Teks pautan untuk navigasi ke skrin set semula kata laluan"
+  },
+  "loginSignInButton": "Log masuk",
+  "@loginSignInButton": {
+    "description": "Label untuk butang log masuk utama"
+  },
+  "loginNoAccountPrompt": "Tiada akaun? ",
+  "@loginNoAccountPrompt": {
+    "description": "Teks gesaan sebelum pautan daftar"
+  },
+  "loginSignUpLink": "Daftar",
+  "@loginSignUpLink": {
+    "description": "Teks pautan untuk navigasi ke skrin daftar"
+  },
   "dashboardAppBarTitle": "Peneroka & Kuiz Tumbuhan",
   "@dashboardAppBarTitle": {
     "description": "Tajuk bar aplikasi untuk skrin papan pemuka utama"
