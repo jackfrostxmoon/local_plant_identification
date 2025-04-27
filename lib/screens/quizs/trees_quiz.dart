@@ -1,5 +1,6 @@
 import 'package:appwrite/appwrite.dart';
 import 'package:flutter/material.dart';
+import 'package:local_plant_identification/screens/quizs/question.dart';
 import 'package:local_plant_identification/screens/quizs/quiz_body.dart';
 import 'package:local_plant_identification/screens/quizs/quiz_dialogs.dart';
 import 'package:local_plant_identification/services/appwrite_service.dart';

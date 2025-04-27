@@ -1,6 +1,6 @@
 // New Widget for individual quiz options
 import 'package:flutter/material.dart';
-import 'package:local_plant_identification/services/appwrite_service.dart';
+import 'package:local_plant_identification/screens/quizs/question.dart';
 
 class QuizOptionButton extends StatelessWidget {
   final int optionIndex;

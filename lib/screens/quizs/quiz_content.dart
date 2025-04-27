@@ -1,8 +1,8 @@
 // lib/widgets/quiz_content.dart
 import 'package:flutter/material.dart';
+import 'package:local_plant_identification/screens/quizs/question.dart';
 import 'package:local_plant_identification/screens/quizs/quiz_image.dart';
 import 'package:local_plant_identification/screens/quizs/quiz_options_grid.dart';
-import 'package:local_plant_identification/services/appwrite_service.dart';
 
 class QuizContent extends StatelessWidget {
   final int currentIndex;

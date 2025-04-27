@@ -1,12 +1,12 @@
-// lib/models/question.dart
 import 'package:appwrite/models.dart';
 
 class Question {
-  final String id;
+  // ... (keep existing Question class code)
+  final String id; // Appwrite document ID
   final String questionText;
   final List<String> options;
   final int correctAnswerIndex;
-  final String? imageUrl; // Make sure this matches your Appwrite attribute name
+  final String? imageUrl; // Nullable image URL
 
   Question({
     required this.id,
@@ -16,32 +16,23 @@ class Question {
     this.imageUrl,
   });
 
-  // Factory constructor to create a Question from an Appwrite document
   factory Question.fromAppwriteDoc(Document doc) {
-    // Ensure correct data types and handle potential nulls gracefully
-    final data = doc.data;
-    final List<dynamic> rawOptions = data['options'] ?? [];
-    final List<String> stringOptions =
-        rawOptions.map((opt) => opt.toString()).toList();
-
-    // Validate correct answer index
-    int correctIndex = data['correctAnswerIndex'] ?? -1;
-    if (correctIndex < 0 || correctIndex >= stringOptions.length) {
-      print(
-        "Warning: Invalid correctAnswerIndex (${data['correctAnswerIndex']}) for question ID ${doc.$id}. Defaulting to 0 or handle error.",
+    List<String> parsedOptions = [];
+    if (doc.data['Options'] is List) {
+      parsedOptions = List<String>.from(
+        doc.data['Options'].map((item) => item.toString()),
       );
-      // Decide how to handle: throw error, default to 0, skip question?
-      // For now, let's clamp it, but ideally, your data should be valid.
-      correctIndex = 0.clamp(0, stringOptions.length - 1);
-      if (stringOptions.isEmpty) correctIndex = -1; // Handle empty options case
     }
-
+    String? imageUrl = doc.data['Image'];
+    if (imageUrl != null && imageUrl.trim().isEmpty) {
+      imageUrl = null;
+    }
     return Question(
       id: doc.$id,
-      questionText: data['questionText'] ?? 'Missing question text',
-      options: stringOptions,
-      correctAnswerIndex: correctIndex,
-      imageUrl: data['imageUrl'] as String?, // Cast safely
+      questionText: doc.data['Questions'] ?? 'Error: Missing question text',
+      options: parsedOptions,
+      correctAnswerIndex: doc.data['Correct_Answer_Index'] ?? 0,
+      imageUrl: imageUrl,
     );
   }
 }

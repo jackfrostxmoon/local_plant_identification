@@ -4,7 +4,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:appwrite/appwrite.dart'; // Still needed for AppwriteException, ID, InputFile
 import 'package:flutter/foundation.dart' show kIsWeb, Uint8List;
-import 'dart:io'; // Keep for mobile File operations
 import 'package:file_picker/file_picker.dart';
 
 // Import the new widgets

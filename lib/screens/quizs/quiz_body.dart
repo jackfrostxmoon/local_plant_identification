@@ -1,8 +1,8 @@
 // lib/widgets/quiz_body.dart
 import 'package:flutter/material.dart';
+import 'package:local_plant_identification/screens/quizs/question.dart';
 import 'package:local_plant_identification/screens/quizs/quiz_content.dart';
 import 'package:local_plant_identification/screens/quizs/quiz_error_display.dart';
-import 'package:local_plant_identification/services/appwrite_service.dart';
 import 'package:local_plant_identification/widgets/custom_loading_indicator.dart';
 
 class QuizBody extends StatelessWidget {

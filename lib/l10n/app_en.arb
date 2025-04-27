@@ -1,0 +1,22 @@
+{
+  "@@locale": "en",
+  "appTitle": "My Plant App",
+  "attributesTitle": "Attributes",
+  "createAttributeButton": "Create attribute",
+  "attributeNameLabel": "Name",
+  "attributeDescriptionLabel": "Description",
+  "attributeGrowthHabitLabel": "Growth Habit",
+  "attributeInterestingFactLabel": "Interesting Fact",
+  "attributeToxicityLabel": "Toxicity (Humans & Pets)",
+  "attributeImageLabel": "Image",
+  "totalResults": "Total results: {count}",
+  "@totalResults": {
+    "description": "Label showing the total number of results",
+    "placeholders": {
+      "count": {
+        "type": "int",
+        "example": "6"
+      }
+    }
+  }
+}
