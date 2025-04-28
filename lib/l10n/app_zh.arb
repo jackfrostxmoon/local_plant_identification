@@ -156,6 +156,11 @@
   "@cameraAppBarTitle": {
     "description": "相机屏幕的应用栏标题"
   },
+  "confirmationAppBarTitle": "植物识别",
+  "confirmationPlantNamePrefix": "植物名称：",
+  "confirmationProbabilityPrefix": "概率：",
+  "confirmationCancelButton": "取消",
+  "confirmationConfirmButton": "确认",
   "favoritesAppBarTitle": "我的收藏",
   "@favoritesAppBarTitle": {
     "description": "收藏夹屏幕的应用栏标题"

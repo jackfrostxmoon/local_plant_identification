@@ -156,6 +156,11 @@
   "@cameraAppBarTitle": {
     "description": "Tajuk bar aplikasi untuk skrin kamera"
   },
+  "confirmationAppBarTitle": "Pengecaman Tumbuhan",
+  "confirmationPlantNamePrefix": "Nama Tumbuhan: ",
+  "confirmationProbabilityPrefix": "Kebarangkalian: ",
+  "confirmationCancelButton": "Batal",
+  "confirmationConfirmButton": "Sahkan",
   "favoritesAppBarTitle": "Kegemaran Saya",
   "@favoritesAppBarTitle": {
     "description": "Tajuk bar aplikasi untuk skrin kegemaran"

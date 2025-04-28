@@ -156,6 +156,26 @@
   "@cameraAppBarTitle": {
     "description": "App bar title for the camera screen"
   },
+  "confirmationAppBarTitle": "Plant Identification",
+  "@confirmationAppBarTitle": {
+    "description": "Title for the screen confirming plant identification results"
+  },
+  "confirmationPlantNamePrefix": "Plant Name: ",
+  "@confirmationPlantNamePrefix": {
+    "description": "Prefix label shown before the identified plant name"
+  },
+  "confirmationProbabilityPrefix": "Probability: ",
+  "@confirmationProbabilityPrefix": {
+    "description": "Prefix label shown before the identification probability percentage"
+  },
+  "confirmationCancelButton": "Cancel",
+  "@confirmationCancelButton": {
+    "description": "Label for the cancel button on the confirmation screen"
+  },
+  "confirmationConfirmButton": "Confirm",
+  "@confirmationConfirmButton": {
+    "description": "Label for the confirm button on the confirmation screen"
+  },
   "favoritesAppBarTitle": "My Favourites",
   "@favoritesAppBarTitle": {
     "description": "App bar title for the favorites screen"

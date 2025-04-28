@@ -28,7 +28,6 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   // Initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
-
   // Run the app, providing the LocaleProvider to the widget tree
   runApp(
     ChangeNotifierProvider(

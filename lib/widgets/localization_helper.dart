@@ -18,7 +18,7 @@ String getLocalizedValue(
       break;
     case 'zh':
       // --- CORRECTION: Use _CN as per your Appwrite attributes ---
-      localeKey = '${baseKey}_CN';
+      localeKey = '${baseKey}_ZH';
       break;
     default:
       localeKey = baseKey;
@@ -57,7 +57,7 @@ List<String> getLocalizedList(
       break;
     case 'zh':
       // --- CORRECTION: Use _CN as per your Appwrite attributes ---
-      localeKey = '${baseKey}_CN';
+      localeKey = '${baseKey}_ZH';
       break;
     default:
       localeKey = baseKey;
