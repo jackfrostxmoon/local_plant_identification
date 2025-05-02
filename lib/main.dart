@@ -1,3 +1,4 @@
+import 'package:camera/camera.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -9,6 +10,8 @@ import 'package:local_plant_identification/screens/login_and_registration/signup
 import 'package:local_plant_identification/screens/login_and_registration/welcome.dart';
 import 'package:provider/provider.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
+
+List<CameraDescription> cameras = [];
 
 // --- LocaleProvider to manage the app's current locale ---
 class LocaleProvider extends ChangeNotifier {
@@ -26,6 +29,7 @@ class LocaleProvider extends ChangeNotifier {
 void main() async {
   // Ensure Flutter bindings are initialized
   WidgetsFlutterBinding.ensureInitialized();
+  cameras = await availableCameras();
   // Initialize Firebase
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   // Run the app, providing the LocaleProvider to the widget tree

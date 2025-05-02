@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+// Import the AppLocalizations class
+import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
 class AppBottomNavigationBar extends StatelessWidget {
   final int currentIndex;
@@ -12,20 +14,33 @@ class AppBottomNavigationBar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Using the icons from your latest snippet
+    // Get the AppLocalizations instance
+    final l10n = AppLocalizations.of(context)!;
+
     return BottomNavigationBar(
-      items: const <BottomNavigationBarItem>[
+      items: <BottomNavigationBarItem>[
         BottomNavigationBarItem(
-          icon: Icon(Icons.home), // Changed from home
-          label: 'Dashboard',
+          icon: const Icon(Icons.home), // Changed from home
+          // Use localized string for the label
+          label: l10n.bottomNavDashboard,
         ),
-        BottomNavigationBarItem(icon: Icon(Icons.search), label: 'Search'),
         BottomNavigationBarItem(
-          icon: Icon(Icons.camera_alt),
-          label: 'Camera',
+            icon: const Icon(Icons.search),
+            // Use localized string for the label
+            label: l10n.bottomNavSearch),
+        BottomNavigationBarItem(
+          icon: const Icon(Icons.camera_alt),
+          // Use localized string for the label
+          label: l10n.bottomNavCamera,
         ), // Changed from camera
-        BottomNavigationBarItem(icon: Icon(Icons.favorite), label: 'Favourite'),
-        BottomNavigationBarItem(icon: Icon(Icons.person), label: 'Profile'),
+        BottomNavigationBarItem(
+            icon: const Icon(Icons.favorite),
+            // Use localized string for the label
+            label: l10n.bottomNavFavourite),
+        BottomNavigationBarItem(
+            icon: const Icon(Icons.person),
+            // Use localized string for the label
+            label: l10n.bottomNavProfile),
       ],
       currentIndex: currentIndex, // Use the passed-in index
       selectedItemColor: Colors.black,

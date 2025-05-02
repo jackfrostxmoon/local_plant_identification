@@ -3,6 +3,7 @@ import 'package:appwrite/appwrite.dart';
 import 'package:appwrite/models.dart' as models;
 
 // --- Appwrite Configuration ---
+// Holds essential Appwrite IDs and endpoint.
 class AppwriteConfig {
   // Replace with your actual Appwrite project ID and endpoint
   static const String projectId = '67f50b9d003441bfb6ac';
@@ -15,40 +16,29 @@ class AppwriteConfig {
   static const String treesCollectionId =
       '67fef1a10005c250aa24'; // Corrected based on image
 
-  // This is the ID for the storage bucket where images are stored
+  // Storage bucket ID for plant images
   static const String plantImagesStorageId = '67fc68bc003416307fcf';
 
-  // Quiz collection IDs
+  // Collection IDs specifically for quiz questions
   static const String flowersquizCollectionId = '68039868002e38039bb3';
   static const String herbsquizCollectionId = '6803b4d30025e1644b19';
   static const String treesquizCollectionId = '6803b92b0003cbbca918';
 
-  // --- Attributes to search across ---
-  // IMPORTANT: Ensure Full-Text Indexes exist for ALL these in Appwrite!
-  // MODIFIED: Added localized attributes based on the provided index image
+  // --- Attributes for Search ---
+  // IMPORTANT: Full-Text Indexes must exist for ALL these in Appwrite!
   static const List<String> searchableAttributes = [
-    // Base English Attributes (Indexes 1-5)
-    'Name',
-    'Description',
-    'Growth_Habit',
-    'Interesting_fact',
+    // English, Malay, and Chinese attributes used for searching
+    'Name', 'Description', 'Growth_Habit', 'Interesting_fact',
     'Toxicity_Humans_and_Pets',
-    // Malay Attributes (Indexes 6, 8, 10, 12, 14)
-    'Name_MS',
-    'Description_MS',
-    'Growth_Habit_MS',
-    'Interesting_fact_MS',
+    'Name_MS', 'Description_MS', 'Growth_Habit_MS', 'Interesting_fact_MS',
     'Toxicity_Humans_and_Pets_MS',
-    // Chinese Attributes (Indexes 7, 9, 11, 13, 15)
-    'Name_ZH', // Assuming Name_ZH corresponds to index_7
-    'Description_ZH',
-    'Growth_Habit_ZH',
-    'Interesting_fact_ZH',
+    'Name_ZH', 'Description_ZH', 'Growth_Habit_ZH', 'Interesting_fact_ZH',
     'Toxicity_Humans_and_Pets_ZH',
   ];
 }
 
-// --- AppwriteService Class (No changes needed in the methods below) ---
+// --- AppwriteService Class ---
+// Singleton for Appwrite backend interactions.
 class AppwriteService {
   static final AppwriteService _instance = AppwriteService._internal();
   late final Client client;
@@ -59,17 +49,19 @@ class AppwriteService {
     return _instance;
   }
 
+  // Initialize Appwrite client and services. Use setSelfSigned(true) ONLY for development.
   AppwriteService._internal() {
     client = Client()
         .setEndpoint(AppwriteConfig.endpoint)
         .setProject(AppwriteConfig.projectId)
-        .setSelfSigned(status: true); // Use true only for development
+        .setSelfSigned(status: true); // Remove or set false for production
 
     databases = Databases(client);
     storage = Storage(client);
   }
 
-  // --- _fetchCollectionData (No changes needed) ---
+  // --- _fetchCollectionData Helper ---
+  // Generic method to fetch documents from a collection.
   Future<List<Map<String, dynamic>>> _fetchCollectionData(
     String collectionId,
     String itemType, {
@@ -81,6 +73,7 @@ class AppwriteService {
         collectionId: collectionId,
         queries: queries,
       );
+      // Map documents, add item_type and \$id.
       return response.documents.map((doc) {
         final data = Map<String, dynamic>.from(doc.data);
         data['item_type'] = itemType;
@@ -91,14 +84,14 @@ class AppwriteService {
       print(
         'Appwrite Error fetching/searching $itemType from $collectionId: ${e.message}',
       );
-      return [];
+      return []; // Return empty on error
     } catch (e) {
       print('Error fetching/searching $itemType from $collectionId: $e');
-      return [];
+      return []; // Return empty on error
     }
   }
 
-  // --- Specific fetch methods (No changes needed) ---
+  // --- Specific Fetch Methods ---
   Future<List<Map<String, dynamic>>> fetchAllFlowers() async {
     return _fetchCollectionData(AppwriteConfig.flowersCollectionId, 'Flower');
   }
@@ -111,7 +104,8 @@ class AppwriteService {
     return _fetchCollectionData(AppwriteConfig.treesCollectionId, 'Tree');
   }
 
-  // --- Combined fetch all (No changes needed) ---
+  // --- Combined Fetch All Plants ---
+  // Fetches all plants from all specified collections concurrently.
   Future<List<Map<String, dynamic>>> fetchAllPlants() async {
     try {
       final results = await Future.wait([
@@ -119,23 +113,20 @@ class AppwriteService {
         fetchAllHerbs(),
         fetchAllTrees(),
       ]);
-      final combinedList = results.expand((list) => list).toList();
-      return combinedList;
+      // Combine results into a single list.
+      return results.expand((list) => list).toList();
     } catch (e) {
       print("Error fetching all plant data: $e");
       throw Exception("Failed to load plant data: $e");
     }
   }
 
-  // --- searchPlants (No changes needed in this method itself) ---
-  // This method already iterates through the AppwriteConfig.searchableAttributes list.
-  // By adding the localized keys to that list, this method will automatically include them.
+  // --- searchPlants ---
+  // Searches across collections and searchable attributes.
   Future<List<Map<String, dynamic>>> searchPlants(String query) async {
     final trimmedQuery = query.trim();
     if (trimmedQuery.isEmpty) {
-      // Return all plants if query is empty (matching previous behavior)
-      return fetchAllPlants();
-      // Or return empty list: return [];
+      return fetchAllPlants(); // Return all if query is empty.
     }
 
     final collectionsToSearch = [
@@ -146,26 +137,25 @@ class AppwriteService {
 
     final List<Future<List<Map<String, dynamic>>>> searchFutures = [];
 
+    // Search each collection for each searchable attribute.
     for (var collectionInfo in collectionsToSearch) {
-      // Loop through ALL attributes defined in the config list
       for (var attribute in AppwriteConfig.searchableAttributes) {
-        final List<String> searchQueries = [
-          Query.search(attribute, trimmedQuery),
-        ];
         searchFutures.add(
           _fetchCollectionData(
             collectionInfo['id']!,
             collectionInfo['type']!,
-            queries: searchQueries,
+            queries: [Query.search(attribute, trimmedQuery)],
           ),
         );
       }
     }
 
     try {
+      // Wait for all search futures to complete.
       final List<List<Map<String, dynamic>>> resultsByAttribute =
           await Future.wait(searchFutures);
 
+      // Combine and filter for unique plants by document ID.
       final Map<String, Map<String, dynamic>> uniqueResults = {};
       for (var resultList in resultsByAttribute) {
         for (var plantData in resultList) {
@@ -176,6 +166,7 @@ class AppwriteService {
         }
       }
 
+      // Convert the map of unique results back to a list.
       final combinedList = uniqueResults.values.toList();
       print(
         "Search for '$trimmedQuery' found ${combinedList.length} unique plants.",
@@ -183,11 +174,12 @@ class AppwriteService {
       return combinedList;
     } catch (e) {
       print("Error during combined plant search for '$trimmedQuery': $e");
-      return [];
+      return []; // Return empty on error
     }
   }
 
-  // --- Get Plant Details by ID (No changes needed) ---
+  // --- Get Plant Details by ID ---
+  // Fetches a single plant document by ID across collections.
   Future<Map<String, dynamic>?> getPlantDetailsById(String plantId) async {
     final collectionsToSearch = [
       {'id': AppwriteConfig.flowersCollectionId, 'type': 'Flower'},
@@ -195,6 +187,7 @@ class AppwriteService {
       {'id': AppwriteConfig.treesCollectionId, 'type': 'Tree'},
     ];
 
+    // Iterate collections to find the plant by ID.
     for (var collectionInfo in collectionsToSearch) {
       try {
         final models.Document document = await databases.getDocument(
@@ -202,6 +195,7 @@ class AppwriteService {
           collectionId: collectionInfo['id']!,
           documentId: plantId,
         );
+        // If found, map data and return.
         final data = Map<String, dynamic>.from(document.data);
         data['\$id'] = document.$id;
         data['item_type'] = collectionInfo['type'];
@@ -215,7 +209,7 @@ class AppwriteService {
             'Failed to fetch plant details for $plantId: ${e.message}',
           );
         }
-        // If 404, continue to the next collection
+        // Continue if 404 (not found in this collection).
       } catch (e) {
         print(
           'Generic Error fetching $plantId from ${collectionInfo['id']}: $e',
@@ -225,7 +219,8 @@ class AppwriteService {
         );
       }
     }
+    // If not found in any collection, log and return null.
     print("Plant with ID $plantId not found in any specified collection.");
-    return null;
+    return null; // Return null if not found in any collection.
   }
 }

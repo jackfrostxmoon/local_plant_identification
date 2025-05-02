@@ -1,4 +1,3 @@
-// screens/favourite/favorites_screen.dart
 import 'dart:async';
 
 import 'package:flutter/material.dart';
@@ -11,6 +10,7 @@ import 'package:local_plant_identification/widgets/localization_helper.dart';
 // Import your Plant Detail Screen and the Appwrite Service
 import '../plant_configs/plant_detail_screen.dart' as detail_screen;
 
+// The screen that displays the user's favorite plants.
 class FavoritesScreen extends StatefulWidget {
   const FavoritesScreen({super.key});
 
@@ -18,28 +18,34 @@ class FavoritesScreen extends StatefulWidget {
   State<FavoritesScreen> createState() => _FavoritesScreenState();
 }
 
+// The state management for the FavoritesScreen.
 class _FavoritesScreenState extends State<FavoritesScreen> {
-  // Use function from detail_screen (consider moving getCurrentUserId to a shared auth service/util)
+  // Get the current user's ID (consider moving getCurrentUserId to a shared auth service/util).
   final String? userId = detail_screen.getCurrentUserId();
+  // Instance of the Appwrite service for fetching plant details.
   final AppwriteService _appwriteService = AppwriteService();
 
-  // --- Helper Function _fetchFavoritePlantDetails (No changes needed) ---
+  // Asynchronously fetches the details of favorite plants from Appwrite.
   Future<List<Map<String, dynamic>>> _fetchFavoritePlantDetails(
     List<String> plantIds,
   ) async {
     if (plantIds.isEmpty) {
       return [];
     }
+    // Create a list of futures to fetch details for each plant ID.
     final List<Future<Map<String, dynamic>?>> futurePlantDetails =
         plantIds.map((id) => _appwriteService.getPlantDetailsById(id)).toList();
     try {
+      // Wait for all futures to complete.
       final List<Map<String, dynamic>?> results = await Future.wait(
         futurePlantDetails,
       );
+      // Filter out null results and cast to the expected type.
       final List<Map<String, dynamic>> plantDetails = results
           .where((result) => result != null)
           .cast<Map<String, dynamic>>()
           .toList();
+      // Warn if some plant IDs could not be found.
       if (plantDetails.length != plantIds.length) {
         print(
           "Warning: Some favorite plant IDs could not be found in Appwrite.",
@@ -47,27 +53,28 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       }
       return plantDetails;
     } catch (e) {
+      // Print and rethrow any errors during fetching.
       print("Error fetching one or more favorite plant details: $e");
       rethrow; // Rethrow to be caught by FutureBuilder
     }
   }
-  // --- End Helper Function ---
 
-  // --- Helper Function to Handle Unfavorite Action (Uses hardcoded messages as keys are missing in template) ---
+  // Handles the action of removing a plant from favorites.
   Future<void> _handleUnfavorite(
       String plantId, String localizedPlantName) async {
     // Ensure context is available before async gap
     if (!mounted) return;
-    // final l10n = AppLocalizations.of(context)!; // Not needed for hardcoded messages
+
     final messenger = ScaffoldMessenger.of(context); // Store messenger
 
     try {
+      // Call the utility function to remove the favorite plant from Firestore.
       await removeFavoritePlant(plantId);
       // Check mount status again before showing snackbar
       if (!mounted) return;
+      // Show a success SnackBar.
       messenger.showSnackBar(
         SnackBar(
-          // --- Hardcoded English message (key missing in provided template) ---
           content: Text('$localizedPlantName removed from favorites.'),
           backgroundColor: Colors.redAccent,
           duration: const Duration(seconds: 2),
@@ -77,6 +84,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       print("Error removing favorite from list: $e");
       // Check mount status again before showing snackbar
       if (!mounted) return;
+      // Show an error SnackBar if removal fails.
       messenger.showSnackBar(
         SnackBar(
           // --- Hardcoded English message (key missing in provided template) ---
@@ -94,11 +102,11 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     // Get l10n instance for the tooltip
     final l10n = AppLocalizations.of(context)!;
 
+    // Show a message if the user is not logged in.
     if (userId == null) {
       return const Center(
         child: Padding(
           padding: EdgeInsets.all(16.0),
-          // --- Hardcoded English message (key missing in provided template) ---
           child: Text(
             'Please log in to see your favorite plants.',
             textAlign: TextAlign.center,
@@ -108,19 +116,23 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
       );
     }
     // Pass l10n down to the builder method for the tooltip
+    // Build the list of favorites using a StreamBuilder to listen for Firestore changes.
     return _buildFavoritesList(l10n);
   }
 
+  // Builds the list of favorite plants.
   Widget _buildFavoritesList(AppLocalizations l10n) {
     return StreamBuilder<DocumentSnapshot>(
       stream: FirebaseFirestore.instance
           .collection('users')
           .doc(userId!) // userId is guaranteed non-null here
-          .snapshots(),
+          .snapshots(), // Listen for changes to the user's document.
       builder: (context, userSnapshot) {
+        // Show a loading indicator while fetching user data.
         if (userSnapshot.connectionState == ConnectionState.waiting) {
           return const Center(child: CircularProgressIndicator());
         }
+        // Show an error message if fetching user data fails.
         if (userSnapshot.hasError) {
           print("Firestore Error: ${userSnapshot.error}");
           // --- Hardcoded English message (key missing in provided template) ---
@@ -131,6 +143,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             ),
           );
         }
+        // Show a message if the user document or favorites list doesn't exist.
         if (!userSnapshot.hasData || !userSnapshot.data!.exists) {
           // --- Hardcoded English message (key missing in provided template) ---
           return const Center(
@@ -141,12 +154,15 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
           );
         }
 
+        // Extract favorite plant IDs from the user document.
         final userData = userSnapshot.data!.data() as Map<String, dynamic>?;
         final List<dynamic> favoriteIdsDynamic =
             userData?['favoritePlantIds'] as List<dynamic>? ?? [];
+        // Convert dynamic list to a list of strings.
         final List<String> favoritePlantIds =
             favoriteIdsDynamic.map((id) => id.toString()).toList();
 
+        // Show a message if the favorite plant IDs list is empty.
         if (favoritePlantIds.isEmpty) {
           // --- Hardcoded English message (key missing in provided template) ---
           return const Center(
@@ -158,13 +174,16 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
         }
 
         // Fetch details using the helper
+        // Use a FutureBuilder to fetch the details of the favorite plants.
         return FutureBuilder<List<Map<String, dynamic>>>(
           future: _fetchFavoritePlantDetails(favoritePlantIds),
           builder: (context, plantDetailsSnapshot) {
+            // Show loading placeholders while fetching plant details.
             if (plantDetailsSnapshot.connectionState ==
                 ConnectionState.waiting) {
               return _buildLoadingPlaceholders(favoritePlantIds.length);
             }
+            // Show an error message if fetching plant details fails.
             if (plantDetailsSnapshot.hasError) {
               print("Appwrite Fetch Error: ${plantDetailsSnapshot.error}");
               // --- Hardcoded English message (key missing in provided template) ---
@@ -176,6 +195,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 ),
               );
             }
+            // Show a message if no plant details were found.
             if (!plantDetailsSnapshot.hasData) {
               // --- Hardcoded English message (key missing in provided template) ---
               return const Center(
@@ -186,9 +206,11 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
               );
             }
 
+            // Get the list of favorite plant details.
             final List<Map<String, dynamic>> favoritePlants =
                 plantDetailsSnapshot.data!;
 
+            // Handle the case where the list of fetched plants is empty but the IDs list was not.
             if (favoritePlants.isEmpty && favoritePlantIds.isNotEmpty) {
               // --- Hardcoded English message (key missing in provided template) ---
               return const Center(
@@ -202,6 +224,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                 ),
               );
             }
+            // Show a message if the final list of favorite plants is empty.
             if (favoritePlants.isEmpty) {
               // --- Hardcoded English message (key missing in provided template) ---
               return const Center(
@@ -213,26 +236,29 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
             }
 
             // Build the list using localized data for name, localized tooltip
+            // Build the list of favorite plants using a ListView.builder.
             return ListView.builder(
               padding: const EdgeInsets.symmetric(
                 vertical: 8.0,
                 horizontal: 8.0,
               ),
-              itemCount: favoritePlants.length,
+              itemCount:
+                  favoritePlants.length, // The number of favorite plants.
+              // Builder function to create each list tile.
               itemBuilder: (context, index) {
                 final plantData = favoritePlants[index];
                 final String? plantId = plantData['\$id'];
 
+                // Skip rendering if the plant data is missing the ID.
                 if (plantId == null) {
                   print(
                       "Warning: Favorite plant data missing '\$id'. Index: $index");
                   return const SizedBox.shrink();
                 }
 
-                // --- Use getLocalizedValue from the imported helper ---
+                // Get the localized plant name.
                 final String localizedName =
                     getLocalizedValue(context, plantData, 'Name');
-                // --- End localization for name ---
 
                 final String? imageUrl = plantData['image'];
 
@@ -245,6 +271,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                   ),
                   elevation: 3,
                   child: InkWell(
+                    // Navigate to the Plant Detail Screen when the card is tapped.
                     onTap: () {
                       Navigator.push(
                         context,
@@ -266,13 +293,16 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(12.0),
                               child: (imageUrl != null && imageUrl.isNotEmpty)
+                                  // Display the plant image if available.
                                   ? Image.network(
                                       imageUrl,
                                       fit: BoxFit.cover,
+                                      // Loading builder for the image.
                                       loadingBuilder:
                                           (context, child, loadingProgress) {
-                                        if (loadingProgress == null)
+                                        if (loadingProgress == null) {
                                           return child;
+                                        }
                                         return Container(
                                           color: Colors.grey[200],
                                           child: const Center(
@@ -286,6 +316,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                                           ),
                                         );
                                       },
+                                      // Error builder for the image.
                                       errorBuilder:
                                           (context, error, stackTrace) {
                                         return Container(
@@ -298,6 +329,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                                         );
                                       },
                                     )
+                                  // Show a placeholder icon if no image is available.
                                   : Container(
                                       color: Colors.grey[200],
                                       child: Icon(
@@ -309,20 +341,19 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                             ),
                           ),
                           const SizedBox(width: 16),
-                          // Text Area (Use localizedName)
+
                           Expanded(
                             child: Text(
-                              localizedName, // Display localized name
+                              localizedName,
                               style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w500,
-                              ),
+                                  fontSize: 18, fontWeight: FontWeight.w500),
                               maxLines: 3,
                               overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           const SizedBox(width: 12),
                           // Favorite Icon Button
+                          // Button to remove the plant from favorites.
                           IconButton(
                             icon: const Icon(
                               Icons.favorite,
@@ -330,8 +361,10 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
                               size: 28,
                             ),
                             // --- Use localized tooltip from .arb template ---
-                            tooltip: l10n.removeFromFavoritesTooltip,
+                            tooltip: l10n
+                                .removeFromFavoritesTooltip, // Localized tooltip.
                             visualDensity: VisualDensity.standard,
+                            // Call the unfavorite handler when the button is pressed.
                             onPressed: () {
                               _handleUnfavorite(plantId, localizedName);
                             },
@@ -349,7 +382,7 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
     );
   }
 
-  // Placeholder widget (No changes needed)
+  // Builds a list of placeholder cards while favorite plant details are loading.
   Widget _buildLoadingPlaceholders(int count) {
     return ListView.builder(
       padding: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 8.0),

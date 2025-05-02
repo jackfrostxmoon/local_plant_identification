@@ -451,5 +451,29 @@
   "profileCancelEditTooltip": "Cancel Edit",
   "@profileCancelEditTooltip": {
     "description": "Tooltip for the cancel button when editing a profile field"
+  },
+  "dashboardLabel": "Dashboard",
+  "@dashboardLabel": {
+    "description": "Label for the Dashboard item/button"
+  },
+  "bottomNavDashboard": "Dashboard",
+  "@bottomNavDashboard": {
+    "description": "Label for the Dashboard tab in the bottom navigation bar"
+  },
+  "bottomNavSearch": "Search",
+  "@bottomNavSearch": {
+    "description": "Label for the Search tab in the bottom navigation bar"
+  },
+  "bottomNavCamera": "Camera",
+  "@bottomNavCamera": {
+    "description": "Label for the Camera tab in the bottom navigation bar"
+  },
+  "bottomNavFavourite": "Favorites",
+  "@bottomNavFavourite": {
+    "description": "Label for the Favorites tab in the bottom navigation bar"
+  },
+  "bottomNavProfile": "Profile",
+  "@bottomNavProfile": {
+    "description": "Label for the Profile tab in the bottom navigation bar"
   }
 }

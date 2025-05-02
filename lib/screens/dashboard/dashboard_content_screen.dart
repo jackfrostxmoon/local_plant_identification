@@ -1,5 +1,3 @@
-// screens/dashboard_content_screen.dart
-
 import 'package:flutter/material.dart';
 import 'package:local_plant_identification/screens/plant_configs/plant_detail_screen.dart';
 import 'package:local_plant_identification/screens/plant_configs/empty_data_message.dart';
@@ -37,7 +35,6 @@ class _DashboardContentScreenState extends State<DashboardContentScreen> {
     }
   }
 
-  // --- _buildPlantCard method ---
   Widget _buildPlantCard(BuildContext context, Map<String, dynamic> plant) {
     final String localizedName = getLocalizedValue(context, plant, 'Name');
     final String? imageUrl = plant['image'];
@@ -53,7 +50,6 @@ class _DashboardContentScreenState extends State<DashboardContentScreen> {
             ),
           );
         } else {
-          // --- Keep this SnackBar error hardcoded (developer focus) ---
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Error: Cannot view details. Plant ID missing.'),
@@ -95,7 +91,6 @@ class _DashboardContentScreenState extends State<DashboardContentScreen> {
                             );
                           },
                           errorBuilder: (context, error, stackTrace) {
-                            // Tooltip for image error - can remain hardcoded or use l10n.imageUnavailableError
                             return Tooltip(
                               message: 'Image unavailable',
                               child: Icon(
@@ -138,7 +133,6 @@ class _DashboardContentScreenState extends State<DashboardContentScreen> {
   }
   // --- END of _buildPlantCard method ---
 
-  // Helper to get localized category name from item_type
   String _getLocalizedCategoryName(BuildContext context, String itemType) {
     final l10n = AppLocalizations.of(context)!;
     switch (itemType) {
@@ -165,13 +159,11 @@ class _DashboardContentScreenState extends State<DashboardContentScreen> {
           return const LoadingIndicator();
         }
         if (snapshot.hasError) {
-          // --- Revert ErrorDisplay message to hardcoded English ---
           return ErrorDisplay(
             errorMessage:
-                'Failed to load plant data.\nPlease try again.\nError: ${snapshot.error}', // Hardcoded English
+                'Failed to load plant data.\nPlease try again.\nError: ${snapshot.error}',
             onRetry: _loadAllPlants,
           );
-          // --- End Revert ---
         }
 
         final allPlants = snapshot.data ?? [];
@@ -213,9 +205,8 @@ class _DashboardContentScreenState extends State<DashboardContentScreen> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  // --- Localized Title ---
                   Text(
-                    l10n.plantCategoriesTitle, // Localized
+                    l10n.plantCategoriesTitle,
                     style: const TextStyle(
                       fontSize: 25,
                       color: Colors.black,
@@ -225,7 +216,7 @@ class _DashboardContentScreenState extends State<DashboardContentScreen> {
                   const Divider(color: Colors.black, thickness: 1),
                   const SizedBox(height: 8),
 
-                  // --- Plant Category Sections ---
+                  // Plant Category Sections
                   if (groupedPlants.isNotEmpty) ...[
                     for (var categoryType in sortedCategories)
                       Padding(
@@ -254,7 +245,7 @@ class _DashboardContentScreenState extends State<DashboardContentScreen> {
                                   _getLocalizedCategoryName(
                                     context,
                                     categoryType,
-                                  ), // Localized category name
+                                  ),
                                   style: const TextStyle(
                                     fontSize: 18,
                                     fontWeight: FontWeight.bold,
@@ -282,19 +273,17 @@ class _DashboardContentScreenState extends State<DashboardContentScreen> {
                     const SizedBox(height: 24),
                   ] else if (snapshot.connectionState ==
                       ConnectionState.done) ...[
-                    // Use localized empty message
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 30.0),
                       child: EmptyDataMessage(
-                        message: "No plants available", // Hardcoded message
+                        message: "No plants available",
                       ),
                     ),
                     const SizedBox(height: 24),
                   ],
 
-                  // --- Localized Quiz Selection Section ---
                   Text(
-                    l10n.quizTypeTitle, // Localized
+                    l10n.quizTypeTitle,
                     style: const TextStyle(
                       fontSize: 24,
                       fontWeight: FontWeight.bold,
@@ -327,7 +316,7 @@ class _DashboardContentScreenState extends State<DashboardContentScreen> {
                             ),
                           ),
                           child: Text(
-                            l10n.quizFlowersButton, // Localized
+                            l10n.quizFlowersButton,
                             style: const TextStyle(
                               fontSize: 18,
                               color: Colors.black,
@@ -357,7 +346,7 @@ class _DashboardContentScreenState extends State<DashboardContentScreen> {
                             ),
                           ),
                           child: Text(
-                            l10n.quizHerbsButton, // Localized
+                            l10n.quizHerbsButton,
                             style: const TextStyle(
                               fontSize: 18,
                               color: Colors.black,
@@ -387,7 +376,7 @@ class _DashboardContentScreenState extends State<DashboardContentScreen> {
                             ),
                           ),
                           child: Text(
-                            l10n.quizTreesButton, // Localized
+                            l10n.quizTreesButton,
                             style: const TextStyle(
                               fontSize: 18,
                               color: Colors.black,
@@ -400,9 +389,8 @@ class _DashboardContentScreenState extends State<DashboardContentScreen> {
                   ),
                   const SizedBox(height: 16),
 
-                  // --- Localized About Us Section ---
                   Text(
-                    l10n.aboutUsTitle, // Localized
+                    l10n.aboutUsTitle,
                     style: const TextStyle(
                       fontSize: 25,
                       color: Colors.black,
@@ -411,7 +399,7 @@ class _DashboardContentScreenState extends State<DashboardContentScreen> {
                   ),
                   const Divider(color: Colors.black, thickness: 1),
                   Text(
-                    l10n.aboutUsContent, // Localized
+                    l10n.aboutUsContent,
                     style: const TextStyle(fontSize: 16, color: Colors.black),
                   ),
                   const SizedBox(height: 20),

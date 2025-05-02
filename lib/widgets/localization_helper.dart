@@ -64,7 +64,7 @@ List<String> getLocalizedList(
       break;
   }
 
-  List<String> _safelyCastList(dynamic listData) {
+  List<String> safelyCastList(dynamic listData) {
     if (listData is List) {
       try {
         return List<String>.from(listData.map((item) => item.toString()));
@@ -78,14 +78,14 @@ List<String> getLocalizedList(
   }
 
   if (data.containsKey(localeKey) && data[localeKey] is List) {
-    List<String> localizedList = _safelyCastList(data[localeKey]);
+    List<String> localizedList = safelyCastList(data[localeKey]);
     if (localizedList.isNotEmpty) {
       return localizedList;
     }
   }
 
   if (data.containsKey(baseKey) && data[baseKey] is List) {
-    List<String> baseList = _safelyCastList(data[baseKey]);
+    List<String> baseList = safelyCastList(data[baseKey]);
     if (baseList.isNotEmpty) {
       return baseList;
     }

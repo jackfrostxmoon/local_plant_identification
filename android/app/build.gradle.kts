@@ -11,7 +11,6 @@ plugins {
 android {
     namespace = "com.example.local_plant_identification"
     compileSdk = flutter.compileSdkVersion
-    ndkVersion = flutter.ndkVersion
 
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11

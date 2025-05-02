@@ -3,13 +3,20 @@ import 'package:flutter/foundation.dart' show kIsWeb, Uint8List;
 import 'package:flutter/material.dart';
 import 'package:flutter_gen/gen_l10n/app_localizations.dart';
 
+// A widget for picking and uploading images to the gallery.
 class ImagePickerUploader extends StatelessWidget {
+  // Holds the selected image data in bytes for web.
   final Uint8List? imageBytes; // For Web
+  // Holds the path to the selected image file for mobile.
   final String? imagePath; // For Mobile
+  // Flag to indicate if an upload operation is currently in progress.
   final bool isUploading;
+  // Callback function to trigger the image picking process.
   final VoidCallback onPickImage;
+  // Callback function to trigger the image upload process.
   final VoidCallback onUploadImage;
 
+  // Constructor for the ImagePickerUploader widget.
   const ImagePickerUploader({
     super.key,
     required this.imageBytes,
@@ -21,6 +28,7 @@ class ImagePickerUploader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Determine if an image has been selected based on the platform.
     final bool hasImage =
         (kIsWeb && imageBytes != null) || (!kIsWeb && imagePath != null);
 
@@ -28,7 +36,7 @@ class ImagePickerUploader extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: Column(
         children: [
-          // --- Image Preview ---
+          // Image Preview
           Container(
             width: 200,
             height: 200,
@@ -39,6 +47,7 @@ class ImagePickerUploader extends StatelessWidget {
             alignment: Alignment.center,
             child: ClipRRect(
               borderRadius: BorderRadius.circular(8),
+              // Display the selected image based on the platform, or a placeholder text.
               child: kIsWeb
                   ? (imageBytes != null
                       ? Image.memory(
@@ -62,13 +71,13 @@ class ImagePickerUploader extends StatelessWidget {
           ),
           const SizedBox(height: 10),
 
-          // --- Action Buttons ---
+          // Action Buttons
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: [
-              // --- Pick Image Button ---
+              // Pick Image Button
               ElevatedButton.icon(
-                onPressed: onPickImage,
+                onPressed: onPickImage, // Call the pick image callback.
                 icon: const Icon(Icons.image_search, color: Colors.black),
                 label: Text(
                   AppLocalizations.of(context)!.pickImageButtonLabel,
@@ -82,8 +91,9 @@ class ImagePickerUploader extends StatelessWidget {
                 ),
               ),
 
-              // --- Upload Image Button ---
+              // Upload Image Button
               ElevatedButton.icon(
+                // Enable the button only if an image is selected and not currently uploading.
                 onPressed: hasImage && !isUploading ? onUploadImage : null,
                 icon: isUploading
                     ? const SizedBox(
@@ -99,6 +109,7 @@ class ImagePickerUploader extends StatelessWidget {
                         color: Colors.black, // Icon color when enabled
                       ),
                 label: Text(
+                  // Display different text based on the uploading state.
                   isUploading
                       ? AppLocalizations.of(context)!.uploadingButtonLabel
                       : AppLocalizations.of(context)!.uploadImageButtonLabel,

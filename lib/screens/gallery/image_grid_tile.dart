@@ -2,12 +2,18 @@ import 'package:flutter/foundation.dart' show Uint8List;
 import 'package:flutter/material.dart';
 import 'package:local_plant_identification/services/appwrite_service.dart'; // Adjust import
 
+// A single tile widget to display an image in the gallery grid.
 class ImageGridTile extends StatelessWidget {
+  // The unique ID of the image file in Appwrite storage.
   final String imageId;
+  // An instance of the AppwriteService to interact with Appwrite.
   final AppwriteService appwriteService;
+  // A flag indicating if a deletion operation is currently in progress.
   final bool isDeleting;
+  // Callback function to be called when the delete button is pressed.
   final Function(String) onDeleteImage; // Callback to trigger deletion
 
+  // Constructor for the ImageGridTile widget.
   const ImageGridTile({
     super.key,
     required this.imageId,
@@ -18,14 +24,17 @@ class ImageGridTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // FutureBuilder to asynchronously fetch the image data.
     return FutureBuilder<Uint8List>(
-      // Fetch image data using the provided service and ID
+      // Fetch image data using the provided service and ID.
       future: appwriteService.storage.getFileDownload(
         bucketId: AppwriteConfig.plantImagesStorageId, // Assuming global config
         fileId: imageId,
       ),
+      // Builder function to handle the state of the future.
       builder: (context, snapshot) {
         // --- Loading State ---
+        // Show a loading indicator while fetching the image data.
         if (snapshot.connectionState == ConnectionState.waiting) {
           return Container(
             decoration: BoxDecoration(
@@ -38,6 +47,7 @@ class ImageGridTile extends StatelessWidget {
           );
         }
         // --- Error State ---
+        // Show an error message if fetching the image data fails.
         else if (snapshot.hasError) {
           print("Error loading file download for $imageId: ${snapshot.error}");
           return Container(
@@ -61,6 +71,7 @@ class ImageGridTile extends StatelessWidget {
           );
         }
         // --- Success State ---
+        // Display the image if the data is successfully fetched and is not empty.
         else if (snapshot.hasData &&
             snapshot.data != null &&
             snapshot.data!.isNotEmpty) {
@@ -71,11 +82,13 @@ class ImageGridTile extends StatelessWidget {
               fit: StackFit.expand,
               children: [
                 // --- Tappable Image for Full View ---
+                // Wrap the image in an InkWell to make it tappable for viewing.
                 InkWell(
                   onTap: () => _showImageDialog(context, imageData),
                   child: Image.memory(
                     imageData,
                     fit: BoxFit.cover,
+                    // Error builder to handle cases where the image cannot be displayed.
                     errorBuilder: (context, error, stackTrace) {
                       print("Error displaying image data for $imageId: $error");
                       return Container(
@@ -92,6 +105,7 @@ class ImageGridTile extends StatelessWidget {
                   ),
                 ),
                 // --- Delete Button ---
+                // Position the delete button in the top-right corner.
                 Positioned(
                   top: 6.0,
                   right: 6.0,
@@ -109,6 +123,7 @@ class ImageGridTile extends StatelessWidget {
                         child: InkWell(
                           borderRadius: BorderRadius.circular(16),
                           // Disable tap if deletion is in progress
+                          // Call the onDeleteImage callback when tapped, if not deleting.
                           onTap:
                               isDeleting ? null : () => onDeleteImage(imageId),
                           child: Container(
@@ -129,6 +144,7 @@ class ImageGridTile extends StatelessWidget {
           );
         }
         // --- Empty/Invalid Data State ---
+        // Show a placeholder icon if no image data is received or it's empty.
         else {
           print("No file data received for $imageId (Data: ${snapshot.data})");
           return Container(
@@ -145,7 +161,7 @@ class ImageGridTile extends StatelessWidget {
     );
   }
 
-  // Helper method to show the image in a dialog
+  // Helper method to show the image in a dialog for full view and zooming.
   void _showImageDialog(BuildContext context, Uint8List imageData) {
     showDialog(
       context: context,
@@ -156,6 +172,7 @@ class ImageGridTile extends StatelessWidget {
               maxHeight: MediaQuery.of(context).size.height * 0.8,
               maxWidth: MediaQuery.of(context).size.width * 0.9,
             ),
+            // InteractiveViewer allows zooming and panning of the image.
             child: InteractiveViewer(
               panEnabled: true,
               minScale: 0.5,
