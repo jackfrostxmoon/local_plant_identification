@@ -6,7 +6,7 @@ import 'web_scraping.dart';
 import 'models.dart';
 
 class APIIntegration {
-  final String apiKey = 'RCSbpHuUBlJOB3dGAb0HerRkWyptTyMIvXlbYkVmtSAoFvZAau';
+  final String apiKey = '';
 
   /// Function to identify a plant using the Plant.id API
   Future<List<Plant>?> identifyPlant(String base64Image) async {
